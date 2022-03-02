@@ -1,0 +1,14 @@
+<%- | Array[String] $urls | -%>
+tls_cert = "/etc/telegraf/cert.pem"
+tls_key = "/etc/telegraf/key.pem"
+tls_ca = "/etc/telegraf/ca.pem"
+data_format = "json_v2"
+headers = {"Content-type" = "application/json"}
+method = 'GET'
+urls = <%= $urls %>
+[[json_v2]]
+   measurement_name = 'puppetdb'
+   [[json_v2.object]]
+      path = 'status-service.status.experimental.jvm-metrics'
+      disable_prepend_keys = false
+

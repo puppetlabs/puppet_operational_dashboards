@@ -1,0 +1,35 @@
+---
+puppet_metrics_dashboard::manage_repos: true
+
+puppet_metrics_dashboard::add_dashboard_examples: false
+puppet_metrics_dashboard::overwrite_dashboards: true
+
+puppet_metrics_dashboard::enable_chronograf: false
+puppet_metrics_dashboard::enable_kapacitor: false
+puppet_metrics_dashboard::enable_telegraf: true
+puppet_metrics_dashboard::configure_telegraf: true
+puppet_metrics_dashboard::consume_graphite: false
+
+puppet_metrics_dashboard::influxdb_database_name:
+  - "telegraf"
+puppet_metrics_dashboard::influxdb_urls:
+  - "http://localhost:8086"
+
+puppet_metrics_dashboard::influx_db_password: "puppet"
+
+puppet_metrics_dashboard::telegraf_db_name: "telegraf"
+puppet_metrics_dashboard::http_response_timeout: "5s"
+puppet_metrics_dashboard::telegraf_agent_interval: "5s"
+puppet_metrics_dashboard::pg_query_interval: "10m"
+
+puppet_metrics_dashboard::use_dashboard_ssl: false
+puppet_metrics_dashboard::tidy_telegraf_configs: false
+puppet_metrics_dashboard::dashboard_cert_file: "/etc/grafana/%{clientcert}_cert.pem"
+puppet_metrics_dashboard::dashboard_cert_key: "/etc/grafana/%{clientcert}_key.pem"
+
+puppet_metrics_dashboard::enable_ldap_auth: false
+
+puppet_metrics_dashboard::overwrite_dashboards_file: "/opt/puppetlabs/puppet/cache/state/overwrite_dashboards_disabled"
+
+puppet_metrics_dashboard::grafana_config: {}
+puppet_metrics_dashboard::grafana_manage_repo: false

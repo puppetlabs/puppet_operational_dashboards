@@ -1,0 +1,30 @@
+class bucket_and_datasource(
+  Sensitive[String] $token,
+){
+
+  influxdb_bucket {'<bucket_name>':
+    ensure => present,
+    org    => 'puppetlabs',
+    token  => $token,
+  }
+
+  grafana_datasource {'<my_datasource>':
+    grafana_user     => 'admin',
+    grafana_password => 'admin',
+    grafana_url      => "http://${facts['fqdn']}:3000",
+    type             => 'influxdb',
+    # This must match the namevar of the influxdb_bucket resource
+    database         => '<bucket_name>',
+    url              => "https://${facts['fqdn']}:8086",
+    access_mode      => 'proxy',
+    is_default       => false,
+    json_data        => {
+      httpHeaderName1 => 'Authorization',
+      httpMode        => 'GET',
+      tlsSkipVerify   => true
+    },
+    secure_json_data => {
+      httpHeaderValue1 => 'Token <token>',
+    },
+  }
+}

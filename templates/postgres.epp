@@ -1,0 +1,23 @@
+<%- | String $certname | -%>
+address = "postgres://telegraf@<%=$certname%>:5432/pe-puppetdb?sslmode=verify-full&sslkey=/etc/telegraf/key.pem&sslcert=/etc/telegraf/cert.pem&sslrootcert=/etc/telegraf/ca.pem"
+databases = ["pe-puppetdb"]
+outputaddress = "<%=$certname%>"
+[[query]]
+sqlquery = "SELECT * FROM pg_stat_database"
+version = 901
+withdbname = false
+[[query]]
+sqlquery = "SELECT relname as table, pg_relation_size(relid) as size FROM pg_catalog.pg_statio_user_tables ORDER BY pg_total_relation_size(relid) DESC"
+tagvalue = "table"
+version = 901
+withdbname = false
+[[query]]
+sqlquery = "SELECT relname as table, autovacuum_count, vacuum_count, n_live_tup, n_dead_tup FROM pg_stat_user_tables"
+tagvalue = "table"
+version = 901
+withdbname = false
+[[query]]
+sqlquery = "SELECT relname as table, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables"
+tagvalue = "table"
+version = 901
+withdbname = false

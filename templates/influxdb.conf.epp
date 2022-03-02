@@ -1,0 +1,71 @@
+<%- | Array $filters = ['puppetdb',
+                        'compiler',
+                        'file-sync-client',
+                        'file-sync-storage',
+                        'functions',
+                        'http',
+                        'http-client',
+                        'jruby',
+                        'memory',
+                        'num-cpus',
+                        'uptime'],
+      Array $master_list
+| -%>
+
+<%
+$serverarray = $master_list.map |$host| { 
+  $server_tag = join(split($host,"[.]").map | $element | { "server" },'.') 
+  $wildcards = join(split($host,"[.]").map | $element | { "*" },'.') 
+  "puppetlabs.${wildcards}.placeholder .${server_tag}.measurement*" 
+}
+
+if length(delete_undef_values($serverarray)) > 1 {
+  $unique_serverarray = unique($serverarray)
+} else {
+  $unique_serverarray = []
+}
+
+$filterarray = $filters.map |$filter| { 
+   regsubst($unique_serverarray, "placeholder", $filter) 
+} 
+
+$sorted_array = sort($filterarray)
+
+$finalfilters = concat(flatten($sorted_array),".server.measurement*")
+
+-%> 
+
+[meta]
+  dir = "/var/lib/influxdb/meta"
+[data]
+  dir = "/var/lib/influxdb/data"
+  wal-dir = "/var/lib/influxdb/wal"
+[coordinator]
+[retention]
+[shard-precreation]
+[monitor]
+[http]
+[subscriber]
+[[graphite]]
+  enabled = true
+  database = "graphite"
+  retention-policy = ""
+  bind-address = ":2003"
+  protocol = "tcp"
+  consistency-level = "one"
+  batch-size = 5000
+  batch-pending = 10
+  batch-timeout = "1s"
+  udp-read-buffer = 0
+  separator = "."
+  templates = [
+    <%# -%>
+    <% $finalfilters.each |$template| { -%>
+    "<%= $template %>",
+    <% } -%>  
+    <%# -%>
+  ]
+[[collectd]]
+[[opentsdb]]
+[[udp]]
+[continuous_queries]
