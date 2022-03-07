@@ -1,3 +1,10 @@
+# @summary Defined type to create Telegraf configurations for a given service
+# @param service
+#   Name of the service to query.  Is the title of the resource.
+# @param hosts
+#   Array of hosts running the service
+# @param ensure
+#   Whether the resource should be present or absent
 define puppet_operational_dashboards::telegraf::config (
   Array[String[1]] $hosts,
   String $service = $title,

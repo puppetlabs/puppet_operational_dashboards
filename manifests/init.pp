@@ -140,10 +140,7 @@ class puppet_operational_dashboards (
 
       if $telegraf_token_contents {
         class { 'puppet_operational_dashboards::telegraf::agent':
-          token => $telegraf_token_contents ? {
-            Sensitive => $telegraf_token_contents,
-            default   => Sensitive($telegraf_token_contents)
-          },
+          token => $telegraf_token_contents,
         }
       }
       else {
@@ -157,10 +154,7 @@ class puppet_operational_dashboards (
 
   if $telegraf_token_contents {
     class { 'puppet_operational_dashboards::profile::dashboards':
-      token => $telegraf_token_contents ? {
-        Sensitive => $telegraf_token_contents,
-        default   => Sensitive($telegraf_token_contents)
-      },
+      token => $telegraf_token_contents,
     }
   }
 }
