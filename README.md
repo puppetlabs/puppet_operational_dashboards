@@ -1,117 +1,82 @@
-# puppet_operational_dashboards_dashboard
-
-Welcome to your new module. A short overview of the generated parts can be found
-in the [PDK documentation][1].
-
-The README template below provides a starting point with details about what
-information to include in your README.
+# puppet_operational_dashboards
 
 ## Table of Contents
 
 1. [Description](#description)
-1. [Setup - The basics of getting started with puppet_operational_dashboards_dashboard](#setup)
-    * [What puppet_operational_dashboards_dashboard affects](#what-puppet_operational_dashboards_dashboard-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with puppet_operational_dashboards_dashboard](#beginning-with-puppet_operational_dashboards_dashboard)
+1. [Setup - The basics of getting started with puppet_operational_dashboards](#setup)
+    * [Beginning with puppet_operational_dashboards](#beginning-with-puppet_operational_dashboards)
 1. [Usage - Configuration options and additional functionality](#usage)
-1. [Limitations - OS compatibility, etc.](#limitations)
-1. [Development - Guide for contributing to the module](#development)
+    * [Determining where Telegraf runs](#determining-where-telegraf-runs)
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your
-module does and what kind of problems users can solve with it.
+This module is a replacement for the [puppet_metrics_dashboard module](https://forge.puppet.com/modules/puppetlabs/puppet_metrics_dashboard).  It is used to configure Telegraf, InfluxDB, and Grafana to collect, store, and display metrics collected from Puppet services. By default, those components are installed on a separate Dashboard node by applying the base class of this module to that node. That class will automatically query PuppetDB for Puppet Infrastructure nodes (Primary server, Compilers, PuppetDB hosts, PostgreSQL hosts) or you can specify them via associated class parameters. It is not recommended to apply the base class of this module to one of your Puppet Infrastructure nodes.
 
-This should be a fairly short description helps the user decide if your module
-is what they want.
 
 ## Setup
 
-### What puppet_operational_dashboards_dashboard affects **OPTIONAL**
+### Prerequisites
 
-If it's obvious what your module touches, you can skip this section. For
-example, folks can probably figure out that your mysql_instance module affects
-their MySQL instances.
+The toml-rb gem needs to be installed in the Puppetserver gem space, which can be done with the [influxdb::profile::toml](https://github.com/puppetlabs/influxdb/blob/main/manifests/profile/toml.pp) class in the InfluxDB module.
 
-If there's more that they should know about, though, this is the place to
-mention:
+To collect PostgreSQL metrics, classify your PostgreSQL nodes with the [puppet_operational_dashboards::profile::postgres_access](https://github.com/puppetlabs/puppet_operational_dashboards/blob/main/manifests/profile/postgres_access.pp) class.  FOSS users will need to manually configure the PostgreSQL authentication settings.
 
-* Files, packages, services, or operations that the module will alter, impact,
-  or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+### Beginning with puppet_operational_dashboards
 
-### Setup Requirements **OPTIONAL**
+The easiest way to get started using this module is by including the `puppet_operational_dashboards` class to install and configure Telegraf, InfluxDB, and Grafana.  Note that you also need to install the toml-rb gem according to the [prerequisites](#setup-prerequisites).
 
-If your module requires anything extra before setting up (pluginsync enabled,
-another module, etc.), mention it here.
+```
+include puppet_operational_dashboards
+```
 
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you might want to include an additional "Upgrading" section here.
+Doing so will:
 
-### Beginning with puppet_operational_dashboards_dashboard
+* Install and configure InfluxDB using the [puppetlabs/influxdb module](https://forge.puppet.com/modules/puppetlabs/influxdb#what-influxdb-affects)
+* Install and configure Telegraf to collect metrics from your PE infrastructure.  FOSS users can specify a list of infrastructure nodes via the `puppet_operational_dashboards::telegraf::agent` parameters.
+* Install and configure Grafana with several dashboards to display data from InfluxDB
 
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most basic
-use of the module.
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your
-users how to use your module to solve problems, and be sure to include code
-examples. Include three to five examples of the most important or common tasks a
-user can accomplish with your module. Show users how to accomplish more complex
-tasks that involve different types, classes, and functions working in tandem.
+### Determining where Telegraf runs
 
-## Reference
-
-This section is deprecated. Instead, add reference information to your code as
-Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your
-module. For details on how to add code comments and generate documentation with
-Strings, see the [Puppet Strings documentation][2] and [style guide][3].
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the
-root of your module directory and list out each of your module's classes,
-defined types, facts, functions, Puppet tasks, task plans, and resource types
-and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-* The data type, if applicable.
-* A description of what the element does.
-* Valid values, if the data type doesn't make it obvious.
-* Default value, if any.
-
-For example:
+Which hosts a node collects metrics from is determined by the `puppet_operational_dashboards::telegraf::agent::collection_method` parameter.  By default, the `puppet_operational_dashboards` class will collect metrics from all nodes in a PE infrastructure.  If you want to change this behavior, set `collection_method` to `local` or `none`.  Telegraf can be run on other nodes by applying the `puppet_operational_dashboards::telegraf::agent` class to them, for example:
 
 ```
-### `pet::cat`
-
-#### Parameters
-
-##### `meow`
-
-Enables vocalization in your cat. Valid options: 'string'.
-
-Default: 'medium-loud'.
+class {'puppet_operational_dashboards::telegraf::agent':
+  collection_method => 'local',
+  token => <my_sensitive_token>,
+}
 ```
 
-## Limitations
+### Importing archive metrics
 
-In the Limitations section, list any incompatibilities, known issues, or other
-warnings.
+Metrics archives output by the [Puppet metrics collector](https://forge.puppet.com/modules/puppetlabs/puppet_metrics_collector) can be imported into InfluxDB using the scripts in the `examples/` directory.  The sample `bucket_and_datasource` class shows how to configure an InfluxDB bucket and Grafana datasource, while the Telegraf files can be used to load the data into the bucket.  After setting up the bucket and datasource:
 
-## Development
+* Download the `telegraf.conf` and `telegraf.conf.d` files to your home directory.
+* Extract the archive
+```
+tar xf <metrics_gz>
+cd <output_directory>
+```
+* Delete any Puppet server metrics with errors.
 
-In the Development section, tell other users the ground rules for contributing
-to your project and how they should submit their work.
+Currently, these will cause the `telegraf` process to exit upon encountering an error.  Delete these with:
+```
+find <puppet_server_metrics_dir> -type f -name "*json" -size -1000c -delete
+```
+* Edit `telegraf.conf` to point to your bucket (`<my_bucket>`) and InfluxDB server (`<influxdb_fqdn>`).
+* Export your Telegraf token
+```
+export INFLUX_TOKEN=<token>
+```
+This token can be found in the "API Tokens" tab of the "Data" page in InfluxDB
+* Run Telegraf to import the metrics.  This can be done all at once:
+```
+telegraf --once --debug --config ~/telegraf.conf --config-directory ~/telegraf.conf.d/
+```
 
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You can also add any additional sections you feel are
-necessary or important to include here. Please use the `##` header.
-
-[1]: https://puppet.com/docs/pdk/latest/pdk_generating_modules.html
-[2]: https://puppet.com/docs/puppet/latest/puppet_strings.html
-[3]: https://puppet.com/docs/puppet/latest/puppet_strings_style.html
+Or one service at a time, e.g. for Puppet server
+```
+telegraf --once --debug --config ~/telegraf.conf --config ~/telegraf.conf.d//puppetserver.conf
+```
