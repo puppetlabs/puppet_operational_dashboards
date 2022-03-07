@@ -24,6 +24,8 @@
 #   Method to use for installing Grafana.  Defaults to using a repository on EL and Debian/Ubuntu, and package for other platforms
 # @param use_ssl
 #   Whether to use SSL when querying InfluxDB.  Defaults to true
+# @param manage_grafana_repo
+#   Whether to manage the Grafana repository definition.  Defaults to true.
 # @param influxdb_host
 #   FQDN of the InfluxDB host.  Defaults to the value of the base class,
 #   which looks up the value of influxdb::host with a default of $facts['fqdn']
@@ -33,9 +35,9 @@
 # @param initial_bucket
 #   Name of the InfluxDB bucket to query. Defaults to the value of the base class,
 #   which looks up the value of influxdb::initial_bucket with a default of 'puppet_data'
-class puppet_operational_dashboards::profile::dashboards(
+class puppet_operational_dashboards::profile::dashboards (
   Sensitive[String] $token = $puppet_operational_dashboards::telegraf_token,
-  String $grafana_host = $facts['fqdn'],
+  String $grafana_host = $facts['networking']['fqdn'],
   Integer $grafana_port = 3000,
   #TODO: document using task to change
   Sensitive[String] $grafana_password = Sensitive('admin'),
@@ -50,9 +52,9 @@ class puppet_operational_dashboards::profile::dashboards(
   String $influxdb_host = $puppet_operational_dashboards::influxdb_host,
   Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,
   String $initial_bucket = $puppet_operational_dashboards::initial_bucket,
-){
+) {
   #TODO: only for local Grafana
-  class {'grafana':
+  class { 'grafana':
     install_method      => $grafana_install,
     version             => $grafana_version,
     manage_package_repo => $manage_grafana_repo,
@@ -68,7 +70,7 @@ class puppet_operational_dashboards::profile::dashboards(
   }
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
-  grafana_datasource {$grafana_datasource:
+  grafana_datasource { $grafana_datasource:
     #FIXME: grafana ssl
     grafana_user     => 'admin',
     grafana_password => $grafana_password.unwrap,
@@ -81,7 +83,7 @@ class puppet_operational_dashboards::profile::dashboards(
     json_data        => {
       httpHeaderName1 => 'Authorization',
       httpMode        => 'GET',
-      tlsSkipVerify   => true
+      tlsSkipVerify   => true,
     },
     secure_json_data => {
       httpHeaderValue1 => "Token ${token.unwrap}",

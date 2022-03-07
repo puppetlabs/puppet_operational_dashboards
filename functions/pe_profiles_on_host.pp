@@ -11,7 +11,7 @@
 
 function puppet_operational_dashboards::pe_profiles_on_host() >> Array {
   if $settings::storeconfigs {
-    $hosts = puppetdb_query("resources[title] {
+  $hosts = puppetdb_query("resources[title] {
       type = 'Class' and
       certname = '${trusted['certname']}' and
       title in ['Puppet_enterprise::Profile::Puppetdb', 'Puppet_enterprise::Profile::Master', 'Puppet_enterprise::Profile::Database'] and

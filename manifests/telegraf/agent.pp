@@ -11,9 +11,9 @@
 #   FQDN of the InfluxDB host.  Defaults to $facts['fqdn']
 # @param influxdb_port
 #   Port used by the InfluxDB service.  Defaults to 8086.
-# @param initial_org
+# @param influxdb_org
 #   Name of the InfluxDB organization. Defaults to 'puppetlabs'.
-# @param initial_bucket
+# @param influxdb_bucket
 #   Name of the InfluxDB bucket to query. Defaults to 'puppet_data'.
 # @param use_ssl
 #   Whether to use SSL when querying InfluxDB.  Defaults to true
@@ -50,11 +50,11 @@
 #   FOSS users can use the $local_services parameter.
 # @param local_services
 #   Array of FOSS services to collect from when collection_method is set to 'local'.
-class puppet_operational_dashboards::telegraf::agent(
+class puppet_operational_dashboards::telegraf::agent (
   Sensitive[String] $token,
 
   #TODO: standardize whether these are lookups or not
-  String $influxdb_host = $facts['fqdn'],
+  String $influxdb_host = $facts['networking']['fqdn'],
   Integer $influxdb_port = 8086,
   String $influxdb_org = 'puppetlabs',
   String $influxdb_bucket = 'puppet_data',
@@ -76,7 +76,7 @@ class puppet_operational_dashboards::telegraf::agent(
   # TODO: test this
   Array[String] $profiles = puppet_operational_dashboards::pe_profiles_on_host(),
   Array[String] $local_services = [],
-){
+) {
   unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services].any |$service| { $service } {
     fail('No services detected on node.')
   }
@@ -116,22 +116,22 @@ class puppet_operational_dashboards::telegraf::agent(
   }
 
   if $use_ssl and $manage_ssl {
-    file {'/etc/telegraf/cert.pem':
-      ensure  => present,
+    file { '/etc/telegraf/cert.pem':
+      ensure  => file,
       source  => "file:///${ssl_cert_file}",
       mode    => '0400',
       owner   => 'telegraf',
       require => Class['telegraf'],
     }
-    file {'/etc/telegraf/key.pem':
-      ensure  => present,
+    file { '/etc/telegraf/key.pem':
+      ensure  => file,
       source  => "file:///${ssl_key_file}",
       mode    => '0400',
       owner   => 'telegraf',
       require => Class['telegraf'],
     }
-    file {'/etc/telegraf/ca.pem':
-      ensure  => present,
+    file { '/etc/telegraf/ca.pem':
+      ensure  => file,
       source  => "file:///${ssl_ca_file}",
       mode    => '0400',
       owner   => 'telegraf',
@@ -139,13 +139,13 @@ class puppet_operational_dashboards::telegraf::agent(
     }
   }
 
-  file {'/etc/systemd/system/telegraf.service.d':
+  file { '/etc/systemd/system/telegraf.service.d':
     ensure => directory,
     owner  => 'telegraf',
     group  => 'telegraf',
     mode   => '0700',
   }
-  file {'/etc/systemd/system/telegraf.service.d/override.conf':
+  file { '/etc/systemd/system/telegraf.service.d/override.conf':
     ensure  => file,
     content => epp('influxdb/telegraf_environment_file.epp', { token => $token }),
     notify  => Service['telegraf'],
@@ -153,14 +153,14 @@ class puppet_operational_dashboards::telegraf::agent(
 
   if $collection_method == 'all' {
     unless $puppetdb_hosts.empty() {
-      puppet_operational_dashboards::telegraf::config {['puppetdb', 'puppetdb_jvm']:
+      puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
         hosts   => $puppetdb_hosts,
         require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
     unless $puppetserver_hosts.empty() {
-      puppet_operational_dashboards::telegraf::config {'puppetserver':
+      puppet_operational_dashboards::telegraf::config { 'puppetserver':
         hosts   => $puppetserver_hosts,
         require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
@@ -173,7 +173,7 @@ class puppet_operational_dashboards::telegraf::agent(
           { certname     => $pg_host }
         ).influxdb::from_toml()
 
-        telegraf::input {"postgres_${pg_host}":
+        telegraf::input { "postgres_${pg_host}":
           plugin_type => 'postgresql_extensible',
           options     => [$inputs],
         }
@@ -183,14 +183,14 @@ class puppet_operational_dashboards::telegraf::agent(
 
   elsif $collection_method == 'local' {
     if 'Puppet_enterprise::Profile::Puppetdb' in $profiles or 'puppetdb' in $local_services {
-      puppet_operational_dashboards::telegraf::config {['puppetdb', 'puppetdb_jvm']:
+      puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
         hosts   => [$trusted['certname']],
         require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
     if 'Puppet_enterprise::Profile::Master' in $profiles or 'puppetserver' in $local_services {
-      puppet_operational_dashboards::telegraf::config {'puppetserver':
+      puppet_operational_dashboards::telegraf::config { 'puppetserver':
         hosts   => [$trusted['certname']],
         require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
@@ -202,7 +202,7 @@ class puppet_operational_dashboards::telegraf::agent(
         { certname     => $trusted['certname'] }
       ).influxdb::from_toml()
 
-      telegraf::input {"postgres_${trusted['certname']}":
+      telegraf::input { "postgres_${trusted['certname']}":
         plugin_type => 'postgresql_extensible',
         options     => [$inputs],
       }
