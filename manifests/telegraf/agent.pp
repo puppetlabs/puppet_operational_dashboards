@@ -1,6 +1,59 @@
+# @summary Installs and configures Telegraf to query hosts in a Puppet infrastructure. Included by the base class
+# @example Basic usage
+#   include puppet_operational_dashboards
+#
+#   class {'puppet_operational_dashboards::telegraf::agent':
+#     token => '<sensitive_telegraf_token>',
+#   }
+# @param token
+#   Telegraf token in Sensitive format.
+# @param influxdb_host
+#   FQDN of the InfluxDB host.  Defaults to $facts['fqdn']
+# @param influxdb_port
+#   Port used by the InfluxDB service.  Defaults to 8086.
+# @param initial_org
+#   Name of the InfluxDB organization. Defaults to 'puppetlabs'.
+# @param initial_bucket
+#   Name of the InfluxDB bucket to query. Defaults to 'puppet_data'.
+# @param use_ssl
+#   Whether to use SSL when querying InfluxDB.  Defaults to true
+# @param manage_ssl
+#   Whether to manage Telegraf ssl configuration.  Defaults to true.
+# @param ssl_cert_file
+#   SSL certificate to be used by the telegraf service.  Defaults to the agent certificate issued by the Puppet CA for the local machine.
+# @param ssl_key_file
+#   Private key used in the CSR for the certificate specified by $ssl_cert_file.
+#   Defaults to the private key of the local machine for generating a CSR for the Puppet CA
+# @param ssl_ca_file
+#   CA certificate issued by the CA which signed the certificate specified by $ssl_cert_file.  Defaults to the Puppet CA.
+# @param version
+#   Version of the Telegraf package to install. Defaults to '1.21.2'.
+# @param collection_method
+#   Determines how metrics will be collected.
+#   'all' will query all Puppet services across all Puppet infrastructure hosts from the node with this class applied.
+#   'local' will query all Puppet services on the node with this class applied.
+#   TODO
+#   'none' will not query any services from the node with this class applied.
+# @param collection_interval
+#   How frequently to collect metrics.  Defaults to '10m'.
+# @param puppetserver_hosts
+#   Array of Puppet server hosts to collect metrics from.  Defaults to all Puppet server hosts in a PE infrastructure.
+#   FOSS users need to supply a list of FQDNs
+# @param puppetdb_hosts
+#   Array of PuppetDB hosts to collect metrics from.  Defaults to all PuppetDB hosts in a PE infrastructure.
+#   FOSS users need to supply a list of FQDNs
+# @param postgres_hosts
+#   Array of Postgres hosts to collect metrics from.  Defaults to all Postgres in a PE infrastructure.
+#   FOSS users need to supply a list of FQDNs.
+# @param profiles
+#   Array of PE profiles on the node with this class applied.  Used when collection_method is set to 'local'.
+#   FOSS users can use the $local_services parameter.
+# @param local_services
+#   Array of FOSS services to collect from when collection_method is set to 'local'.
 class puppet_operational_dashboards::telegraf::agent(
   Sensitive[String] $token,
 
+  #TODO: standardize whether these are lookups or not
   String $influxdb_host = $facts['fqdn'],
   Integer $influxdb_port = 8086,
   String $influxdb_org = 'puppetlabs',
@@ -8,14 +61,12 @@ class puppet_operational_dashboards::telegraf::agent(
 
   Boolean $use_ssl = true,
   Boolean $manage_ssl = true,
-  String  $ssl_cert_file = "${facts['puppet_ssldir']}/certs/${trusted['certname']}.pem",
-  String  $ssl_key_file ="${facts['puppet_ssldir']}/private_keys/${trusted['certname']}.pem",
-  String  $ssl_ca_file ="${facts['puppet_ssldir']}/certs/ca.pem",
+  String  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
+  String  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
+  String  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
 
   String $version = '1.21.2',
   Enum['all', 'local', 'none'] $collection_method = 'all',
-  String  $config_file = '/etc/telegraf/telegraf.conf',
-  String  $config_dir = '/etc/telegraf/telegraf.d',
   String $collection_interval = '10m',
 
   Array $puppetserver_hosts = puppet_operational_dashboards::hosts_with_pe_profile('Master'),
