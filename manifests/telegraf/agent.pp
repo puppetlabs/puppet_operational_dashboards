@@ -116,10 +116,6 @@ class puppet_operational_dashboards::telegraf::agent(
     }
 
     unless $postgres_hosts.empty() {
-      if $facts['pe_postgresql_info'] {
-        include puppet_operational_dashboards::profile::postgres_access
-      }
-
       $postgres_hosts.each |$pg_host| {
         $inputs = epp(
           'puppet_operational_dashboards/postgres.epp',
