@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.1.2](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v0.1.2) (2022-03-08)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v0.1.1...v0.1.2)
+
+### Fixed
+
+- Fix name [\#14](https://github.com/puppetlabs/puppet_operational_dashboards/pull/14) ([m0dular](https://github.com/m0dular))
+
 ## [v0.1.1](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v0.1.1) (2022-03-08)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/d9a8f5e0fcdd1a64d95fec8a39eda863c0697e0e...v0.1.1)
