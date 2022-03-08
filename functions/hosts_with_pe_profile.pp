@@ -8,10 +8,9 @@
 #
 # @return [Array[String]]
 #   An array of certnames from the query, or the local certname when the query returns no hosts.
-
 function puppet_operational_dashboards::hosts_with_pe_profile(
   String $profile,
-) >> Array {
+) >> Array[String] {
   if $settings::storeconfigs {
   $hosts = puppetdb_query("resources[certname] {
       type = 'Class' and

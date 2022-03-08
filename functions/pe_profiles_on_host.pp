@@ -1,15 +1,11 @@
 # @summary function used to determine hosts with a Puppet Enterprise profile
 #
-# Queries PuppetDB for hosts with the specified Puppet Enterprise profile.
-# Used by this module to identify hosts with Puppet Enterprise API endpoints.
-#
-# @param profile [String]
-#   The short name of the Puppet Enterprise profile to query.
+# Queries PuppetDB for Puppet Enterprise profile on the node including the class.
+# Used by this module to identify Puppet Enterprise API endpoints on the node.
 #
 # @return [Array[String]]
-#   An array of certnames from the query, or the local certname when the query returns no hosts.
-
-function puppet_operational_dashboards::pe_profiles_on_host() >> Array {
+#   An array of PE profiles representing the Puppet server, PDB, and postgres services
+function puppet_operational_dashboards::pe_profiles_on_host() >> Array[String] {
   if $settings::storeconfigs {
   $hosts = puppetdb_query("resources[title] {
       type = 'Class' and
