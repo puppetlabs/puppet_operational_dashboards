@@ -4,9 +4,9 @@
   "author": "Adrian Parreiras Horta",
   "summary": "A module for managing the installation and configuration of metrics dashboards for Puppet Infrastructure.",
   "license": "Apache-2.0",
-  "source": "https://github.com/puppetlabs/puppet_metrics_dashboard",
-  "project_page": "https://github.com/puppetlabs/puppet_metrics_dashboard",
-  "issues_url": "https://github.com/puppetlabs/puppet_metrics_dashboard/issues",
+  "source": "https://github.com/puppetlabs/puppet_operational_dashboards",
+  "project_page": "https://github.com/puppetlabs/puppet_operational_dashboards",
+  "issues_url": "https://github.com/puppetlabs/puppet_operational_dashboards/issues",
   "dependencies": [
     {
       "name": "puppet-grafana",
