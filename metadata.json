@@ -1,5 +1,5 @@
 {
-  "name": "puppetlabs-puppet_operational_dashboards_dashboard",
+  "name": "puppetlabs-puppet_operational_dashboards",
   "version": "0.1.1",
   "author": "Adrian Parreiras Horta",
   "summary": "A module for managing the installation and configuration of metrics dashboards for Puppet Infrastructure.",
