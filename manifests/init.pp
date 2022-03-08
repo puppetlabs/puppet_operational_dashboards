@@ -58,37 +58,29 @@ class puppet_operational_dashboards (
   }
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
-  #TODO: how to check for this without failing compilation
-  if !file('/opt/puppetlabs/server/data/puppetserver/jruby-gems/gems/toml-rb-2.1.1/README.md') {
-    notify { 'toml_gem_warn':
-      message  => 'toml-rb gem not found. Please see the README for how to install the correct version of the gem.',
-      loglevel => 'warning',
+  if $manage_influxdb {
+    class { 'influxdb':
+      host        => $influxdb_host,
+      port        => $influxdb_port,
+      initial_org => $initial_org,
+    }
+
+    influxdb_org { $initial_org:
+      ensure  => present,
+      token   => $influxdb_token,
+      require => Class['influxdb'],
+    }
+    influxdb_bucket { $initial_bucket:
+      ensure  => present,
+      org     => $initial_org,
+      token   => $influxdb_token,
+      require => [Class['influxdb'], Influxdb_org[$initial_org]],
+    }
+
+    Influxdb_auth {
+      require => Class['influxdb'],
     }
   }
-  else {
-    if $manage_influxdb {
-      class { 'influxdb':
-        host        => $influxdb_host,
-        port        => $influxdb_port,
-        initial_org => $initial_org,
-      }
-
-      influxdb_org { $initial_org:
-        ensure  => present,
-        token   => $influxdb_token,
-        require => Class['influxdb'],
-      }
-      influxdb_bucket { $initial_bucket:
-        ensure  => present,
-        org     => $initial_org,
-        token   => $influxdb_token,
-        require => [Class['influxdb'], Influxdb_org[$initial_org]],
-      }
-
-      Influxdb_auth {
-        require => Class['influxdb'],
-      }
-    }
 
     if $manage_telegraf_token {
       # Create a token with permissions to read and write timeseries data
@@ -150,7 +142,6 @@ class puppet_operational_dashboards (
         }
       }
     }
-  }
 
   if $telegraf_token_contents {
     class { 'puppet_operational_dashboards::profile::dashboards':

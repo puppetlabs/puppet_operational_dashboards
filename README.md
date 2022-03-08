@@ -35,6 +35,20 @@ Doing so will:
 * Install and configure Telegraf to collect metrics from your PE infrastructure.  FOSS users can specify a list of infrastructure nodes via the `puppet_operational_dashboards::telegraf::agent` parameters.
 * Install and configure Grafana with several dashboards to display data from InfluxDB
 
+Note that this will save an InfluxDB administrative token to the user's home directory, typically `/root/.influxdb_token`.  The type and provider code can use this token, but it is not available to Puppet server to be used in compiling catalogs.  In order to use the Telegraf token created by this module, you will need to either:
+
+* Supply this admin token via the `influxdb::token` parameter.
+* Supply the Telegraf token via the `puppet_operational_dashboards::telegraf_token` parameter.
+
+These are both `Sensitive` strings, so the recommended way is to encrypt them with [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) and use the encrypted value in hiera.  For example:
+
+```
+influxdb::token: <eyaml_encrypted_string>
+lookup_options:
+   influxdb::token:
+     convert_to: "Sensitive"
+```
+
 
 ## Usage
 
