@@ -32,11 +32,16 @@
 # @param influxdb_port
 #   Port used by the InfluxDB service.  Defaults to the value of the base class,
 #   which looks up the value of influxdb::port with a default of 8086
-# @param initial_bucket
+# @param influxdb_bucket
 #   Name of the InfluxDB bucket to query. Defaults to the value of the base class,
 #   which looks up the value of influxdb::initial_bucket with a default of 'puppet_data'
+# @param telegraf_token_name
+#   Name of the token to retrieve from InfluxDB if not given $token
+# @param influxdb_token_file
+#   Location on disk of an InfluxDB admin token.
+#   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
 class puppet_operational_dashboards::profile::dashboards (
-  Sensitive[String] $token = $puppet_operational_dashboards::telegraf_token,
+  Optional[Sensitive[String]] $token = undef,
   String $grafana_host = $facts['networking']['fqdn'],
   Integer $grafana_port = 3000,
   #TODO: document using task to change
@@ -49,9 +54,12 @@ class puppet_operational_dashboards::profile::dashboards (
   },
   Boolean $use_ssl = true,
   Boolean $manage_grafana_repo = true,
+  #TODO: put these in module data?
   String $influxdb_host = $puppet_operational_dashboards::influxdb_host,
   Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,
-  String $initial_bucket = $puppet_operational_dashboards::initial_bucket,
+  String $influxdb_bucket = $puppet_operational_dashboards::initial_bucket,
+  String $telegraf_token_name = $puppet_operational_dashboards::telegraf_token_name,
+  String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
 ) {
   #TODO: only for local Grafana
   class { 'grafana':
@@ -70,24 +78,51 @@ class puppet_operational_dashboards::profile::dashboards (
   }
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
-  grafana_datasource { $grafana_datasource:
-    #FIXME: grafana ssl
-    grafana_user     => 'admin',
-    grafana_password => $grafana_password.unwrap,
-    grafana_url      => "http://${grafana_host}:${grafana_port}",
-    type             => 'influxdb',
-    database         => $initial_bucket,
-    url              => "${protocol}://${influxdb_host}:${influxdb_port}",
-    access_mode      => 'proxy',
-    is_default       => false,
-    json_data        => {
-      httpHeaderName1 => 'Authorization',
-      httpMode        => 'GET',
-      tlsSkipVerify   => true,
-    },
-    secure_json_data => {
-      httpHeaderValue1 => "Token ${token.unwrap}",
-    },
+  if $token {
+    grafana_datasource { $grafana_datasource:
+      #FIXME: grafana ssl
+      grafana_user     => 'admin',
+      grafana_password => $grafana_password.unwrap,
+      grafana_url      => "http://${grafana_host}:${grafana_port}",
+      type             => 'influxdb',
+      database         => $influxdb_bucket,
+      url              => "${protocol}://${influxdb_host}:${influxdb_port}",
+      access_mode      => 'proxy',
+      is_default       => false,
+      json_data        => {
+        httpHeaderName1 => 'Authorization',
+        httpMode        => 'GET',
+        tlsSkipVerify   => true,
+      },
+      secure_json_data => {
+        httpHeaderValue1 => "Token ${token.unwrap}",
+      },
+    }
+  }
+  else {
+    $token_vars = {
+      token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $telegraf_token_name, $influxdb_token_file])),
+    }
+
+    grafana_datasource { $grafana_datasource:
+      #FIXME: grafana ssl
+      grafana_user     => 'admin',
+      grafana_password => $grafana_password.unwrap,
+      grafana_url      => "http://${grafana_host}:${grafana_port}",
+      type             => 'influxdb',
+      database         => $influxdb_bucket,
+      url              => "${protocol}://${influxdb_host}:${influxdb_port}",
+      access_mode      => 'proxy',
+      is_default       => false,
+      json_data        => {
+        httpHeaderName1 => 'Authorization',
+        httpMode        => 'GET',
+        tlsSkipVerify   => true,
+      },
+      secure_json_data => {
+        httpHeaderValue1 => Deferred('inline_epp', ['Token <%= $token.unwrap %>', $token_vars]),
+      },
+    }
   }
 
   ['Puppetserver', 'Puppetdb', 'Postgresql', 'Filesync'].each |$service| {
