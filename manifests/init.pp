@@ -82,66 +82,66 @@ class puppet_operational_dashboards (
     }
   }
 
-    if $manage_telegraf_token {
-      # Create a token with permissions to read and write timeseries data
-      # The influxdb::retrieve_token() function cannot find a token during the catalog compilation which creates it
-      #   i.e. it takes two agent runs to become available
-      influxdb_auth { $telegraf_token_name:
-        ensure      => present,
-        org         => $initial_org,
-        token       => $influxdb_token,
-        permissions => [
-          {
-            'action'   => 'read',
-            'resource' => {
-              'type'   => 'telegrafs',
-            }
-          },
-          {
-            'action'   => 'write',
-            'resource' => {
-              'type'   => 'telegrafs',
-            }
-          },
-          {
-            'action'   => 'read',
-            'resource' => {
-              'type'   => 'buckets',
-            }
-          },
-          {
-            'action'   => 'write',
-            'resource' => {
-              'type'   => 'buckets',
-            }
-          },
-        ],
-      }
+  if $manage_telegraf_token {
+    # Create a token with permissions to read and write timeseries data
+    # The influxdb::retrieve_token() function cannot find a token during the catalog compilation which creates it
+    #   i.e. it takes two agent runs to become available
+    influxdb_auth { $telegraf_token_name:
+      ensure      => present,
+      org         => $initial_org,
+      token       => $influxdb_token,
+      permissions => [
+        {
+          'action'   => 'read',
+          'resource' => {
+            'type'   => 'telegrafs',
+          }
+        },
+        {
+          'action'   => 'write',
+          'resource' => {
+            'type'   => 'telegrafs',
+          }
+        },
+        {
+          'action'   => 'read',
+          'resource' => {
+            'type'   => 'buckets',
+          }
+        },
+        {
+          'action'   => 'write',
+          'resource' => {
+            'type'   => 'buckets',
+          }
+        },
+      ],
+    }
+  }
+
+  if $manage_telegraf {
+    $telegraf_token_contents = if $telegraf_token {
+      $telegraf_token
+    }
+    elsif $influxdb_token {
+      Sensitive(influxdb::retrieve_token($influxdb_uri, $influxdb_token, $telegraf_token_name))
+    }
+    else {
+      undef
     }
 
-    if $manage_telegraf {
-      $telegraf_token_contents = if $telegraf_token {
-        $telegraf_token
-      }
-      elsif $influxdb_token {
-        Sensitive(influxdb::retrieve_token($influxdb_uri, $influxdb_token, $telegraf_token_name))
-      }
-      else {
-        undef
-      }
-
-      if $telegraf_token_contents {
-        class { 'puppet_operational_dashboards::telegraf::agent':
-          token => $telegraf_token_contents,
-        }
-      }
-      else {
-        notify { 'puppet_telegraf_token_warn':
-          message  => 'Please set either influxdb::token or puppet_operational_dashboards::telegraf_token to complete installation',
-          loglevel => 'warning',
-        }
+    if $telegraf_token_contents {
+      class { 'puppet_operational_dashboards::telegraf::agent':
+        token => $telegraf_token_contents,
       }
     }
+    else {
+      notify { 'puppet_telegraf_token_warn':
+        message  => 'Please set either influxdb::token or puppet_operational_dashboards::telegraf_token to complete installation',
+        loglevel => 'warning',
+      }
+    }
+  }
 
   if $telegraf_token_contents {
     class { 'puppet_operational_dashboards::profile::dashboards':

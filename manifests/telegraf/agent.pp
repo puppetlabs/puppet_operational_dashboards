@@ -69,9 +69,9 @@ class puppet_operational_dashboards::telegraf::agent (
   Enum['all', 'local', 'none'] $collection_method = 'all',
   String $collection_interval = '10m',
 
-  Array $puppetserver_hosts = puppet_operational_dashboards::hosts_with_pe_profile('Master'),
-  Array $puppetdb_hosts     = puppet_operational_dashboards::hosts_with_pe_profile('Puppetdb'),
-  Array $postgres_hosts     = puppet_operational_dashboards::hosts_with_pe_profile('Database'),
+  Array $puppetserver_hosts = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Master'),
+  Array $puppetdb_hosts     = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Puppetdb'),
+  Array $postgres_hosts     = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Database'),
 
   # TODO: test this
   Array[String] $profiles = puppet_operational_dashboards::pe_profiles_on_host(),
