@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-puppet_operational_dashboards",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": "Adrian Parreiras Horta",
   "summary": "A module for managing the installation and configuration of metrics dashboards for Puppet Infrastructure.",
   "license": "Apache-2.0",
