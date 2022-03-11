@@ -50,15 +50,20 @@
 #   FOSS users can use the $local_services parameter.
 # @param local_services
 #   Array of FOSS services to collect from when collection_method is set to 'local'.
+# @param token_name
+#   Name of the token to retrieve from InfluxDB if not given $token
+# @param influxdb_token_file
+#   Location on disk of an InfluxDB admin token.
+#   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
 class puppet_operational_dashboards::telegraf::agent (
-  Sensitive[String] $token,
-
-  #TODO: standardize whether these are lookups or not
-  String $influxdb_host = $facts['networking']['fqdn'],
-  Integer $influxdb_port = 8086,
-  String $influxdb_org = 'puppetlabs',
-  String $influxdb_bucket = 'puppet_data',
-
+  Optional[Sensitive[String]] $token = undef,
+  #TODO: put these in module data?
+  String $token_name = $puppet_operational_dashboards::telegraf_token_name,
+  String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
+  String $influxdb_host = $puppet_operational_dashboards::influxdb_host,
+  Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,
+  String $influxdb_bucket = $puppet_operational_dashboards::initial_bucket,
+  String $influxdb_org = $puppet_operational_dashboards::initial_org,
   Boolean $use_ssl = true,
   Boolean $manage_ssl = true,
   String  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
@@ -81,6 +86,12 @@ class puppet_operational_dashboards::telegraf::agent (
     fail('No services detected on node.')
   }
 
+  exec { 'puppet_influxdb_daemon_reload':
+    command     => 'systemctl daemon-reload',
+    path        => ['/bin', '/usr/bin'],
+    refreshonly => true,
+  }
+
   $protocol = $use_ssl ? {
     true  => 'https',
     false => 'http',
@@ -99,7 +110,7 @@ class puppet_operational_dashboards::telegraf::agent (
     archive_location => 'https://dl.influxdata.com/telegraf/releases/telegraf-1.21.2_linux_amd64.tar.gz',
     interval         => $collection_interval,
     hostname         => '',
-    manage_service   => true,
+    manage_service   => false,
     outputs          => {
       'influxdb_v2' => [
         {
@@ -113,6 +124,14 @@ class puppet_operational_dashboards::telegraf::agent (
         }
       ],
     },
+  }
+
+  service { 'telegraf':
+    ensure  => running,
+    require => [
+      Class['telegraf'],
+      Exec['puppet_influxdb_daemon_reload'],
+    ],
   }
 
   if $use_ssl and $manage_ssl {
@@ -145,10 +164,26 @@ class puppet_operational_dashboards::telegraf::agent (
     group  => 'telegraf',
     mode   => '0700',
   }
-  file { '/etc/systemd/system/telegraf.service.d/override.conf':
-    ensure  => file,
-    content => epp('influxdb/telegraf_environment_file.epp', { token => $token }),
-    notify  => Service['telegraf'],
+
+  if $token {
+    file { '/etc/systemd/system/telegraf.service.d/override.conf':
+      ensure  => file,
+      content => inline_epp(file('influxdb/telegraf_environment_file.epp'), { token => $token }),
+      notify  => [Exec['puppet_influxdb_daemon_reload'], Service['telegraf']],
+    }
+  }
+  else {
+    $token_vars = {
+      token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $token_name, $influxdb_token_file])),
+    }
+    file { '/etc/systemd/system/telegraf.service.d/override.conf':
+      ensure  => file,
+      content => Deferred('inline_epp', [file('influxdb/telegraf_environment_file.epp'), $token_vars]),
+      notify  => [
+        Exec['puppet_influxdb_daemon_reload'],
+        Service['telegraf']
+      ],
+    }
   }
 
   if $collection_method == 'all' {

@@ -21,8 +21,6 @@
 # @param influxdb_token
 #   InfluxDB admin token in Sensitive format.  Defaults to the value of influxdb::token.
 #   See the puppetlabs/influxdb documentation for more information about this token.
-# @param telegraf_token
-#   Telegraf token in Sensitive format.  This parameter is preferred over $telegraf_token_name if both are given
 # @param telegraf_token_name
 #   Name of the token to retrieve from InfluxDB if not given $telegraf_token.
 # @param manage_telegraf
@@ -31,6 +29,10 @@
 #   Whether to create and manage a Telegraf token with permissions to query buckets in the default organization.  Defaults to true.
 # @param use_ssl
 #   Whether to use SSL when querying InfluxDB.  Defaults to true
+# @param influxdb_token_file
+#   Location on disk of an InfluxDB admin token.
+#   This file is written to by the influxdb class during installation and read by the type and providers,
+#   as well Deferred functions in this module.
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   Boolean $manage_grafana = true,
@@ -40,10 +42,11 @@ class puppet_operational_dashboards (
   String $initial_bucket = lookup(influxdb::initial_bucket, undef, undef, 'puppet_data'),
 
   Optional[Sensitive[String]] $influxdb_token = lookup(influxdb::token, undef, undef, undef),
-  Optional[Sensitive[String]] $telegraf_token = undef,
-  # Name of the token to retrive from InfluxDB using the retrieve_token() function if not given $telegraf_token
   String $telegraf_token_name = 'puppet telegraf token',
-
+  String $influxdb_token_file = lookup(influxdb::token_file, undef, undef, $facts['identity']['user'] ? {
+      'root'  => '/root/.influxdb_token',
+      default => "/home/${facts['identity']['user']}/.influxdb_token"
+  }),
   Boolean $manage_telegraf = true,
   Boolean $manage_telegraf_token = true,
   Boolean $use_ssl = true,
@@ -63,22 +66,26 @@ class puppet_operational_dashboards (
       host        => $influxdb_host,
       port        => $influxdb_port,
       initial_org => $initial_org,
+      token_file  => $influxdb_token_file,
     }
 
     influxdb_org { $initial_org:
-      ensure  => present,
-      token   => $influxdb_token,
-      require => Class['influxdb'],
+      ensure     => present,
+      token      => $influxdb_token,
+      require    => Class['influxdb'],
+      token_file => $influxdb_token_file,
     }
     influxdb_bucket { $initial_bucket:
-      ensure  => present,
-      org     => $initial_org,
-      token   => $influxdb_token,
-      require => [Class['influxdb'], Influxdb_org[$initial_org]],
+      ensure     => present,
+      org        => $initial_org,
+      token      => $influxdb_token,
+      require    => [Class['influxdb'], Influxdb_org[$initial_org]],
+      token_file => $influxdb_token_file,
     }
 
     Influxdb_auth {
       require => Class['influxdb'],
+      token_file  => $influxdb_token_file,
     }
   }
 
@@ -90,6 +97,7 @@ class puppet_operational_dashboards (
       ensure      => present,
       org         => $initial_org,
       token       => $influxdb_token,
+      token_file  => $influxdb_token_file,
       permissions => [
         {
           'action'   => 'read',
@@ -120,32 +128,8 @@ class puppet_operational_dashboards (
   }
 
   if $manage_telegraf {
-    $telegraf_token_contents = if $telegraf_token {
-      $telegraf_token
-    }
-    elsif $influxdb_token {
-      Sensitive(influxdb::retrieve_token($influxdb_uri, $influxdb_token, $telegraf_token_name))
-    }
-    else {
-      undef
-    }
-
-    if $telegraf_token_contents {
-      class { 'puppet_operational_dashboards::telegraf::agent':
-        token => $telegraf_token_contents,
-      }
-    }
-    else {
-      notify { 'puppet_telegraf_token_warn':
-        message  => 'Please set either influxdb::token or puppet_operational_dashboards::telegraf_token to complete installation',
-        loglevel => 'warning',
-      }
-    }
+    include 'puppet_operational_dashboards::telegraf::agent'
   }
 
-  if $telegraf_token_contents {
-    class { 'puppet_operational_dashboards::profile::dashboards':
-      token => $telegraf_token_contents,
-    }
-  }
+  include 'puppet_operational_dashboards::profile::dashboards'
 }
