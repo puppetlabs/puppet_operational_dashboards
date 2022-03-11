@@ -35,12 +35,9 @@ Doing so will:
 * Install and configure Telegraf to collect metrics from your PE infrastructure.  FOSS users can specify a list of infrastructure nodes via the `puppet_operational_dashboards::telegraf::agent` parameters.
 * Install and configure Grafana with several dashboards to display data from InfluxDB
 
-Note that this will save an InfluxDB administrative token to the user's home directory, typically `/root/.influxdb_token`.  The type and provider code can use this token, but it is not available to Puppet server to be used in compiling catalogs.  In order to use the Telegraf token created by this module, you will need to either:
+Note that this will save an InfluxDB administrative token to the user's home directory, typically `/root/.influxdb_token`.  The `puppetlabs/influxdb` types and providers can make use of this file during catalog application.  The manifests in this module are also able to use it via [deferred functions](https://puppet.com/docs/puppet/7/deferring_functions.html), which also run on the agent as the first step of catalog application.  Therefore, it is possible to use this file for all token-based operations in this module, and no further configuration is required.
 
-* Supply this admin token via the `influxdb::token` parameter.
-* Supply the Telegraf token via the `puppet_operational_dashboards::telegraf_token` parameter.
-
-These are both `Sensitive` strings, so the recommended way is to encrypt them with [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) and use the encrypted value in hiera.  For example:
+It is also possible to specify this token via the `influxdb::token` parameter in hiera.  The Telegraf token used by the `telegraf` service and Grafana datasource can also be set via `puppet_operational_dashboards::telegraf_token`.  These are both `Sensitive` strings, so the recommended way to use them is to encrypt them with [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) and use the encrypted value in hiera data.  After setting up a hierarchy to use the [eyaml backend](https://github.com/voxpupuli/hiera-eyaml#with-hiera-5), the values can be added to hiera data and automatically converted to `Sensitive`:
 
 ```
 influxdb::token: <eyaml_encrypted_string>
@@ -48,6 +45,8 @@ lookup_options:
    influxdb::token:
      convert_to: "Sensitive"
 ```
+
+These parameters take precedence over the file on disk if both are specified.
 
 
 ## Usage
