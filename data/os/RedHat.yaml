@@ -1,2 +1,0 @@
----
-puppet_metrics_dashboard::influx_db_service_name: 'influxdb'
