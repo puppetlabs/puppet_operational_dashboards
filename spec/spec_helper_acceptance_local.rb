@@ -11,7 +11,13 @@ RSpec.configure do |c|
     # Download the plugins and install required toml gem
     PuppetLitmus::PuppetHelpers.run_shell('/opt/puppetlabs/bin/puppet plugin download')
     pp = <<-PUPPETCODE
+     service { 'pe-puppetserver': }
      include  influxdb::profile::toml
+     package { 'toml-rb puppet_gem':
+       name     => 'toml-rb',
+       ensure   => installed,
+       provider => 'puppet_gem',
+     }
      PUPPETCODE
     apply_manifest(pp)
   end
