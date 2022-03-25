@@ -51,6 +51,14 @@ These parameters take precedence over the file on disk if both are specified.
 
 ## Usage
 
+### Evaluation order
+
+When using the default configuration options and the deferred function to retreive the Telegraf token, note that it will not be available during the initial Puppet agent run that creates all of the resources.  A second run is required to retrieve the token and update the resources that use it.  If you are seeing authentication errors from Telegraf and Grafana, make sure the Puppet agent has been run twice and that the token has made its way to the Telegraf service config file:
+
+```
+/etc/systemd/system/telegraf.service.d/override.conf
+```
+
 ### Determining where Telegraf runs
 
 Which hosts a node collects metrics from is determined by the `puppet_operational_dashboards::telegraf::agent::collection_method` parameter.  By default, the `puppet_operational_dashboards` class will collect metrics from all nodes in a PE infrastructure.  If you want to change this behavior, set `collection_method` to `local` or `none`.  Telegraf can be run on other nodes by applying the `puppet_operational_dashboards::telegraf::agent` class to them, for example:
