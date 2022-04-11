@@ -1,0 +1,25 @@
+<%- |
+  String $name,
+  String $url,
+  String $database,
+  Sensitive[String] $token,
+| -%>
+# This file is managed by Puppet, any changes will be overwritten
+---
+apiVersion: 1
+datasources:
+- name: <%= $name %>
+  type: 'influxdb'
+  access: 'proxy'
+  url: <%= $url %>
+  database: <%= $database %>
+  basicAuth: false
+  withCredentials: false
+  isDefault: false
+  jsonData:
+    httpHeaderName1: 'Authorization'
+    httpMode: 'GET'
+    tlsSkipVerify: true
+  secureJsonData:
+    httpHeaderValue1: 'Token <%= $token %>'
+  readOnly: false
