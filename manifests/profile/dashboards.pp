@@ -93,6 +93,8 @@ class puppet_operational_dashboards::profile::dashboards (
   if $token {
     file { $provisioning_datasource_file:
       ensure  => file,
+      mode    => '0600',
+      owner   => 'grafana',
       content => inline_epp(file('puppet_operational_dashboards/datasource.epp'), {
           name     => $grafana_datasource,
           token    => $token,
@@ -111,6 +113,8 @@ class puppet_operational_dashboards::profile::dashboards (
 
     file { $provisioning_datasource_file:
       ensure  => file,
+      mode    => '0600',
+      owner   => 'grafana',
       content => Deferred('inline_epp',
       [file('puppet_operational_dashboards/datasource.epp'), $token_vars]),
     }
