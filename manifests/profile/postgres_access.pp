@@ -18,6 +18,13 @@ class puppet_operational_dashboards::profile::postgres_access (
     require    => Class['Pe_postgresql::Server'],
   }
 
+  pe_postgresql::server::database_grant { 'operational_dashboards_telegraf':
+    privilege => 'CONNECT',
+    db        => 'pe-puppetdb',
+    role      => 'telegraf',
+    require   => Pe_postgresql_psql['CREATE ROLE telegraf LOGIN'],
+  }
+
   pe_postgresql_psql { 'telegraf_pg_monitor_grant':
     db         => 'pe-puppetdb',
     port       => '5432',
