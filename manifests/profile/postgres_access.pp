@@ -8,7 +8,7 @@ class puppet_operational_dashboards::profile::postgres_access (
 ) {
   $ident_file = "/opt/puppetlabs/server/data/postgresql/${facts['pe_postgresql_info']['installed_server_version']}/data/pg_ident.conf"
 
-  pe_postgresql_psql { 'CREATE ROLE telegraf':
+  pe_postgresql_psql { 'CREATE ROLE telegraf LOGIN':
     db         => 'pe-puppetdb',
     port       => '5432',
     psql_user  => 'pe-postgres',
@@ -26,7 +26,7 @@ class puppet_operational_dashboards::profile::postgres_access (
     command    => 'GRANT pg_monitor TO telegraf',
     unless     => "select 1 from pg_roles where pg_has_role( 'telegraf', 'pg_monitor', 'member')",
     psql_path  => '/opt/puppetlabs/server/bin/psql',
-    require    => Pe_postgresql_psql['CREATE ROLE telegraf'],
+    require    => Pe_postgresql_psql['CREATE ROLE telegraf LOGIN'],
   }
 
   $telegraf_hosts.each |$host| {
