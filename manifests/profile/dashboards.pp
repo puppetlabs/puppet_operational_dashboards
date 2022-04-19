@@ -82,6 +82,7 @@ class puppet_operational_dashboards::profile::dashboards (
     try_sleep   => 1,
     refreshonly => true,
     subscribe   => File[$provisioning_datasource_file],
+    notify => Service['grafana-server'],
   }
 
   $protocol = $use_ssl ? {
