@@ -1,7 +1,9 @@
-<%- | Array[String] $urls | -%>
+<%- | Array[String] $urls, Enum['https', 'http'] $protocol | -%>
+<% if $protocol == 'https' { -%>
 tls_cert = "/etc/telegraf/cert.pem"
 tls_key = "/etc/telegraf/key.pem"
 tls_ca = "/etc/telegraf/ca.pem"
+<% } -%>
 data_format = "json_v2"
 headers = {"Content-type" = "application/json"}
 method = 'GET'
