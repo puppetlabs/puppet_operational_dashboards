@@ -56,8 +56,7 @@
 #   Location on disk of an InfluxDB admin token.
 #   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
 class puppet_operational_dashboards::telegraf::agent (
-  Optional[Sensitive[String]] $token = undef,
-  #TODO: put these in module data?
+  Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
   String $influxdb_host = $puppet_operational_dashboards::influxdb_host,

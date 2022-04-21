@@ -33,6 +33,8 @@
 #   Location on disk of an InfluxDB admin token.
 #   This file is written to by the influxdb class during installation and read by the type and providers,
 #   as well Deferred functions in this module.
+# @param telegraf_token
+#   Telegraf token in Sensitive format.
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   Boolean $manage_grafana = true,
@@ -42,6 +44,7 @@ class puppet_operational_dashboards (
   String $initial_bucket = lookup(influxdb::initial_bucket, undef, undef, 'puppet_data'),
 
   Optional[Sensitive[String]] $influxdb_token = lookup(influxdb::token, undef, undef, undef),
+  Optional[Sensitive[String]] $telegraf_token = undef,
   String $telegraf_token_name = 'puppet telegraf token',
   String $influxdb_token_file = lookup(influxdb::token_file, undef, undef, $facts['identity']['user'] ? {
       'root'  => '/root/.influxdb_token',

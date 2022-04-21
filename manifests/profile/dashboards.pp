@@ -40,8 +40,10 @@
 # @param influxdb_token_file
 #   Location on disk of an InfluxDB admin token.
 #   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
+# @param provisioning_datasource_file
+#   Location on disk to store datasource definition
 class puppet_operational_dashboards::profile::dashboards (
-  Optional[Sensitive[String]] $token = undef,
+  Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $grafana_host = $facts['networking']['fqdn'],
   Integer $grafana_port = 3000,
   #TODO: document using task to change
@@ -52,6 +54,7 @@ class puppet_operational_dashboards::profile::dashboards (
     /(RedHat|Debian)/ => 'repo',
     default           => 'package',
   },
+  String $provisioning_datasource_file = '/etc/grafana/provisioning/datasources/influxdb.yaml',
   Boolean $use_ssl = true,
   Boolean $manage_grafana_repo = true,
   #TODO: put these in module data?
@@ -68,8 +71,18 @@ class puppet_operational_dashboards::profile::dashboards (
     manage_package_repo => $manage_grafana_repo,
   }
 
-  Grafana_datasource {
-    require => [Class['grafana'], Service['grafana-server']],
+  $grafana_url = "http://${grafana_host}:${grafana_port}"
+
+  # grafana-service may transition to 'running' state before it is ready to accept connections,
+  # so we can't rely on a require/subscribe to create dependency relationships
+  exec { 'operational_dashboards_grafana_wait':
+    command     => "curl -k ${grafana_url}",
+    path        => ['/bin', '/usr/bin'],
+    tries       => 5,
+    try_sleep   => 1,
+    refreshonly => true,
+    subscribe   => File[$provisioning_datasource_file],
+    notify => Service['grafana-server'],
   }
 
   $protocol = $use_ssl ? {
@@ -79,49 +92,32 @@ class puppet_operational_dashboards::profile::dashboards (
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
   if $token {
-    grafana_datasource { $grafana_datasource:
-      #FIXME: grafana ssl
-      grafana_user     => 'admin',
-      grafana_password => $grafana_password.unwrap,
-      grafana_url      => "http://${grafana_host}:${grafana_port}",
-      type             => 'influxdb',
-      database         => $influxdb_bucket,
-      url              => "${protocol}://${influxdb_host}:${influxdb_port}",
-      access_mode      => 'proxy',
-      is_default       => false,
-      json_data        => {
-        httpHeaderName1 => 'Authorization',
-        httpMode        => 'GET',
-        tlsSkipVerify   => true,
-      },
-      secure_json_data => {
-        httpHeaderValue1 => "Token ${token.unwrap}",
-      },
+    file { $provisioning_datasource_file:
+      ensure  => file,
+      mode    => '0600',
+      owner   => 'grafana',
+      content => inline_epp(file('puppet_operational_dashboards/datasource.epp'), {
+          name     => $grafana_datasource,
+          token    => $token,
+          database => $influxdb_bucket,
+          url      => $influxdb_uri,
+      }),
     }
   }
   else {
     $token_vars = {
+      name     => $grafana_datasource,
       token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $telegraf_token_name, $influxdb_token_file])),
+      database => $influxdb_bucket,
+      url      => $influxdb_uri,
     }
 
-    grafana_datasource { $grafana_datasource:
-      #FIXME: grafana ssl
-      grafana_user     => 'admin',
-      grafana_password => $grafana_password.unwrap,
-      grafana_url      => "http://${grafana_host}:${grafana_port}",
-      type             => 'influxdb',
-      database         => $influxdb_bucket,
-      url              => "${protocol}://${influxdb_host}:${influxdb_port}",
-      access_mode      => 'proxy',
-      is_default       => false,
-      json_data        => {
-        httpHeaderName1 => 'Authorization',
-        httpMode        => 'GET',
-        tlsSkipVerify   => true,
-      },
-      secure_json_data => {
-        httpHeaderValue1 => Deferred('inline_epp', ['Token <%= $token.unwrap %>', $token_vars]),
-      },
+    file { $provisioning_datasource_file:
+      ensure  => file,
+      mode    => '0600',
+      owner   => 'grafana',
+      content => Deferred('inline_epp',
+      [file('puppet_operational_dashboards/datasource.epp'), $token_vars]),
     }
   }
 
@@ -129,9 +125,9 @@ class puppet_operational_dashboards::profile::dashboards (
     grafana_dashboard { "${service} Performance":
       grafana_user     => 'admin',
       grafana_password => $grafana_password.unwrap,
-      grafana_url      => "http://${grafana_host}:${grafana_port}",
+      grafana_url      => $grafana_url,
       content          => file("puppet_operational_dashboards/${service}_performance.json"),
-      require          => Grafana_datasource[$grafana_datasource],
+      require          => Exec['operational_dashboards_grafana_wait'],
     }
   }
 }
