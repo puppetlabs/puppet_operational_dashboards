@@ -2,7 +2,7 @@
   String $name,
   String $url,
   String $database,
-  Sensitive[String] $token,
+  Sensitive $token,
 | -%>
 # This file is managed by Puppet, any changes will be overwritten
 ---
