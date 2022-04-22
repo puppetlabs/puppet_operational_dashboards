@@ -8,6 +8,34 @@ class puppet_operational_dashboards::profile::postgres_access (
 ) {
   $ident_file = "/opt/puppetlabs/server/data/postgresql/${facts['pe_postgresql_info']['installed_server_version']}/data/pg_ident.conf"
 
+  pe_postgresql_psql { 'CREATE ROLE telegraf LOGIN':
+    db         => 'pe-puppetdb',
+    port       => '5432',
+    psql_user  => 'pe-postgres',
+    psql_group => 'pe-postgres',
+    unless     => "SELECT rolname FROM pg_roles WHERE rolname='telegraf'",
+    psql_path  => '/opt/puppetlabs/server/bin/psql',
+    require    => Class['Pe_postgresql::Server'],
+  }
+
+  pe_postgresql::server::database_grant { 'operational_dashboards_telegraf':
+    privilege => 'CONNECT',
+    db        => 'pe-puppetdb',
+    role      => 'telegraf',
+    require   => Pe_postgresql_psql['CREATE ROLE telegraf LOGIN'],
+  }
+
+  pe_postgresql_psql { 'telegraf_pg_monitor_grant':
+    db         => 'pe-puppetdb',
+    port       => '5432',
+    psql_user  => 'pe-postgres',
+    psql_group => 'pe-postgres',
+    command    => 'GRANT pg_monitor TO telegraf',
+    unless     => "select 1 from pg_roles where pg_has_role( 'telegraf', 'pg_monitor', 'member')",
+    psql_path  => '/opt/puppetlabs/server/bin/psql',
+    require    => Pe_postgresql_psql['CREATE ROLE telegraf LOGIN'],
+  }
+
   $telegraf_hosts.each |$host| {
     puppet_enterprise::pg::cert_allowlist_entry { "telegraf_${host}":
       user                          => 'telegraf',
