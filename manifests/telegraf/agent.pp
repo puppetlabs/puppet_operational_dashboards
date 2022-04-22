@@ -69,7 +69,7 @@ class puppet_operational_dashboards::telegraf::agent (
   String  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
   String  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
 
-  String $version = '1.21.2',
+  String $version = '1.22.1-1',
   Enum['all', 'local', 'none'] $collection_method = 'all',
   String $collection_interval = '10m',
 
