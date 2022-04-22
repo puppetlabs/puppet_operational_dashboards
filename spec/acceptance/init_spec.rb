@@ -9,8 +9,8 @@ describe 'puppet_operational_dashboards class' do
         MANIFEST
 
       # Run it twice and then test for idempotency to cover token creation
-      expect(apply_manifest(pp).exit_code).not_to eq(0)
-      expect(apply_manifest(pp).exit_code).not_to eq(0)
+      apply_manifest(pp, catch_failures: true)
+      apply_manifest(pp, catch_failures: true)
       idempotent_apply(pp)
     end
     describe port('3000') do
