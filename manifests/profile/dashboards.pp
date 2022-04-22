@@ -14,6 +14,8 @@
 #   FQDN of the Grafana host.  Defaults to the FQDN of the agent receiving the catalog.
 # @param grafana_port
 #   Port used by the Grafana service.  Defaults to 3000
+# @param grafana_timeout
+#   How long to wait for the Grafana service to start.  Defaults to 10 seconds.
 # @param grafana_password
 #   Grafana admin password in Sensitive format.  Defaults to 'admin'
 # @param grafana_version
@@ -46,6 +48,7 @@ class puppet_operational_dashboards::profile::dashboards (
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $grafana_host = $facts['networking']['fqdn'],
   Integer $grafana_port = 3000,
+  Integer $grafana_timeout = 10,
   #TODO: document using task to change
   Sensitive[String] $grafana_password = Sensitive('admin'),
   String $grafana_version = '8.2.2',
@@ -57,7 +60,6 @@ class puppet_operational_dashboards::profile::dashboards (
   String $provisioning_datasource_file = '/etc/grafana/provisioning/datasources/influxdb.yaml',
   Boolean $use_ssl = true,
   Boolean $manage_grafana_repo = true,
-  #TODO: put these in module data?
   String $influxdb_host = $puppet_operational_dashboards::influxdb_host,
   Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,
   String $influxdb_bucket = $puppet_operational_dashboards::initial_bucket,
@@ -73,23 +75,29 @@ class puppet_operational_dashboards::profile::dashboards (
 
   $grafana_url = "http://${grafana_host}:${grafana_port}"
 
-  # grafana-service may transition to 'running' state before it is ready to accept connections,
-  # so we can't rely on a require/subscribe to create dependency relationships
-  exec { 'operational_dashboards_grafana_wait':
-    command     => "curl -k ${grafana_url}",
-    path        => ['/bin', '/usr/bin'],
-    tries       => 5,
-    try_sleep   => 1,
-    refreshonly => true,
-    subscribe   => File[$provisioning_datasource_file],
-    notify => Service['grafana-server'],
-  }
-
   $protocol = $use_ssl ? {
     true  => 'https',
     false => 'http',
   }
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
+
+  file { 'grafana-conf-d':
+    ensure => directory,
+    path   => '/etc/systemd/system/grafana-server.service.d',
+  }
+  file { 'wait-for-grafana':
+    ensure    => file,
+    path      => '/etc/systemd/system/grafana-server.service.d/wait.conf',
+    subscribe => Exec['puppet_grafana_daemon_reload'],
+    content   => epp('puppet_operational_dashboards/grafana_wait.epp', { timeout => $grafana_timeout }),
+  }
+
+  exec { 'puppet_grafana_daemon_reload':
+    command     => 'systemctl daemon-reload',
+    path        => ['/bin', '/usr/bin'],
+    refreshonly => true,
+    notify      => Service['grafana-server'],
+  }
 
   if $token {
     file { $provisioning_datasource_file:
@@ -102,6 +110,7 @@ class puppet_operational_dashboards::profile::dashboards (
           database => $influxdb_bucket,
           url      => $influxdb_uri,
       }),
+      before  => Service['grafana-server'],
     }
   }
   else {
@@ -118,6 +127,8 @@ class puppet_operational_dashboards::profile::dashboards (
       owner   => 'grafana',
       content => Deferred('inline_epp',
       [file('puppet_operational_dashboards/datasource.epp'), $token_vars]),
+      require => Class['Grafana::Install'],
+      before  => Service['grafana-server'],
     }
   }
 
@@ -127,7 +138,7 @@ class puppet_operational_dashboards::profile::dashboards (
       grafana_password => $grafana_password.unwrap,
       grafana_url      => $grafana_url,
       content          => file("puppet_operational_dashboards/${service}_performance.json"),
-      require          => Exec['operational_dashboards_grafana_wait'],
+      require          => Service['grafana-server'],
     }
   }
 }
