@@ -1,0 +1,6 @@
+<%- | Integer $timeout | -%>
+# Adapted from https://unix.stackexchange.com/a/584965/226625
+# Wait for the service to be listening on port 3000
+[Service]
+ExecStartPost=/usr/bin/timeout <%= $timeout %> sh -c 'while ! ss -H -t -l -n sport = :3000 | grep -q "^LISTEN.*:3000"; do sleep 1; done'
+
