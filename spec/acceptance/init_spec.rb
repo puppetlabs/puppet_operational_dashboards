@@ -1,8 +1,22 @@
 
 require 'spec_helper_acceptance'
 
-describe 'puppet_operational_dashboards class' do
-  context 'init with default parameters' do
+describe 'install dashboards and set up dependancies' do
+  context 'apply enterprise_infrastructure  with default parameters' do
+    it 'installs tomlrb and dbaccess' do
+      inf = <<-MANIFEST
+           service { 'pe-puppetserver': }
+      include puppet_operational_dashboards::enterprise_infrastructure
+     package { 'toml-rb puppet_gem':
+       name     => 'toml-rb',
+       ensure   => installed,
+       provider => 'puppet_gem',
+     }
+           MANIFEST
+      idempotent_apply(inf)
+    end
+  end
+  context 'init puppet_operational_dashboards with default parameters' do
     it 'installs grafana and influxdb' do
       pp = <<-MANIFEST
         include puppet_operational_dashboards

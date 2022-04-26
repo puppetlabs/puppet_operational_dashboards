@@ -2,11 +2,19 @@
 
 ## Table of Contents
 
-1. [Description](#description)
-1. [Setup - The basics of getting started with puppet_operational_dashboards](#setup)
-    * [Beginning with puppet_operational_dashboards](#beginning-with-puppet_operational_dashboards)
-1. [Usage - Configuration options and additional functionality](#usage)
-    * [Determining where Telegraf runs](#determining-where-telegraf-runs)
+- [puppet_operational_dashboards](#puppet_operational_dashboards)
+  - [Table of Contents](#table-of-contents)
+  - [Description](#description)
+  - [Setup](#setup)
+    - [Prerequisites](#prerequisites)
+    - [Beginning with puppet_operational_dashboards](#beginning-with-puppet_operational_dashboards)
+      - [Installing on Puppet Enterprise](#installing-on-puppet-enterprise)
+      - [Installing on Puppet Open Source](#installing-on-puppet-open-source)
+      - [What puppet_operational_dashboards affects](#what-puppet_operational_dashboards-affects)
+  - [Usage](#usage)
+    - [Evaluation order](#evaluation-order)
+    - [Determining where Telegraf runs](#determining-where-telegraf-runs)
+    - [Importing archive metrics](#importing-archive-metrics)
 
 ## Description
 
@@ -17,19 +25,45 @@ This module is a replacement for the [puppet_metrics_dashboard module](https://f
 
 ### Prerequisites
 
-The toml-rb gem needs to be installed in the Puppetserver gem space, which can be done with the [influxdb::profile::toml](https://github.com/puppetlabs/influxdb/blob/main/manifests/profile/toml.pp) class in the InfluxDB module.
-
-To collect PostgreSQL metrics, classify your PostgreSQL nodes with the [puppet_operational_dashboards::profile::postgres_access](https://github.com/puppetlabs/puppet_operational_dashboards/blob/main/manifests/profile/postgres_access.pp) class.  FOSS users will need to manually configure the PostgreSQL authentication settings.
-
 ### Beginning with puppet_operational_dashboards
 
-The easiest way to get started using this module is by including the `puppet_operational_dashboards` class to install and configure Telegraf, InfluxDB, and Grafana.  Note that you also need to install the toml-rb gem according to the [prerequisites](#setup-prerequisites).
+#### Installing on Puppet Enterprise
+
+To Install on Puppet Enterprise:
+
+1. Classify `puppet_operational_dashboards::enterprise_infrastructure` to a node group that encompasses all Puppet Infrastructure agents. The default node group `PE Infrastructure Agent` is appropriate.
+
+```
+include puppet_operational_dashboards::enterprise_infrastructure
+```
+
+This will install the toml-rb gem on compiling nodes, and grant the appropriate access to the databases, for the dashboard node on all database nodes.
+
+2. Classify `puppet_operational_dashboards` to the Puppet agent node to be designated as the Operational Dashboard node.
+
+```
+include puppet_operational_dashboards
+```
+This will install and configure Telegraf, InfluxDB, and Grafana.
+
+
+Please note database access will not be granted until the Puppet agent run on the postgres nodes AFTER the application of `puppet_operational_dashboards` on the designated dashboard node.
+
+
+#### Installing on Puppet Open Source
+
+The toml-rb gem needs to be installed in the Puppetserver gem space, which can be done with the [influxdb::profile::toml](https://github.com/puppetlabs/influxdb/blob/main/manifests/profile/toml.pp) class in the InfluxDB module.
+
+To collect PostgreSQL metrics, FOSS users will need to manually configure the PostgreSQL authentication settings.
+
+The easiest way to get started using this module is by including the `puppet_operational_dashboards` class to install and configure Telegraf, InfluxDB, and Grafana.  Note that you also need to install the toml-rb gem according to the.
 
 ```
 include puppet_operational_dashboards
 ```
 
-Doing so will:
+#### What puppet_operational_dashboards affects
+Installing the module will:
 
 * Install and configure InfluxDB using the [puppetlabs/influxdb module](https://forge.puppet.com/modules/puppetlabs/influxdb#what-influxdb-affects)
 * Install and configure Telegraf to collect metrics from your PE infrastructure.  FOSS users can specify a list of infrastructure nodes via the `puppet_operational_dashboards::telegraf::agent` parameters.
