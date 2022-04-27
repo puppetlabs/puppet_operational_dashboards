@@ -128,7 +128,7 @@ class puppet_operational_dashboards::telegraf::agent (
   service { 'telegraf':
     ensure  => running,
     require => [
-      Class['telegraf'],
+      Class['telegraf::install'],
       Exec['puppet_influxdb_daemon_reload'],
     ],
   }
@@ -158,11 +158,11 @@ class puppet_operational_dashboards::telegraf::agent (
   }
 
   file { '/etc/systemd/system/telegraf.service.d':
-    ensure => directory,
-    owner  => 'telegraf',
-    group  => 'telegraf',
-    mode   => '0700',
-    require => Class['telegraf'],
+    ensure  => directory,
+    owner   => 'telegraf',
+    group   => 'telegraf',
+    mode    => '0700',
+    require => Class['telegraf::install'],
   }
 
   if $token {
@@ -170,6 +170,7 @@ class puppet_operational_dashboards::telegraf::agent (
       ensure  => file,
       content => inline_epp(file('influxdb/telegraf_environment_file.epp'), { token => $token }),
       notify  => [Exec['puppet_influxdb_daemon_reload'], Service['telegraf']],
+      require => Class['telegraf::install'],
     }
   }
   else {
@@ -181,8 +182,9 @@ class puppet_operational_dashboards::telegraf::agent (
       content => Deferred('inline_epp', [file('influxdb/telegraf_environment_file.epp'), $token_vars]),
       notify  => [
         Exec['puppet_influxdb_daemon_reload'],
-        Service['telegraf']
+        Service['telegraf'],
       ],
+      require => Class['telegraf::install'],
     }
   }
 
