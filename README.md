@@ -135,3 +135,7 @@ Or one service at a time, e.g. for Puppet server
 ```
 telegraf --once --debug --config ~/telegraf.conf --config ~/telegraf.conf.d//puppetserver.conf
 ```
+
+### Limitations
+
+Currently, only the latest Telegraf package is provided by the Ubuntu repository.  Therefore, the only allowed value for `puppet_operational_dashboards::telegraf::agent::version` is `latest`.  Setting this parameter to a different value on Ubuntu will produce a warning.
