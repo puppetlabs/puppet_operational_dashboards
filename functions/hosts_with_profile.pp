@@ -8,7 +8,6 @@
 #
 # @return [Array[String]]
 #   An array of certnames from the query
-
 function puppet_operational_dashboards::hosts_with_profile(
   String $profile,
 ) >> Array[String] {

@@ -7,6 +7,7 @@
 ### Classes
 
 * [`puppet_operational_dashboards`](#puppet_operational_dashboards): Installs Telegraf, InfluxDB, and Grafana to collect and display Puppet metrics
+* [`puppet_operational_dashboards::enterprise_infrastructure`](#puppet_operational_dashboardsenterprise_infrastructure): Installs dependancies for Operational dashboards on PE infrastructure components
 * [`puppet_operational_dashboards::profile::dashboards`](#puppet_operational_dashboardsprofiledashboards): Installs Grafana and several dashboards to display Puppet metrics.  Included via the base class.
 * [`puppet_operational_dashboards::profile::postgres_access`](#puppet_operational_dashboardsprofilepostgres_access): Allows Telegraf to connect and collect metrics from postgres nodes
 * [`puppet_operational_dashboards::telegraf::agent`](#puppet_operational_dashboardstelegrafagent): Installs and configures Telegraf to query hosts in a Puppet infrastructure. Included by the base class
@@ -17,7 +18,7 @@
 
 ### Functions
 
-* [`puppet_operational_dashboards::hosts_with_profile`](#puppet_operational_dashboardshosts_with_profile)
+* [`puppet_operational_dashboards::hosts_with_profile`](#puppet_operational_dashboardshosts_with_profile): function used to determine hosts with a profile class
 * [`puppet_operational_dashboards::pe_profiles_on_host`](#puppet_operational_dashboardspe_profiles_on_host): function used to determine hosts with a Puppet Enterprise profile
 
 ## Classes
@@ -55,6 +56,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`manage_telegraf_token`](#manage_telegraf_token)
 * [`use_ssl`](#use_ssl)
 * [`influxdb_token_file`](#influxdb_token_file)
+* [`telegraf_token`](#telegraf_token)
 
 ##### <a name="manage_influxdb"></a>`manage_influxdb`
 
@@ -158,6 +160,41 @@ Default value: `lookup(influxdb::token_file, undef, undef, $facts['identity']['u
       default => "/home/${facts['identity']['user']}/.influxdb_token"
   })`
 
+##### <a name="telegraf_token"></a>`telegraf_token`
+
+Data type: `Optional[Sensitive[String]]`
+
+Telegraf token in Sensitive format.
+
+Default value: ``undef``
+
+### <a name="puppet_operational_dashboardsenterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
+
+When applied to an appropriate node group this class applies the toml gem and database access
+On appropriate infrastructure nodes in PE
+
+#### Examples
+
+##### 
+
+```puppet
+include puppet_operational_dashboards::enterprise_infrastructure
+```
+
+#### Parameters
+
+The following parameters are available in the `puppet_operational_dashboards::enterprise_infrastructure` class:
+
+* [`profiles`](#profiles)
+
+##### <a name="profiles"></a>`profiles`
+
+Data type: `Array[String]`
+
+Array of PE profiles on the node with this class applied.
+
+Default value: `puppet_operational_dashboards::pe_profiles_on_host()`
+
 ### <a name="puppet_operational_dashboardsprofiledashboards"></a>`puppet_operational_dashboards::profile::dashboards`
 
 Installs Grafana and several dashboards to display Puppet metrics.  Included via the base class.
@@ -184,6 +221,7 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 * [`token`](#token)
 * [`grafana_host`](#grafana_host)
 * [`grafana_port`](#grafana_port)
+* [`grafana_timeout`](#grafana_timeout)
 * [`grafana_password`](#grafana_password)
 * [`grafana_version`](#grafana_version)
 * [`grafana_datasource`](#grafana_datasource)
@@ -195,6 +233,7 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 * [`influxdb_bucket`](#influxdb_bucket)
 * [`telegraf_token_name`](#telegraf_token_name)
 * [`influxdb_token_file`](#influxdb_token_file)
+* [`provisioning_datasource_file`](#provisioning_datasource_file)
 
 ##### <a name="token"></a>`token`
 
@@ -202,7 +241,7 @@ Data type: `Optional[Sensitive[String]]`
 
 Token in Sensitive format used to query InfluxDB. The token must grant priviledges to query the associated bucket in InfluxDB
 
-Default value: ``undef``
+Default value: `$puppet_operational_dashboards::telegraf_token`
 
 ##### <a name="grafana_host"></a>`grafana_host`
 
@@ -219,6 +258,14 @@ Data type: `Integer`
 Port used by the Grafana service.  Defaults to 3000
 
 Default value: `3000`
+
+##### <a name="grafana_timeout"></a>`grafana_timeout`
+
+Data type: `Integer`
+
+How long to wait for the Grafana service to start.  Defaults to 10 seconds.
+
+Default value: `10`
 
 ##### <a name="grafana_password"></a>`grafana_password`
 
@@ -312,6 +359,14 @@ This token is used in this class in a Deferred function call to retrieve a Teleg
 
 Default value: `$puppet_operational_dashboards::influxdb_token_file`
 
+##### <a name="provisioning_datasource_file"></a>`provisioning_datasource_file`
+
+Data type: `String`
+
+Location on disk to store datasource definition
+
+Default value: `'/etc/grafana/provisioning/datasources/influxdb.yaml'`
+
 ### <a name="puppet_operational_dashboardsprofilepostgres_access"></a>`puppet_operational_dashboards::profile::postgres_access`
 
 Allows Telegraf to connect and collect metrics from postgres nodes
@@ -385,7 +440,7 @@ Data type: `Optional[Sensitive[String]]`
 
 Telegraf token in Sensitive format.
 
-Default value: ``undef``
+Default value: `$puppet_operational_dashboards::telegraf_token`
 
 ##### <a name="influxdb_host"></a>`influxdb_host`
 
@@ -466,7 +521,7 @@ Data type: `String`
 
 Version of the Telegraf package to install. Defaults to '1.21.2'.
 
-Default value: `'1.21.2'`
+Default value: `'1.22.2-1'`
 
 ##### <a name="collection_method"></a>`collection_method`
 
@@ -591,19 +646,21 @@ Default value: `'present'`
 
 Type: Puppet Language
 
-The puppet_operational_dashboards::hosts_with_profile function.
+Queries PuppetDB for hosts with the specified profile.
+Used by this module to identify hosts with Puppet Enterprise API endpoints and Telegraf hosts
 
 #### `puppet_operational_dashboards::hosts_with_profile(String $profile)`
 
-The puppet_operational_dashboards::hosts_with_profile function.
+Queries PuppetDB for hosts with the specified profile.
+Used by this module to identify hosts with Puppet Enterprise API endpoints and Telegraf hosts
 
-Returns: `Array[String]`
+Returns: `Array[String]` An array of certnames from the query
 
 ##### `profile`
 
 Data type: `String`
 
-
+The full name of the profile to query.
 
 ### <a name="puppet_operational_dashboardspe_profiles_on_host"></a>`puppet_operational_dashboards::pe_profiles_on_host`
 
