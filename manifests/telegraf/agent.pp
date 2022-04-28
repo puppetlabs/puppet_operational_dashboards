@@ -104,9 +104,16 @@ class puppet_operational_dashboards::telegraf::agent (
     notify => Service['telegraf'],
   }
 
+  # Only the latest telegraf package seems to be available for Ubuntu
+  $version_ensure = $facts['os']['name'] ? {
+    'Ubuntu' => 'latest',
+    default  => $version,
+  }
+
   class { 'telegraf':
-    ensure           => $version,
-    archive_location => 'https://dl.influxdata.com/telegraf/releases/telegraf-1.21.2_linux_amd64.tar.gz',
+    ensure           => $version_ensure,
+    # Use the $version parameter to determine the archive link, stripping the '-1' suffix.
+    archive_location => "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz",
     interval         => $collection_interval,
     hostname         => '',
     manage_service   => false,
