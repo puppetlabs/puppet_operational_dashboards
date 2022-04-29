@@ -15,6 +15,13 @@
     - [Evaluation order](#evaluation-order)
     - [Determining where Telegraf runs](#determining-where-telegraf-runs)
     - [Importing archive metrics](#importing-archive-metrics)
+  - [Default Dashboards Available](#default-dashboards-available)
+      - [Puppetserver Performance](#puppetserver-performance)
+      - [Puppetserver Workload](#puppetserver-workload)
+      - [File Sync Metrics](#file-sync-metrics)
+      - [PuppetDB Performance](#puppetdb-performance)
+      - [PuppetDB Workload](#puppetdb-workload)
+      - [Postgres Metrics](#postgres-metrics)
 
 ## Description
 
@@ -136,6 +143,133 @@ Or one service at a time, e.g. for Puppet server
 telegraf --once --debug --config ~/telegraf.conf --config ~/telegraf.conf.d//puppetserver.conf
 ```
 
+## Default Dashboards Available
+#### Puppetserver Performance
+This dashboard is to inspect `Puppetserver` service performance and troubleshoot `Puppetserver` service issues. Available Graphs:
+- Puppetserver Performance Graph: This graph is to monitor JRuby instances performance collectivelly
+  - Average free JRubies
+  - Average requested JRubies
+  - Average JRuby borrow time
+  - Average JRuby wait time 
+- Heap Memory and Uptime Graph: This graph is to monitor JRuby Heap usage
+  - Heap Committed
+  - Heap Used
+  - Uptime
+- Average Requested JRubies Graph
+- Average Borrow Time Graph
+- Avergae Free JRubies Graph
+- Average Wait Time Graph
+
+**Use Case**
+- Puppetserver service performance degraded
+- 503 responses to agent requests
+- Agent unable to get catalog
+#### Puppetserver Workload
+This dashboard is to inspect `Puppetserver` service workloads and performance in each category - Catalogs, Environment Classes, Environment Modules, Environments, File metadata, Nodes. Available Graphs: 
+- JRuby Borrow Timers (Ave) Graph
+- JRuby Borrow Timers (Rate) Graph
+
+**Use Case**
+- Inspect performance for a particular type of request
+- Inspect which type of request could be a performance bottleneck
+#### File Sync Metrics
+This dashboard is to inspect File-sync related performance. Available Graphs:
+- Number of Fetch / Commits vs Lock wait / held
+  - Average Lock Held Time
+  - Avergee Lock Wait Time
+  - Number of Commits
+  - Number of Fetches
+- File-Sync timing - Client Services
+  - Average Clone Time
+  - Average Fetch Time
+  - Average Sync Time
+  - Average Sync Clean Time
+- File-Sync timing - Storage Services
+  - Average Commit add / rm Time
+  - Average Commit time
+  - Average Clean Check time
+  - Average Pre-commit Hook Time
+
+**Use Case**
+- Code Manager takes a significant time or fails to deploy code
+- Puppetserver frequently locked due to file sync
+- Compilers do not have the latest code available
+#### PuppetDB Performance
+This dashboard is to inspect PuppetDB service performance. Available Graphs:
+- Commands Per Second
+- Command Processing Time
+- Heap
+- Queue Depth
+- Replace Catalog Time
+- Replace Facts Time
+- Store Report Time
+
+**Use Case**
+- Any PuppetDB performance issues
+#### PuppetDB Workload
+This dashboard is to inspect PuppetDB Read/Write Pool performance. Available Graphs:
+- Average Command Persistence Time
+- Average Read Duration
+- Peak Read Pool Wait
+- Read Pool Pending Connections
+- Average Write Duration
+- Peak Write Pool Wait
+- Write Pool Pending Connections
+
+**Use Case**
+- Troubleshooting Read/Write Pool Errors
+- General PuppetDB performance issues
+#### Postgres Metrics
+This dashboard is to inspect PostgreSQL database performance. Available Graphs:
+- Temp Files
+- Table Sizes
+- Autovacuum Activity
+- Vacuum Activity - (not auto, not full)
+- I/O - heap toast and index - hits / reads
+- Live / Dead Tuples
+- Deadlocks
+
+**Use Cases**
+- Monitor table sizes
+- Monitor Deadlocks and Slow Queries
+- Any PostgreSQL performance issues
 ### Limitations
 
+## Ubuntu Telegraf Package
 Currently, only the latest Telegraf package is provided by the Ubuntu repository.  Therefore, the only allowed value for `puppet_operational_dashboards::telegraf::agent::version` is `latest`.  Setting this parameter to a different value on Ubuntu will produce a warning.
+
+## Upgrading from puppet_metrics_dashboard
+This module uses InfluxDB 2.x, while `puppet_metrics_dashboard` uses 1.x.  This module does not currently provide an option to upgrade between these versions, so it is recommended to either install this module on a new node or manually upgrade.  See the [InfluxDB docs](https://docs.influxdata.com/influxdb/v2.2/upgrade/v1-to-v2/) for more information about upgrading.
+
+### Troubleshooting
+If data is not displaying in Grafana or you see errors in Telegraf collections, try checking the following items.
+
+## Grafana datasource and time interval
+A common reason for not seeing data in the dashboards is choosing the wrong datasource or time interval.  Double check that you have selected a datasource and window of time for which metrics have been collected.  Also, check that the `server` filter at the top of the dashboard contains valid entries.
+
+Also, note that Telegraf performs its first collection after the first collection interval has passed.  You may need to wait for this to pass, or manually test using the method below.
+
+Datasources can be tested via the "Data Sources" configuration page in Grafana.  Select the datasource, e.g. `influxdb_puppet`, and click the "Test" button.  Note that because this is a "provisioned datasource," it cannot be edited in the UI.
+
+## Telegraf errors
+A good way to test Telegraf collection is to use the `--test` option.  After logging into the node running `telegraf`, first export your token:
+```
+export INFLUX_TOKEN=<token>
+```
+
+The token can either be the admin token written to `/root/.influxdb_token` by default, or the `puppet telegraf token` used specifically for Telegraf.  See `REFERENCE.md` for more information.
+
+Prepending a space before the `export` command will prevent the token from being written to you shell's history.
+
+Then, test the collection:
+```
+telegraf --test --debug --config /etc/telegraf/telegraf.conf --config-directory /etc/telegraf/telegraf.d/
+```
+
+Services can also be tested individually, for example:
+
+```
+telegraf --test --debug --config /etc/telegraf/telegraf.conf --config /etc/telegraf/telegraf.d/puppetserver_metrics.conf
+```
+
+will only collect Puppet server metrics.
