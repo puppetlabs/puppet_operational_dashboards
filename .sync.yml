@@ -34,6 +34,8 @@ spec/spec_helper.rb:
   coverage_report: true
 Rakefile:
   changelog_user: "puppetlabs"
+  extra_disabled_lint_checks:
+    - 'lookup_in_parameter'
 spec/default_facts.yml:
   extra_facts:
     pe_build: '2021.5.0'

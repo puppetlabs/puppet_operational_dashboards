@@ -68,8 +68,11 @@ class puppet_operational_dashboards::telegraf::agent (
   String  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
   String  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
   String  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-
-  String $version = '1.22.2-1',
+  # Only the latest telegraf package seems to be available for Ubuntu
+  String $version = $facts['os']['name'] ? {
+    'Ubuntu' => 'latest',
+    default  => '1.22.2-1',
+  },
   Enum['all', 'local', 'none'] $collection_method = 'all',
   String $collection_interval = '10m',
 
@@ -104,9 +107,22 @@ class puppet_operational_dashboards::telegraf::agent (
     notify => Service['telegraf'],
   }
 
+  if $facts['os']['name'] == 'Ubuntu' and $version != 'latest' {
+    notify { 'telegraf_ubuntu_warn':
+      message  => "Using 'latest' for Telegraf package on Ubuntu",
+      loglevel => 'warning',
+    }
+  }
+
+  $version_ensure = $facts['os']['name'] ? {
+    'Ubuntu' => 'latest',
+    default  => $version,
+  }
+
   class { 'telegraf':
-    ensure           => $version,
-    archive_location => 'https://dl.influxdata.com/telegraf/releases/telegraf-1.21.2_linux_amd64.tar.gz',
+    ensure           => $version_ensure,
+    # Use the $version parameter to determine the archive link, stripping the '-1' suffix.
+    archive_location => "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz",
     interval         => $collection_interval,
     hostname         => '',
     manage_service   => false,
