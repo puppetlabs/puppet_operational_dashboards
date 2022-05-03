@@ -1,11 +1,20 @@
-class bucket_and_datasource(
-  Sensitive[String] $token,
+# Example Puppet code to create an InfluxDB bucket and Grafana datasource.
+# Intended to be used with `puppet apply`.  Fill in these values as needed:
+#   <bucket_name>
+#   <my_org>
+#   <my_datasource>
+class local_apply(
+  String $influxdb_token_file = lookup(influxdb::token_file, undef, undef, $facts['identity']['user'] ? {
+    'root'  => '/root/.influxdb_token',
+    default => "/home/${facts['identity']['user']}/.influxdb_token"
+})
+
 ){
+  $token = file($influxdb_token_file)
 
   influxdb_bucket {'<bucket_name>':
     ensure => present,
-    org    => 'puppetlabs',
-    token  => $token,
+    org    => '<my_org>',
   }
 
   grafana_datasource {'<my_datasource>':
@@ -24,7 +33,9 @@ class bucket_and_datasource(
       tlsSkipVerify   => true
     },
     secure_json_data => {
-      httpHeaderValue1 => 'Token <token>',
+      httpHeaderValue1 => "Token ${token}",
     },
   }
 }
+
+include local_apply
