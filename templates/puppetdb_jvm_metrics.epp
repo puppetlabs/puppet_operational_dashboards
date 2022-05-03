@@ -11,4 +11,8 @@ urls = <%= $urls %>
    [[json_v2.object]]
       path = 'status-service.status.experimental.jvm-metrics'
       disable_prepend_keys = false
+   [[json_v2.object]]
+      disable_prepend_keys = true
+      path = "puppetdb-status.status"
+      included_keys = ["queue_depth"]
 
