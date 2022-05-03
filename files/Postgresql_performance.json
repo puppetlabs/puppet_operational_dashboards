@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 7,
-  "iteration": 1643138080225,
+  "id": 21,
+  "iteration": 1651513742359,
   "links": [
     {
       "icon": "external link",
@@ -77,33 +77,16 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
-          "unit": "short"
+          "unit": "decbytes"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/TempBytes.*/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "decbytes"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -122,7 +105,7 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_server-TempFiles-$tag_db",
+          "alias": "$tag_server-$tag_db-temp_bytes",
           "groupBy": [
             {
               "params": [
@@ -132,13 +115,13 @@
             },
             {
               "params": [
-                "db"
+                "server"
               ],
               "type": "tag"
             },
             {
               "params": [
-                "server"
+                "db"
               ],
               "type": "tag"
             },
@@ -152,82 +135,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"temp_files\") FROM \"postgresql\" WHERE (\"db\" != 'postgres' AND \"db\" != 'template0' AND \"db\" != 'template1') AND temp_files > 0 AND $timeFilter AND \"server\" =~ /$server/ GROUP BY time($__interval), \"db\", \"server\" fill(null)",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "temp_files"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "db",
-              "operator": "!=",
-              "value": "postgres"
-            },
-            {
-              "condition": "AND",
-              "key": "db",
-              "operator": "!=",
-              "value": "template0"
-            },
-            {
-              "condition": "AND",
-              "key": "db",
-              "operator": "!=",
-              "value": "template1"
-            },
-            {
-              "condition": "AND",
-              "key": "server",
-              "operator": "=~",
-              "value": "/$server/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_server-TempBytes-$tag_db",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "db"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "server"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "postgresql",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT distinct(\"temp_bytes\") FROM \"postgresql\" WHERE (\"db\" != 'postgres' AND \"db\" != 'template0' AND \"db\" != 'template1') AND temp_bytes > 0 AND $timeFilter AND \"server\" =~ /$server/ GROUP BY time($__interval), \"db\", \"server\" fill(null)",
+          "query": "SELECT non_negative_difference(distinct(\"temp_bytes\")) FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"db\", \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -242,27 +150,14 @@
               {
                 "params": [],
                 "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
               }
             ]
           ],
           "tags": [
-            {
-              "key": "db",
-              "operator": "!=",
-              "value": "postgres"
-            },
-            {
-              "condition": "AND",
-              "key": "db",
-              "operator": "!=",
-              "value": "template0"
-            },
-            {
-              "condition": "AND",
-              "key": "db",
-              "operator": "!=",
-              "value": "template1"
-            },
             {
               "condition": "AND",
               "key": "server",
@@ -274,7 +169,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Temp Files",
+      "title": "Temp File Sizes",
       "type": "timeseries"
     },
     {
@@ -289,7 +184,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 30,
+            "fillOpacity": 10,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -319,10 +214,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -332,11 +223,11 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 0
+        "w": 24,
+        "x": 0,
+        "y": 9
       },
-      "id": 8,
+      "id": 16,
       "links": [],
       "options": {
         "legend": {
@@ -351,7 +242,7 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_server-$tag_s_table",
+          "alias": "$tag_server-$tag_db-total_bytes",
           "groupBy": [
             {
               "params": [
@@ -361,7 +252,7 @@
             },
             {
               "params": [
-                "s_table"
+                "db"
               ],
               "type": "tag"
             },
@@ -381,25 +272,27 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "A",
+          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"db\", \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "size"
+                  "total"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
-                "type": "distinct"
+                "type": "sum"
               }
             ]
           ],
-          "slimit": "",
           "tags": [
             {
+              "condition": "AND",
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
@@ -409,7 +302,406 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Table Sizes",
+      "title": "Sizes by Database (total)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 17,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_server-$tag_table_name-size_bytes",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "table_name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "table"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "condition": "AND",
+              "key": "server",
+              "operator": "=~",
+              "value": "/$server/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Sizes by Table",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 18,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_server-$tag_table_name-size_bytes",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "table_name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "index"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "condition": "AND",
+              "key": "server",
+              "operator": "=~",
+              "value": "/$server/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Sizes by Index",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "id": 19,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_server-$tag_table_name-size_bytes",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "table_name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "toast"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "condition": "AND",
+              "key": "server",
+              "operator": "=~",
+              "value": "/$server/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Sizes by Toast",
       "type": "timeseries"
     },
     {
@@ -470,7 +762,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 45
       },
       "id": 10,
       "links": [],
@@ -487,17 +779,17 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_server-$tag_v_table",
+          "alias": "$tag_server-$tag_table",
           "groupBy": [
             {
               "params": [
-                "10s"
+                "$__interval"
               ],
               "type": "time"
             },
             {
               "params": [
-                "v_table"
+                "table"
               ],
               "type": "tag"
             },
@@ -532,10 +824,8 @@
                 "type": "distinct"
               },
               {
-                "params": [
-                  "10s"
-                ],
-                "type": "non_negative_derivative"
+                "params": [],
+                "type": "non_negative_difference"
               }
             ]
           ],
@@ -611,7 +901,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 9
+        "y": 45
       },
       "id": 11,
       "links": [],
@@ -628,17 +918,17 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_server-$tag_v_table",
+          "alias": "$tag_server-$tag_table",
           "groupBy": [
             {
               "params": [
-                "10s"
+                "$__interval"
               ],
               "type": "time"
             },
             {
               "params": [
-                "v_table"
+                "table"
               ],
               "type": "tag"
             },
@@ -673,10 +963,8 @@
                 "type": "distinct"
               },
               {
-                "params": [
-                  "10s"
-                ],
-                "type": "non_negative_derivative"
+                "params": [],
+                "type": "non_negative_difference"
               }
             ]
           ],
@@ -736,10 +1024,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -751,7 +1035,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 52
       },
       "id": 13,
       "links": [],
@@ -768,7 +1052,7 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_server-Heap-read-$tag_io_table",
+          "alias": "$tag_server-$tag_table-heap_disk_reads",
           "groupBy": [
             {
               "params": [
@@ -778,7 +1062,7 @@
             },
             {
               "params": [
-                "io_table"
+                "table"
               ],
               "type": "tag"
             },
@@ -811,6 +1095,10 @@
               {
                 "params": [],
                 "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
               }
             ]
           ],
@@ -821,9 +1109,84 @@
               "value": "/$server/"
             }
           ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Disk Block Reads (Heap)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
         },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 52
+      },
+      "id": 20,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
         {
-          "alias": "$tag_server-Heap-hits-$tag_io_table",
+          "alias": "$tag_server-$tag_table-heap_cache_reads",
           "groupBy": [
             {
               "params": [
@@ -833,7 +1196,7 @@
             },
             {
               "params": [
-                "io_table"
+                "table"
               ],
               "type": "tag"
             },
@@ -866,336 +1229,10 @@
               {
                 "params": [],
                 "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "server",
-              "operator": "=~",
-              "value": "/$server/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_server-Index-reads-$tag_io_table",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "io_table"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "server"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "postgresql",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "idx_blks_read"
-                ],
-                "type": "field"
               },
               {
                 "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "server",
-              "operator": "=~",
-              "value": "/$server/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_server-Index-hit-$tag_io_table",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "io_table"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "server"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "postgresql",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "idx_blks_hit"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "server",
-              "operator": "=~",
-              "value": "/$server/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_server-Toast-blks-hit-$tag_io_table",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "io_table"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "server"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "postgresql",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "toast_blks_hit"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "server",
-              "operator": "=~",
-              "value": "/$server/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_server-Toast-blks-read-$tag_io_table",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "io_table"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "server"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "postgresql",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "F",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "toast_blks_read"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "server",
-              "operator": "=~",
-              "value": "/$server/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_server-Toast-index-hit-$tag_io_table",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "io_table"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "server"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "postgresql",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "G",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "tidx_blks_hit"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "server",
-              "operator": "=~",
-              "value": "/$server/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_server-Toast-index-read-$tag_io_table",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "io_table"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "server"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "postgresql",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "H",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "tidx_blks_read"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
+                "type": "non_negative_difference"
               }
             ]
           ],
@@ -1210,7 +1247,682 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "I/O - heap toast and index - hits / reads",
+      "title": "Cache Reads (Heap)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 61
+      },
+      "id": 21,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_server-$tag_table-index_disk_reads",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "table"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "idx_blks_read"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/$server/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Disk Block Reads (Index)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 61
+      },
+      "id": 22,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_server-$tag_table-index_cache_reads",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "table"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "idx_blks_hit"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/$server/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Heap Reads (Index)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 70
+      },
+      "id": 23,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_server-$tag_table-toast_disk_reads",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "table"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "toast_blks_read"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/$server/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Disk Block Reads (Toast)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 70
+      },
+      "id": 24,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_server-$tag_table-toast_cache_reads",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "table"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "toast_blks_hit"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/$server/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Cache Reads (Toast)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 40,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 79
+      },
+      "id": 2,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_server-$tag_table-live_tuples",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "v_table"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "server"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "limit": "",
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"n_live_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_live_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "n_live_tup"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "slimit": "",
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/$server/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Live Tuples",
       "type": "timeseries"
     },
     {
@@ -1271,9 +1983,9 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 79
       },
-      "id": 2,
+      "id": 25,
       "links": [],
       "options": {
         "legend": {
@@ -1288,7 +2000,7 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_server-Live Tuples - $tag_v_table",
+          "alias": "$tag_server-$tag_table-dead_tuples",
           "groupBy": [
             {
               "params": [
@@ -1319,7 +2031,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"n_live_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_live_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($__interval), \"v_table\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"n_dead_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_dead_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($__interval), \"table\", \"server\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1345,70 +2057,11 @@
               "value": "/$server/"
             }
           ]
-        },
-        {
-          "alias": "$tag_server-Dead Tuples - $tag_v_table",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "v_table"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "server"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "limit": "",
-          "measurement": "postgresql",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT distinct(\"n_dead_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_dead_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($__interval), \"v_table\", \"server\" fill(null)",
-          "rawQuery": true,
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "n_dead_tup"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "slimit": "",
-          "tags": [
-            {
-              "key": "server",
-              "operator": "=~",
-              "value": "/$server/"
-            }
-          ]
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Live / Dead Tuples",
+      "title": "Dead Tuples",
       "type": "timeseries"
     },
     {
@@ -1468,7 +2121,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 88
       },
       "id": 4,
       "links": [],
@@ -1570,18 +2223,15 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "5s",
+  "refresh": false,
   "schemaVersion": 31,
   "style": "dark",
-  "tags": [
-    "telegraf",
-    "postgres"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "influxdb_puppet",
           "value": "influxdb_puppet"
         },
@@ -1594,6 +2244,7 @@
         "name": "datasource",
         "options": [],
         "query": "influxdb",
+        "queryValue": "",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1633,7 +2284,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -1661,6 +2312,6 @@
       "30d"
     ]
   },
-  "timezone": "",
-  "title": "Postgres Metrics"
+  "timezone": "utc",
+  "title": "Postgresql Performance Copy"
 }
