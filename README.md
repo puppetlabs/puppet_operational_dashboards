@@ -145,31 +145,39 @@ telegraf --once --debug --config ~/telegraf.conf --config ~/telegraf.conf.d//pup
 
 ## Default Dashboards Available
 #### Puppetserver Performance
-This dashboard is to inspect `Puppetserver` service performance and troubleshoot `Puppetserver` service issues. Available Graphs:
-- Puppetserver Performance Graph: This graph is to monitor JRuby instances performance collectivelly
+This dashboard is to inspect Puppet server performance and troubleshoot the `pe-puppetserver` service. Available panels:
+- Puppetserver Performance
+  This is a composite panel consisting of the following JRuby related metrics:
   - Average free JRubies
   - Average requested JRubies
   - Average JRuby borrow time
   - Average JRuby wait time 
-- Heap Memory and Uptime Graph: This graph is to monitor JRuby Heap usage
+- Heap Memory and Uptime
+  This panel displays the following JVM metrics:
   - Heap Committed
   - Heap Used
   - Uptime
-- Average Requested JRubies Graph
-- Average Borrow Time Graph
-- Avergae Free JRubies Graph
-- Average Wait Time Graph
+- Average Requested JRubies
+- Average Borrow/Compile Time
+- Avergae Free JRubies
+- Average Wait Time
+- HTTP Client Metrics
+  This panel displays the various network related metrics performed by Puppet server.  Examples include:
+  - puppetdb.query.full_response
+  - facts.find.full_response
+- Borrow Timers Mean
+  Average duration api requests require borrowing a JRuby from the pool
+- Borrow Timers Rate
+  Rate at which Puppet server performs the above api requests
+- Function Timers
+  Average duration of functions run as part of catalog compilations
+- Function Timers Count
+  Rate at which Puppet server performs the above api requests
 
 **Use Case**
 - Puppetserver service performance degraded
 - 503 responses to agent requests
 - Agent unable to get catalog
-#### Puppetserver Workload
-This dashboard is to inspect `Puppetserver` service workloads and performance in each category - Catalogs, Environment Classes, Environment Modules, Environments, File metadata, Nodes. Available Graphs: 
-- JRuby Borrow Timers (Ave) Graph
-- JRuby Borrow Timers (Rate) Graph
-
-**Use Case**
 - Inspect performance for a particular type of request
 - Inspect which type of request could be a performance bottleneck
 #### File Sync Metrics
@@ -195,37 +203,48 @@ This dashboard is to inspect File-sync related performance. Available Graphs:
 - Puppetserver frequently locked due to file sync
 - Compilers do not have the latest code available
 #### PuppetDB Performance
-This dashboard is to inspect PuppetDB service performance. Available Graphs:
+This dashboard is to inspect PuppetDB performance and troubleshoot the `pe-puppetdb` service. Available panels:
+- Heap
 - Commands Per Second
 - Command Processing Time
-- Heap
 - Queue Depth
 - Replace Catalog Time
 - Replace Facts Time
 - Store Report Time
-
-**Use Case**
-- Any PuppetDB performance issues
-#### PuppetDB Workload
-This dashboard is to inspect PuppetDB Read/Write Pool performance. Available Graphs:
-- Average Command Persistence Time
 - Average Read Duration
-- Peak Read Pool Wait
 - Read Pool Pending Connections
 - Average Write Duration
-- Peak Write Pool Wait
 - Write Pool Pending Connections
 
 **Use Case**
+- Any PuppetDB performance issues
 - Troubleshooting Read/Write Pool Errors
-- General PuppetDB performance issues
-#### Postgres Metrics
-This dashboard is to inspect PostgreSQL database performance. Available Graphs:
+
+#### Postgres Performance
+This dashboard is to inspect PostgreSQL database performance. Available panels:
 - Temp Files
-- Table Sizes
+  Changes in temp file sizes per database over the given time interval
+- Sizes by Database (total)
+  Total size of each database, including tables, indexes, and toast
+- Sizes by Table
+  Size of each table, not including indexes or toast
+- Sizes by Index
+- Sizes by Toast
 - Autovacuum Activity
 - Vacuum Activity - (not auto, not full)
 - I/O - heap toast and index - hits / reads
+- Disk Block Reads (Heap)
+  Changes in the number of disks blocks reads by postgres heap files per table.  This indicates the value needed to be retrieved from disk instead of the cache.
+- Cache Reads (Heap)
+  Changes in the number of cache reads by postgres heap files per table.  This indicates the value was retrieved from the cache.
+- Disk Block Reads (Index)
+  Same as above panel, but for indexes
+- Cache Reads (Index)
+  Same as above panel, but for indexes
+- Disk Block Reads (Toast)
+  Same as above panel, but for toast data
+- Cache Reads (Toast)
+  Same as above panel, but for toast data
 - Live / Dead Tuples
 - Deadlocks
 
