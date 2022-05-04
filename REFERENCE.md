@@ -521,7 +521,7 @@ Data type: `String`
 
 Version of the Telegraf package to install. Defaults to '1.21.2'.
 
-Default value: `'1.22.2-1'`
+Default value: `$facts['os']['name']`
 
 ##### <a name="collection_method"></a>`collection_method`
 
