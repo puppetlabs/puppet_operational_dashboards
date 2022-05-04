@@ -3512,5 +3512,6 @@
       "30d"
     ]
   },
-  "timezone": ""
+  "timezone": "utc",
+  "title": "Puppet Server Performance"
 }
