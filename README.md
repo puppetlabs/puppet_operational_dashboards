@@ -121,11 +121,17 @@ Metrics archives output by the [Puppet metrics collector](https://forge.puppet.c
 tar xf <metrics_gz>
 cd <output_directory>
 ```
+
+* Extract metrics archives
+```
+find metrics/ -type f -name "*gz" -execdir tar xf "{}" \;
+```
+
 * Delete any Puppet server metrics with errors.
 
 Currently, these will cause the `telegraf` process to exit upon encountering an error.  Delete these with:
 ```
-find <puppet_server_metrics_dir> -type f -name "*json" -size -1000c -delete
+find metrics/puppetserver -type f -name "*json" -size -1000c -delete
 ```
 * Edit `telegraf.conf` to point to your bucket (`<my_bucket>`) and InfluxDB server (`<influxdb_fqdn>`).
 * Export your Telegraf token
