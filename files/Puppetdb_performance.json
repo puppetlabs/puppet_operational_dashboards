@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 22,
-  "iteration": 1651590506276,
+  "id": 26,
+  "iteration": 1652140231776,
   "links": [
     {
       "asDropdown": false,
@@ -1287,7 +1287,7 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_url-pending_connections",
+          "alias": "$tag_url-active_connections",
           "dsType": "influxdb",
           "groupBy": [
             {
@@ -1338,14 +1338,14 @@
               "condition": "AND",
               "key": "mbean",
               "operator": "=",
-              "value": "PDBReadPool.pool.ActiveConnections"
+              "value": "PDBWritePool.pool.ActiveConnections"
             }
           ]
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Active Connections (Read Pool)",
+      "title": "Active Connections (Write Pool)",
       "type": "timeseries"
     },
     {
@@ -1418,7 +1418,7 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_url-active_connections",
+          "alias": "$tag_url-pending_connections",
           "dsType": "influxdb",
           "groupBy": [
             {
