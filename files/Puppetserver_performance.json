@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 23,
-  "iteration": 1651678437801,
+  "id": 28,
+  "iteration": 1652287150904,
   "links": [
     {
       "icon": "external link",
@@ -874,6 +874,371 @@
       "type": "timeseries"
     },
     {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 9,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_url-gc-mark-sweep",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_MarkSweep_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-scavenge",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_Scavenge_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        }
+      ],
+      "title": "Garbage Collection Times",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 9,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 18,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_url-gc-mark-sweep",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_MarkSweep_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-scavenge",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_Scavenge_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        }
+      ],
+      "title": "Garbage Collection Counts",
+      "type": "timeseries"
+    },
+    {
       "datasource": "$datasource",
       "fieldConfig": {
         "defaults": {
@@ -930,7 +1295,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 34
       },
       "id": 4,
       "links": [],
@@ -1085,7 +1450,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 34
       },
       "id": 6,
       "links": [],
@@ -1216,7 +1581,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 41
       },
       "id": 8,
       "options": {
@@ -1349,7 +1714,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 49
       },
       "id": 10,
       "options": {
@@ -1774,7 +2139,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 49
       },
       "id": 13,
       "options": {
@@ -2212,7 +2577,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 50
+        "y": 58
       },
       "id": 12,
       "options": {
@@ -2338,7 +2703,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 50
+        "y": 58
       },
       "id": 14,
       "options": {
@@ -2417,7 +2782,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "influxdb_puppet",
           "value": "influxdb_puppet"
         },
