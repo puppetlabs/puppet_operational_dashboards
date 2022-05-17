@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 25,
-  "iteration": 1652198141769,
+  "id": 29,
+  "iteration": 1652371811862,
   "links": [
     {
       "asDropdown": false,
@@ -308,6 +308,404 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*uptime$"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "id": 22,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_url-mark-sweep-gc",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_MarkSweep_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/$url/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-scavenge-gc",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_Scavenge_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/$url/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Garbage Collection Times",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*uptime$"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "id": 23,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_url-mark-sweep",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_MarkSweep_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/$url/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-scavenge",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_Scavenge_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/$url/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Garbage Collection Counts",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "$datasource",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
             "spanNulls": true,
             "stacking": {
               "group": "A",
@@ -339,7 +737,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 14
       },
       "id": 5,
       "links": [],
@@ -474,7 +872,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 14
       },
       "id": 6,
       "links": [],
@@ -609,7 +1007,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 21
       },
       "id": 4,
       "links": [],
@@ -734,7 +1132,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 28
       },
       "id": 9,
       "links": [],
@@ -865,7 +1263,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 21
+        "y": 28
       },
       "id": 11,
       "links": [],
@@ -996,7 +1394,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 28
+        "y": 35
       },
       "id": 16,
       "links": [],
@@ -1139,7 +1537,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 28
+        "y": 35
       },
       "id": 17,
       "links": [],
@@ -1283,7 +1681,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 42
       },
       "id": 10,
       "links": [],
@@ -1414,7 +1812,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 35
+        "y": 42
       },
       "id": 12,
       "links": [],
@@ -1545,7 +1943,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 49
       },
       "id": 15,
       "links": [],
@@ -1688,7 +2086,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 51
+        "y": 58
       },
       "id": 13,
       "links": [],
@@ -1831,7 +2229,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 51
+        "y": 58
       },
       "id": 14,
       "links": [],
@@ -1978,7 +2376,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 58
+        "y": 65
       },
       "id": 20,
       "links": [],
@@ -2121,7 +2519,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 58
+        "y": 65
       },
       "id": 21,
       "links": [],
@@ -2264,7 +2662,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 65
+        "y": 72
       },
       "id": 18,
       "links": [],
@@ -2345,7 +2743,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "GC Times (95th Percentile)",
+      "title": "PDB GC Times (95th Percentile)",
       "type": "timeseries"
     },
     {
@@ -2401,7 +2799,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 65
+        "y": 72
       },
       "id": 19,
       "links": [],
@@ -2492,7 +2890,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "GC Counts",
+      "title": "PDB GC Counts",
       "type": "timeseries"
     }
   ],
