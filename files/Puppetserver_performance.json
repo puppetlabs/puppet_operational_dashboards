@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 35,
-  "iteration": 1652889111127,
+  "iteration": 1652889111141,
   "links": [
     {
       "icon": "external link",
@@ -2871,7 +2871,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"route-id\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"route-id\" fill(null)",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($__interval), \"url\", \"route-id\" fill(null)",
           "rawQuery": true,
           "refId": "H",
           "resultFormat": "time_series",
