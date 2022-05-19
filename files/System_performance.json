@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 31,
-  "iteration": 1652728506344,
+  "iteration": 1652982646458,
   "links": [
     {
       "icon": "external link",
@@ -159,9 +159,9 @@
           ],
           "tags": [
             {
-              "key": "service",
+              "key": "server",
               "operator": "=~",
-              "value": "/^$service$/"
+              "value": "/^$server$/"
             },
             {
               "condition": "AND",
@@ -299,9 +299,9 @@
           ],
           "tags": [
             {
-              "key": "service",
+              "key": "server",
               "operator": "=~",
-              "value": "/^$service$/"
+              "value": "/^$server$/"
             },
             {
               "condition": "AND",
@@ -439,9 +439,9 @@
           ],
           "tags": [
             {
-              "key": "service",
+              "key": "server",
               "operator": "=~",
-              "value": "/^$service$/"
+              "value": "/^$server$/"
             },
             {
               "condition": "AND",
@@ -579,9 +579,9 @@
           ],
           "tags": [
             {
-              "key": "service",
+              "key": "server",
               "operator": "=~",
-              "value": "/^$service$/"
+              "value": "/^$server$/"
             },
             {
               "condition": "AND",
@@ -719,9 +719,9 @@
           ],
           "tags": [
             {
-              "key": "service",
+              "key": "server",
               "operator": "=~",
-              "value": "/^$service$/"
+              "value": "/^$server$/"
             },
             {
               "condition": "AND",
@@ -863,9 +863,9 @@
           ],
           "tags": [
             {
-              "key": "service",
+              "key": "server",
               "operator": "=~",
-              "value": "/^$service$/"
+              "value": "/^$server$/"
             },
             {
               "condition": "AND",
@@ -1003,5 +1003,5 @@
     ]
   },
   "timezone": "utc",
-  "title": "System Performance (Archive Only)"
+  "title": "System Performance"
 }
