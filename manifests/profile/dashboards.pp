@@ -110,7 +110,8 @@ class puppet_operational_dashboards::profile::dashboards (
           database => $influxdb_bucket,
           url      => $influxdb_uri,
       }),
-      before  => Service['grafana-server'],
+      require => Class['grafana::install'],
+      notify  => Service['grafana-server'],
     }
   }
   else {
@@ -127,8 +128,8 @@ class puppet_operational_dashboards::profile::dashboards (
       owner   => 'grafana',
       content => Deferred('inline_epp',
       [file('puppet_operational_dashboards/datasource.epp'), $token_vars]),
-      require => Class['Grafana::Install'],
-      before  => Service['grafana-server'],
+      require => Class['grafana::install'],
+      notify  => Service['grafana-server'],
     }
   }
 
