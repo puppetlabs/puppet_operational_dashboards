@@ -113,41 +113,7 @@ class {'puppet_operational_dashboards::telegraf::agent':
 
 ### Importing archive metrics
 
-Metrics archives output by the [Puppet metrics collector](https://forge.puppet.com/modules/puppetlabs/puppet_metrics_collector) can be imported into InfluxDB using the scripts in the `examples/` directory.  The sample `bucket_and_datasource` class shows how to configure an InfluxDB bucket and Grafana datasource, while the Telegraf files can be used to load the data into the bucket.  After setting up the bucket and datasource:
-
-* Download the `telegraf.conf` and `telegraf.conf.d` files to your home directory.
-* Extract the archive
-```
-tar xf <metrics_gz>
-cd <output_directory>
-```
-
-* Extract metrics archives
-```
-find metrics/ -type f -name "*gz" -execdir tar xf "{}" \;
-```
-
-* Delete any Puppet server metrics with errors.
-
-Currently, these will cause the `telegraf` process to exit upon encountering an error.  Delete these with:
-```
-find metrics/puppetserver -type f -name "*json" -size -1000c -delete
-```
-* Edit `telegraf.conf` to point to your bucket (`<my_bucket>`) and InfluxDB server (`<influxdb_fqdn>`).
-* Export your Telegraf token
-```
-export INFLUX_TOKEN=<token>
-```
-This token can be found in the "API Tokens" tab of the "Data" page in InfluxDB
-* Run Telegraf to import the metrics.  This can be done all at once:
-```
-telegraf --once --debug --config ~/telegraf.conf --config-directory ~/telegraf.conf.d/
-```
-
-Or one service at a time, e.g. for Puppet server
-```
-telegraf --once --debug --config ~/telegraf.conf --config ~/telegraf.conf.d//puppetserver.conf
-```
+Metrics archives output by the [Puppet metrics collector](https://forge.puppet.com/modules/puppetlabs/puppet_metrics_collector) can be imported into InfluxDB using Telegraf and the scripts in the `examples/` directory.  See `ARCHIVES.md` for more.
 
 ## Default Dashboards Available
 #### Puppetserver Performance
