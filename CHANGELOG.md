@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.1.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.1.0) (2022-05-27)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.0.0...v1.1.0)
+
+### Added
+
+- \(SUP-3329\) Add metric archive info to ARCHIVES.md [\#55](https://github.com/puppetlabs/puppet_operational_dashboards/pull/55) ([m0dular](https://github.com/m0dular))
+- Add PDB JVM GC panels [\#51](https://github.com/puppetlabs/puppet_operational_dashboards/pull/51) ([m0dular](https://github.com/m0dular))
+- Add panels for Puppet server GC times and counts [\#50](https://github.com/puppetlabs/puppet_operational_dashboards/pull/50) ([m0dular](https://github.com/m0dular))
+- \(SUP-3250\) Add HA and other PDB panels [\#48](https://github.com/puppetlabs/puppet_operational_dashboards/pull/48) ([m0dular](https://github.com/m0dular))
+
+### Fixed
+
+- Fix queue\_depth metric in starlark processor [\#49](https://github.com/puppetlabs/puppet_operational_dashboards/pull/49) ([m0dular](https://github.com/m0dular))
+- Fix panels related to PDB connections [\#47](https://github.com/puppetlabs/puppet_operational_dashboards/pull/47) ([m0dular](https://github.com/m0dular))
+
+### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+
+- \(SUP-3319\) Refresh service when datasource changes [\#54](https://github.com/puppetlabs/puppet_operational_dashboards/pull/54) ([m0dular](https://github.com/m0dular))
+- Add metrics from route-ids [\#53](https://github.com/puppetlabs/puppet_operational_dashboards/pull/53) ([m0dular](https://github.com/m0dular))
+
 ## [v1.0.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.0.0) (2022-05-04)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v0.2.0...v1.0.0)
