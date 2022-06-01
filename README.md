@@ -22,7 +22,8 @@
       - [PuppetDB Performance](#puppetdb-performance)
       - [PuppetDB Workload](#puppetdb-workload)
       - [Postgres Metrics](#postgres-metrics)
-
+  - [Limitations](#limitations)
+  - [Troubleshooting](#troubleshooting)
 ## Description
 
 This module is a replacement for the [puppet_metrics_dashboard module](https://forge.puppet.com/modules/puppetlabs/puppet_metrics_dashboard).  It is used to configure Telegraf, InfluxDB, and Grafana to collect, store, and display metrics collected from Puppet services. By default, those components are installed on a separate Dashboard node by applying the base class of this module to that node. That class will automatically query PuppetDB for Puppet Infrastructure nodes (Primary server, Compilers, PuppetDB hosts, PostgreSQL hosts) or you can specify them via associated class parameters. It is not recommended to apply the base class of this module to one of your Puppet Infrastructure nodes.
@@ -231,6 +232,17 @@ Currently, only the latest Telegraf package is provided by the Ubuntu repository
 
 ## Upgrading from puppet_metrics_dashboard
 This module uses InfluxDB 2.x, while `puppet_metrics_dashboard` uses 1.x.  This module does not currently provide an option to upgrade between these versions, so it is recommended to either install this module on a new node or manually upgrade.  See the [InfluxDB docs](https://docs.influxdata.com/influxdb/v2.2/upgrade/v1-to-v2/) for more information about upgrading.
+
+## Applying classes on PE 2021.5 and 2021.6
+On Puppet Enterprise versions 2021.5 and 2021.6, there is an issue when applying either the `puppet_operational_dashboards::enterprise_infrastructure` or `puppet_operational_dashboards::profile::postgres_access` classes in a user manifest.  Doing so may result in an error such as:
+
+```
+Error: Could not retrieve catalog from remote server: Error 500 on SERVER: Server Error: Evaluation Error: Error while evaluating a Resource Statement, Evaluation Error: Comparison of: Undef Value < Integer, is not possible. Caused by 'Only Strings, Numbers, Timespans, Timestamps, and Versions are comparable'
+```
+
+This is due to an ordering issue with the `cert_allowlist_entry` defined type.  The workaround is to apply the classes via the Console, for example by applying `puppet_operational_dashboards::enterprise_infrastructure` to the `PE Infrastructure Agent` node group.  See [Installing on Puppet Enterprise](#installing-on-puppet-enterprise).
+
+This issue only affect PE versions 2021.5 and 2021.6.  Earlier versions are not affected, and later releases will include a fix to the defined type.
 
 ### Troubleshooting
 If data is not displaying in Grafana or you see errors in Telegraf collections, try checking the following items.
