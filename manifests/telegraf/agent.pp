@@ -184,10 +184,11 @@ class puppet_operational_dashboards::telegraf::agent (
   }
 
   file { '/etc/systemd/system/telegraf.service.d':
-    ensure => directory,
-    owner  => 'telegraf',
-    group  => 'telegraf',
-    mode   => '0700',
+    ensure  => directory,
+    owner   => 'telegraf',
+    group   => 'telegraf',
+    mode    => '0700',
+    require => Class['telegraf::install'],
   }
 
   if $token {
