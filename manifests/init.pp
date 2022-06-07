@@ -8,8 +8,6 @@
 #   }
 # @param manage_influxdb
 #   Whether to manage installation and configuration of InfluxDB.  Defaults to true
-# @param manage_grafana
-#   Whether to manage installation and configuration of Grafana.  Defaults to true
 # @param influxdb_host
 #   FQDN of the InfluxDB host.  Defaults to a the value of influxdb::host, or $facts['fqdn'] if unset
 # @param influxdb_port
@@ -37,7 +35,6 @@
 #   Telegraf token in Sensitive format.
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
-  Boolean $manage_grafana = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
   Integer $influxdb_port = lookup(influxdb::port, undef, undef, 8086),
   String $initial_org = lookup(influxdb::initial_org, undef, undef, 'puppetlabs'),

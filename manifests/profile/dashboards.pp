@@ -26,6 +26,8 @@
 #   Method to use for installing Grafana.  Defaults to using a repository on EL and Debian/Ubuntu, and package for other platforms
 # @param use_ssl
 #   Whether to use SSL when querying InfluxDB.  Defaults to true
+# @param manage_grafana
+#   Whether to manage installation and configuration of Grafana.  Defaults to true
 # @param manage_grafana_repo
 #   Whether to manage the Grafana repository definition.  Defaults to true.
 # @param influxdb_host
@@ -59,6 +61,7 @@ class puppet_operational_dashboards::profile::dashboards (
   },
   String $provisioning_datasource_file = '/etc/grafana/provisioning/datasources/influxdb.yaml',
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
+  Boolean $manage_grafana = true,
   Boolean $manage_grafana_repo = true,
   String $influxdb_host = $puppet_operational_dashboards::influxdb_host,
   Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,
@@ -66,13 +69,6 @@ class puppet_operational_dashboards::profile::dashboards (
   String $telegraf_token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
 ) {
-  #TODO: only for local Grafana
-  class { 'grafana':
-    install_method      => $grafana_install,
-    version             => $grafana_version,
-    manage_package_repo => $manage_grafana_repo,
-  }
-
   $grafana_url = "http://${grafana_host}:${grafana_port}"
 
   $protocol = $use_ssl ? {
@@ -81,55 +77,69 @@ class puppet_operational_dashboards::profile::dashboards (
   }
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
-  file { 'grafana-conf-d':
-    ensure => directory,
-    path   => '/etc/systemd/system/grafana-server.service.d',
-  }
-  file { 'wait-for-grafana':
-    ensure    => file,
-    path      => '/etc/systemd/system/grafana-server.service.d/wait.conf',
-    subscribe => Exec['puppet_grafana_daemon_reload'],
-    content   => epp('puppet_operational_dashboards/grafana_wait.epp', { timeout => $grafana_timeout }),
-  }
-
-  exec { 'puppet_grafana_daemon_reload':
-    command     => 'systemctl daemon-reload',
-    path        => ['/bin', '/usr/bin'],
-    refreshonly => true,
-    notify      => Service['grafana-server'],
-  }
-
-  if $token {
-    file { $provisioning_datasource_file:
-      ensure  => file,
-      mode    => '0600',
-      owner   => 'grafana',
-      content => inline_epp(file('puppet_operational_dashboards/datasource.epp'), {
-          name     => $grafana_datasource,
-          token    => $token,
-          database => $influxdb_bucket,
-          url      => $influxdb_uri,
-      }),
-      require => Class['grafana::install'],
-      notify  => Service['grafana-server'],
-    }
-  }
-  else {
-    $token_vars = {
-      name     => $grafana_datasource,
-      token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $telegraf_token_name, $influxdb_token_file])),
-      database => $influxdb_bucket,
-      url      => $influxdb_uri,
+  if $manage_grafana {
+    class { 'grafana':
+      install_method      => $grafana_install,
+      version             => $grafana_version,
+      manage_package_repo => $manage_grafana_repo,
     }
 
-    file { $provisioning_datasource_file:
-      ensure  => file,
-      mode    => '0600',
-      owner   => 'grafana',
-      content => Deferred('inline_epp',
-      [file('puppet_operational_dashboards/datasource.epp'), $token_vars]),
+    file { 'grafana-conf-d':
+      ensure => directory,
+      path   => '/etc/systemd/system/grafana-server.service.d',
+    }
+    file { 'wait-for-grafana':
+      ensure    => file,
+      path      => '/etc/systemd/system/grafana-server.service.d/wait.conf',
+      subscribe => Exec['puppet_grafana_daemon_reload'],
+      content   => epp('puppet_operational_dashboards/grafana_wait.epp', { timeout => $grafana_timeout }),
+    }
+
+    exec { 'puppet_grafana_daemon_reload':
+      command     => 'systemctl daemon-reload',
+      path        => ['/bin', '/usr/bin'],
+      refreshonly => true,
+      notify      => Service['grafana-server'],
+    }
+
+    # Require the install class for any dashboards when managing Grafana
+    Grafana_dashboard {
       require => Class['grafana::install'],
-      notify  => Service['grafana-server'],
+    }
+
+    if $token {
+      file { 'grafana_provisioning_datasource':
+        ensure  => file,
+        path  => $provisioning_datasource_file,
+        mode    => '0600',
+        owner   => 'grafana',
+        content => inline_epp(file('puppet_operational_dashboards/datasource.epp'), {
+            name     => $grafana_datasource,
+            token    => $token,
+            database => $influxdb_bucket,
+            url      => $influxdb_uri,
+        }),
+        require => Class['grafana::install'],
+        notify  => Service['grafana-server'],
+      }
+    }
+    else {
+      $token_vars = {
+        name     => $grafana_datasource,
+        token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $telegraf_token_name, $influxdb_token_file])),
+        database => $influxdb_bucket,
+        url      => $influxdb_uri,
+      }
+
+      file { $provisioning_datasource_file:
+        ensure  => file,
+        mode    => '0600',
+        owner   => 'grafana',
+        content => Deferred('inline_epp',
+        [file('puppet_operational_dashboards/datasource.epp'), $token_vars]),
+        require => Class['grafana::install'],
+        notify  => Service['grafana-server'],
+      }
     }
   }
 
@@ -139,7 +149,6 @@ class puppet_operational_dashboards::profile::dashboards (
       grafana_password => $grafana_password.unwrap,
       grafana_url      => $grafana_url,
       content          => file("puppet_operational_dashboards/${service}_performance.json"),
-      require          => Service['grafana-server'],
     }
   }
 }
