@@ -10,6 +10,7 @@ fixtures:
     apt: 'https://github.com/puppetlabs/puppetlabs-apt'
     inifile: 'https://github.com/puppetlabs/puppetlabs-inifile'
     grafana: 'https://github.com/voxpupuli/puppet-grafana'
+    influxdb: 'https://github.com/puppetlabs/influxdb'
     archive: 'https://github.com/voxpupuli/puppet-archive'
     systemd: 'https://github.com/voxpupuli/puppet-systemd'
     yumrepo:
