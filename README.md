@@ -244,6 +244,22 @@ This is due to an ordering issue with the `cert_allowlist_entry` defined type.  
 
 This issue only affect PE versions 2021.5 and 2021.6.  Earlier versions are not affected, and later releases will include a fix to the defined type.
 
+## Installing on openSUSE 15
+On some versions of openSUSE 15, the `insserv-compat` package may be required to enable the Grafana service.  If you see an error such as:
+
+```
+Error: /Stage[main]/Grafana::Service/Service[grafana]/ensure: change from 'stopped' to 'running' failed: Could not enable grafana-server:
+```
+
+This is due to the missing package:
+
+```
+Synchronizing state of grafana-server.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install enable grafana-server
+/sbin/insserv: No such file or directory
+```
+
+Installing the `insserv-compat` resolves the error.
 ### Troubleshooting
 If data is not displaying in Grafana or you see errors in Telegraf collections, try checking the following items.
 

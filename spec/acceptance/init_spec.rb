@@ -19,6 +19,13 @@ describe 'install dashboards and set up dependancies' do
   context 'init puppet_operational_dashboards with default parameters' do
     it 'installs grafana and influxdb' do
       pp = <<-MANIFEST
+        if $facts['osfamily'] == 'Suse' {
+          package {'insserv-compat':
+            ensure => 'installed',
+            before => Class['puppet_operational_dashboards'],
+          }
+        }
+
         include puppet_operational_dashboards
         MANIFEST
 
