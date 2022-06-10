@@ -110,7 +110,7 @@ class puppet_operational_dashboards::profile::dashboards (
     if $token {
       file { 'grafana_provisioning_datasource':
         ensure  => file,
-        path  => $provisioning_datasource_file,
+        path    => $provisioning_datasource_file,
         mode    => '0600',
         owner   => 'grafana',
         content => inline_epp(file('puppet_operational_dashboards/datasource.epp'), {
