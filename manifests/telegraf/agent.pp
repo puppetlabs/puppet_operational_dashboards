@@ -32,7 +32,6 @@
 #   Determines how metrics will be collected.
 #   'all' will query all Puppet services across all Puppet infrastructure hosts from the node with this class applied.
 #   'local' will query all Puppet services on the node with this class applied.
-#   TODO
 #   'none' will not query any services from the node with this class applied.
 # @param collection_interval
 #   How frequently to collect metrics.  Defaults to '10m'.
@@ -63,7 +62,7 @@ class puppet_operational_dashboards::telegraf::agent (
   Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,
   String $influxdb_bucket = $puppet_operational_dashboards::initial_bucket,
   String $influxdb_org = $puppet_operational_dashboards::initial_org,
-  Boolean $use_ssl = true,
+  Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $manage_ssl = true,
   String  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
   String  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
@@ -80,7 +79,6 @@ class puppet_operational_dashboards::telegraf::agent (
   Array $puppetdb_hosts     = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Puppetdb'),
   Array $postgres_hosts     = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Database'),
 
-  # TODO: test this
   Array[String] $profiles = puppet_operational_dashboards::pe_profiles_on_host(),
   Array[String] $local_services = [],
 ) {
@@ -226,15 +224,17 @@ class puppet_operational_dashboards::telegraf::agent (
   if $collection_method == 'all' {
     unless $puppetdb_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
-        hosts   => $puppetdb_hosts,
-        require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        hosts    => $puppetdb_hosts,
+        protocol => $protocol,
+        require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
     unless $puppetserver_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { 'puppetserver':
-        hosts   => $puppetserver_hosts,
-        require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        hosts    => $puppetserver_hosts,
+        protocol => $protocol,
+        require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
@@ -256,15 +256,17 @@ class puppet_operational_dashboards::telegraf::agent (
   elsif $collection_method == 'local' {
     if 'Puppet_enterprise::Profile::Puppetdb' in $profiles or 'puppetdb' in $local_services {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
-        hosts   => [$trusted['certname']],
-        require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        hosts    => [$trusted['certname']],
+        protocol => $protocol,
+        require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
     if 'Puppet_enterprise::Profile::Master' in $profiles or 'puppetserver' in $local_services {
       puppet_operational_dashboards::telegraf::config { 'puppetserver':
-        hosts   => [$trusted['certname']],
-        require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        hosts    => [$trusted['certname']],
+        protocol => $protocol,
+        require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 

@@ -58,7 +58,7 @@ class puppet_operational_dashboards::profile::dashboards (
     default           => 'package',
   },
   String $provisioning_datasource_file = '/etc/grafana/provisioning/datasources/influxdb.yaml',
-  Boolean $use_ssl = true,
+  Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $manage_grafana_repo = true,
   String $influxdb_host = $puppet_operational_dashboards::influxdb_host,
   Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,

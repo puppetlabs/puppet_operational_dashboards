@@ -58,16 +58,11 @@ class puppet_operational_dashboards (
     fail("Installation on ${facts['os']['family']} is not supported")
   }
 
-  $protocol = $use_ssl ? {
-    true  => 'https',
-    false => 'http',
-  }
-  $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
-
   if $manage_influxdb {
     class { 'influxdb':
       host        => $influxdb_host,
       port        => $influxdb_port,
+      use_ssl     => $use_ssl,
       initial_org => $initial_org,
       token_file  => $influxdb_token_file,
     }
@@ -88,7 +83,6 @@ class puppet_operational_dashboards (
 
     Influxdb_auth {
       require => Class['influxdb'],
-      token_file  => $influxdb_token_file,
     }
   }
 
