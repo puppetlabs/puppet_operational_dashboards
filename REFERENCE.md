@@ -45,7 +45,6 @@ class {'puppet_operational_dashboards':
 The following parameters are available in the `puppet_operational_dashboards` class:
 
 * [`manage_influxdb`](#manage_influxdb)
-* [`manage_grafana`](#manage_grafana)
 * [`influxdb_host`](#influxdb_host)
 * [`influxdb_port`](#influxdb_port)
 * [`initial_org`](#initial_org)
@@ -63,14 +62,6 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 Data type: `Boolean`
 
 Whether to manage installation and configuration of InfluxDB.  Defaults to true
-
-Default value: ``true``
-
-##### <a name="manage_grafana"></a>`manage_grafana`
-
-Data type: `Boolean`
-
-Whether to manage installation and configuration of Grafana.  Defaults to true
 
 Default value: ``true``
 
@@ -227,6 +218,7 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 * [`grafana_datasource`](#grafana_datasource)
 * [`grafana_install`](#grafana_install)
 * [`use_ssl`](#use_ssl)
+* [`manage_grafana`](#manage_grafana)
 * [`manage_grafana_repo`](#manage_grafana_repo)
 * [`influxdb_host`](#influxdb_host)
 * [`influxdb_port`](#influxdb_port)
@@ -304,6 +296,14 @@ Default value: `$facts['os']['family']`
 Data type: `Boolean`
 
 Whether to use SSL when querying InfluxDB.  Defaults to true
+
+Default value: `$puppet_operational_dashboards::use_ssl`
+
+##### <a name="manage_grafana"></a>`manage_grafana`
+
+Data type: `Boolean`
+
+Whether to manage installation and configuration of Grafana.  Defaults to true
 
 Default value: ``true``
 
@@ -480,7 +480,7 @@ Data type: `Boolean`
 
 Whether to use SSL when querying InfluxDB.  Defaults to true
 
-Default value: ``true``
+Default value: `$puppet_operational_dashboards::use_ssl`
 
 ##### <a name="manage_ssl"></a>`manage_ssl`
 
@@ -530,7 +530,6 @@ Data type: `Enum['all', 'local', 'none']`
 Determines how metrics will be collected.
 'all' will query all Puppet services across all Puppet infrastructure hosts from the node with this class applied.
 'local' will query all Puppet services on the node with this class applied.
-TODO
 'none' will not query any services from the node with this class applied.
 
 Default value: `'all'`
@@ -615,6 +614,7 @@ Defined type to create Telegraf configurations for a given service
 The following parameters are available in the `puppet_operational_dashboards::telegraf::config` defined type:
 
 * [`service`](#service)
+* [`protocol`](#protocol)
 * [`hosts`](#hosts)
 * [`ensure`](#ensure)
 
@@ -625,6 +625,12 @@ Data type: `String`
 Name of the service to query.  Is the title of the resource.
 
 Default value: `$title`
+
+##### <a name="protocol"></a>`protocol`
+
+Data type: `Enum['https', 'http']`
+
+Protocol to use in requests, either https or http
 
 ##### <a name="hosts"></a>`hosts`
 

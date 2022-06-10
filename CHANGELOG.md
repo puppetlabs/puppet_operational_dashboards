@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.2.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/temp-tag) (2022-06-10)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.1.0...temp-tag)
+
+### Added
+
+- \(SUP-3025\) Add spec tests [\#63](https://github.com/puppetlabs/puppet_operational_dashboards/pull/63) ([m0dular](https://github.com/m0dular))
+
+### Fixed
+
+- \(SUP-3358\) Fix $use\_ssl logic across all manifests [\#62](https://github.com/puppetlabs/puppet_operational_dashboards/pull/62) ([m0dular](https://github.com/m0dular))
+- \(SUP-3357\) Move manage\_grafana to dashboard class [\#61](https://github.com/puppetlabs/puppet_operational_dashboards/pull/61) ([m0dular](https://github.com/m0dular))
+- \(SUP-3348\) Telegraf ssl bugfixes [\#60](https://github.com/puppetlabs/puppet_operational_dashboards/pull/60) ([m0dular](https://github.com/m0dular))
+
 ## [v1.1.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.1.0) (2022-05-27)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.0.0...v1.1.0)
