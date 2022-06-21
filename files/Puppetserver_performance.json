@@ -302,7 +302,7 @@
           ]
         },
         {
-          "alias": "$tag_url-avg-borrow-time",
+          "alias": "$tag_url-avg-wait-time",
           "dsType": "influxdb",
           "groupBy": [
             {
