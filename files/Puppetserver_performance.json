@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 35,
-  "iteration": 1652889111141,
+  "id": 36,
+  "iteration": 1655825047788,
   "links": [
     {
       "icon": "external link",
@@ -1351,15 +1351,50 @@
               },
               {
                 "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "Average Borrow Time"
-                ],
-                "type": "alias"
+                "type": "distinct"
               }
-            ],
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-avg-compile-time",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"average-borrow-time\") FROM \"puppetserver.jruby-metrics.average-borrow-time\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(1m), \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
             [
               {
                 "params": [
@@ -1369,13 +1404,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
-              },
-              {
-                "params": [
-                  "Catalog Borrow Time"
-                ],
-                "type": "alias"
+                "type": "distinct"
               }
             ]
           ],
@@ -3036,7 +3065,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "influxdb_puppet",
           "value": "influxdb_puppet"
         },
