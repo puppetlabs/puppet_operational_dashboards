@@ -132,7 +132,7 @@ This dashboard is to inspect Puppet server performance and troubleshoot the `pe-
   - Uptime
 - Average Requested JRubies
 - Average Borrow/Compile Time
-- Avergae Free JRubies
+- Average Free JRubies
 - Average Wait Time
 - HTTP Client Metrics
   This panel displays the various network related metrics performed by Puppet server.  Examples include:
