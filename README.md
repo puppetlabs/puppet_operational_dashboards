@@ -124,7 +124,7 @@ This dashboard is to inspect Puppet server performance and troubleshoot the `pe-
   - Average free JRubies
   - Average requested JRubies
   - Average JRuby borrow time
-  - Average JRuby wait time 
+  - Average JRuby wait time
 - Heap Memory and Uptime
   This panel displays the following JVM metrics:
   - Heap Committed
