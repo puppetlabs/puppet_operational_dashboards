@@ -56,7 +56,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
       )
 
       is_expected.to contain_service('telegraf').with(ensure: 'running')
-      is_expected.to contain_service('telegraf').that_requires(['Class[telegraf::install]', 'Exec[puppet_influxdb_daemon_reload]'])
+      is_expected.to contain_service('telegraf').that_requires(['Class[telegraf::install]', 'Exec[puppet_telegraf_daemon_reload]'])
 
       ['/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem', '/etc/telegraf/key.pem'].each do |cert_file|
         is_expected.to contain_file(cert_file)
@@ -74,7 +74,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         is_expected.to contain_telegraf__input(input)
       end
 
-      is_expected.to contain_exec('puppet_influxdb_daemon_reload').with(refreshonly: true)
+      is_expected.to contain_exec('puppet_telegraf_daemon_reload').with(refreshonly: true)
 
       is_expected.to contain_file('/etc/systemd/system/telegraf.service.d').that_requires('Class[telegraf::install]')
 
@@ -84,7 +84,30 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
       is_expected.to contain_file('/etc/telegraf/telegraf.d/puppetserver_metrics.conf').with_content(
         %r{tls_cert = "/etc/telegraf/cert\.pem"},
       )
-      is_expected.to contain_file('/etc/systemd/system/telegraf.service.d/override.conf').that_notifies(['Exec[puppet_influxdb_daemon_reload]', 'Service[telegraf]'])
+      is_expected.to contain_file('/etc/systemd/system/telegraf.service.d/override.conf').that_notifies(['Exec[puppet_telegraf_daemon_reload]', 'Service[telegraf]'])
+    }
+  end
+
+  context 'when installing from archive on EL' do
+    let(:pre_condition) { '' }
+    let(:params) do
+      {
+        token: RSpec::Puppet::Sensitive.new(nil),
+        token_name: 'puppet telegraf token',
+        influxdb_token_file: '/root/.influxdb_token',
+        influxdb_host: 'localhost.foo.com',
+        influxdb_port: 8086,
+        influxdb_bucket: 'puppet_data',
+        influxdb_org: 'puppetlabs',
+        use_ssl: true,
+        manage_repo: false,
+        manage_archive: true,
+      }
+    end
+
+    it {
+      is_expected.to compile
+      is_expected.not_to contain_yumrepo('influxdata')
     }
   end
 

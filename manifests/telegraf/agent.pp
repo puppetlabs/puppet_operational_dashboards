@@ -19,6 +19,12 @@
 #   Whether to use SSL when querying InfluxDB.  Defaults to true
 # @param manage_ssl
 #   Whether to manage Telegraf ssl configuration.  Defaults to true.
+# @param manage_repo
+#   Whether to install Telegraf from a repository.  Defaults to true on the RedHat family of platforms.
+# @param manage_archive
+#   Whether to install Telegraf from an archive source.  Defaults to true on platforms other than RedHat.
+# @param manage_user
+#   Whether to manage the telegraf user when installing from archive.  Defaults to true.
 # @param ssl_cert_file
 #   SSL certificate to be used by the telegraf service.  Defaults to the agent certificate issued by the Puppet CA for the local machine.
 # @param ssl_key_file
@@ -28,6 +34,11 @@
 #   CA certificate issued by the CA which signed the certificate specified by $ssl_cert_file.  Defaults to the Puppet CA.
 # @param version
 #   Version of the Telegraf package to install. Defaults to '1.21.2'.
+# @param archive_location
+#   URL containing an archive source for the telegraf package.  Defaults to downloading $version from dl.influxdata.com
+#   Version of the Telegraf package to install. Defaults to '1.21.2'.
+# @param archive_install_dir
+#   Directory to install $archive_location to.  Defaults to /opt/telegraf.
 # @param collection_method
 #   Determines how metrics will be collected.
 #   'all' will query all Puppet services across all Puppet infrastructure hosts from the node with this class applied.
@@ -64,6 +75,12 @@ class puppet_operational_dashboards::telegraf::agent (
   String $influxdb_org = $puppet_operational_dashboards::initial_org,
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $manage_ssl = true,
+  Boolean $manage_repo = $facts['os']['family'] ? {
+    'RedHat' => true,
+    default  => false,
+  },
+  Boolean $manage_archive = !$manage_repo,
+  Boolean $manage_user = true,
   String  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
   String  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
   String  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
@@ -72,6 +89,9 @@ class puppet_operational_dashboards::telegraf::agent (
     'Ubuntu' => 'latest',
     default  => '1.22.2-1',
   },
+  # Use the $version parameter to determine the archive link, stripping the '-1' suffix.
+  String $archive_location = "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz",
+  String $archive_install_dir = '/opt/telegraf',
   Enum['all', 'local', 'none'] $collection_method = 'all',
   String $collection_interval = '10m',
 
@@ -86,7 +106,7 @@ class puppet_operational_dashboards::telegraf::agent (
     fail('No services detected on node.')
   }
 
-  exec { 'puppet_influxdb_daemon_reload':
+  exec { 'puppet_telegraf_daemon_reload':
     command     => 'systemctl daemon-reload',
     path        => ['/bin', '/usr/bin'],
     refreshonly => true,
@@ -144,14 +164,17 @@ class puppet_operational_dashboards::telegraf::agent (
   }
 
   class { 'telegraf':
-    ensure           => $version_ensure,
-    # Use the $version parameter to determine the archive link, stripping the '-1' suffix.
-    archive_location => "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz",
-    interval         => $collection_interval,
-    hostname         => '',
-    manage_service   => false,
-    outputs          => $influxdb_v2,
-    notify           => Service['telegraf'],
+    ensure              => $version_ensure,
+    manage_repo         => $manage_repo,
+    manage_archive      => $manage_archive,
+    manage_user         => $manage_user,
+    archive_location    => $archive_location,
+    archive_install_dir => $archive_install_dir,
+    interval            => $collection_interval,
+    hostname            => '',
+    manage_service      => false,
+    outputs             => $influxdb_v2,
+    notify              => Service['telegraf'],
   }
 
   if $use_ssl and $manage_ssl {
@@ -194,7 +217,7 @@ class puppet_operational_dashboards::telegraf::agent (
       ensure  => file,
       content => inline_epp(file('influxdb/telegraf_environment_file.epp'), { token => $token }),
       notify  => [
-        Exec['puppet_influxdb_daemon_reload'],
+        Exec['puppet_telegraf_daemon_reload'],
         Service['telegraf']
       ],
     }
@@ -207,7 +230,7 @@ class puppet_operational_dashboards::telegraf::agent (
       ensure  => file,
       content => Deferred('inline_epp', [file('influxdb/telegraf_environment_file.epp'), $token_vars]),
       notify  => [
-        Exec['puppet_influxdb_daemon_reload'],
+        Exec['puppet_telegraf_daemon_reload'],
         Service['telegraf'],
       ],
     }
@@ -217,7 +240,7 @@ class puppet_operational_dashboards::telegraf::agent (
     ensure  => running,
     require => [
       Class['telegraf::install'],
-      Exec['puppet_influxdb_daemon_reload'],
+      Exec['puppet_telegraf_daemon_reload'],
     ],
   }
 

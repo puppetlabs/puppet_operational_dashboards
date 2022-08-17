@@ -7,6 +7,7 @@
   - [Description](#description)
   - [Setup](#setup)
     - [Prerequisites](#prerequisites)
+    - [Note on air-gapped environments](#note-on-air-gapped-environments)
     - [Beginning with puppet_operational_dashboards](#beginning-with-puppet_operational_dashboards)
       - [Installing on Puppet Enterprise](#installing-on-puppet-enterprise)
       - [Installing on Puppet Open Source](#installing-on-puppet-open-source)
@@ -39,6 +40,31 @@ This module is a replacement for the [puppet_metrics_dashboard module](https://f
 ## Setup
 
 ### Prerequisites
+
+### Note on air-gapped environments
+
+If you are applying either the `puppet_operational_dashboards` or `puppet_operational_dashboards::telegraf::agent` classes to a node that cannot access the internet, it is possible to install packages from an archive source located within the air gap.
+
+For InfluxDB, set:
+
+* [influxdb::manage_repo](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#manage_repo) to `false`
+* [influxdb::archive_source](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#archive_source) to an internal URL containing the archive file for InfluxDB
+
+For Grafana, set:
+
+* [grafana::install_method](https://forge.puppet.com/modules/puppet/grafana/reference#install_method) to either `archive` or `package` depending on your preferred method.
+
+Then, set either of the following depending on the installation method
+
+* [grafana::package_source](https://forge.puppet.com/modules/puppet/grafana/reference#package_source)
+* [grafana::archive_source](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#archive_source)
+
+#TODO: document these in the PR that generates the changelog and reference
+For Telegraf, set:
+
+* `puppet_operational_dashboards::telegraf::agent::manage_repo` to `false`
+* `puppet_operational_dashboards::telegraf::agent::manage_archive` to `true`
+* `puppet_operational_dashboards::telegraf::agent::archive_location` to an internal URL containing the archive file for Telegraf
 
 ### Beginning with puppet_operational_dashboards
 
