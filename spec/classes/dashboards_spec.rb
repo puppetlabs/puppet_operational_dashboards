@@ -24,7 +24,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
   context 'when using default parameters' do
     it {
       is_expected.to contain_class('grafana').with(
-        version: '8.5.11',
+        version: '8.2.7',
         manage_package_repo: true,
       )
 
