@@ -273,7 +273,7 @@ Data type: `String`
 
 Version of the Grafana package to install.  Defaults to '8.2.2'
 
-Default value: `'8.2.2'`
+Default value: `'8.2.7'`
 
 ##### <a name="grafana_datasource"></a>`grafana_datasource`
 
