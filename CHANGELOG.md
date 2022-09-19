@@ -2,9 +2,27 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v1.2.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/temp-tag) (2022-06-10)
+## [v1.3.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/temp-tag) (2022-09-19)
 
-[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.1.0...temp-tag)
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.2.0...temp-tag)
+
+### Added
+
+- \(SUP-3646\) Grafana Bump for security vulnerability [\#79](https://github.com/puppetlabs/puppet_operational_dashboards/pull/79) ([MartyEwings](https://github.com/MartyEwings))
+- SUP-3276 Add system metrics from archives [\#71](https://github.com/puppetlabs/puppet_operational_dashboards/pull/71) ([m0dular](https://github.com/m0dular))
+- \(SUP-3431\) Add index and toast stats to postgres [\#70](https://github.com/puppetlabs/puppet_operational_dashboards/pull/70) ([m0dular](https://github.com/m0dular))
+- \(SUP-3220\) Rewrite Puppet server script [\#68](https://github.com/puppetlabs/puppet_operational_dashboards/pull/68) ([m0dular](https://github.com/m0dular))
+
+### Fixed
+
+- README.md: Cleanup trailing whitespace  / Fix typo [\#73](https://github.com/puppetlabs/puppet_operational_dashboards/pull/73) ([bastelfreak](https://github.com/bastelfreak))
+- \(SUP-3396\) Remove ha\_last-sync-succeeded mbeans [\#72](https://github.com/puppetlabs/puppet_operational_dashboards/pull/72) ([m0dular](https://github.com/m0dular))
+- \(SUP-3388\) Change error handling in PDB script [\#69](https://github.com/puppetlabs/puppet_operational_dashboards/pull/69) ([m0dular](https://github.com/m0dular))
+- \(SUP-3403\) Fix labels in compile/borrow panel [\#67](https://github.com/puppetlabs/puppet_operational_dashboards/pull/67) ([m0dular](https://github.com/m0dular))
+
+## [v1.2.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.2.0) (2022-06-10)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.1.0...v1.2.0)
 
 ### Added
 
