@@ -1,0 +1,8 @@
+---
+name: puppet_operational_dashboards
+modules:
+- name: puppetlabs-stdlib
+- name: puppetlabs-influxdb
+- name: puppet-grafana
+- name: puppet-telegraf
+- name: puppetlabs-apt
