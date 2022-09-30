@@ -40,7 +40,9 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       end
 
       is_expected.to contain_file('grafana-conf-d')
-      is_expected.to contain_file('wait-for-grafana').with_content(%r{ExecStartPost=/usr/bin/timeout 10 sh -c 'while ! ss -H -t -l -n sport = :3000 | grep -q "^LISTEN.*:3000"; do sleep 1; done'})
+      is_expected.to contain_file('wait-for-grafana').with_content(
+        %r{ExecStartPost=/usr/bin/timeout 10 sh -c 'while ! ss -t -l -n sport = :3000 | sed 1d | grep -q "^LISTEN.*:3000"; do sleep 1; done'},
+      )
       is_expected.to contain_file('wait-for-grafana').that_subscribes_to('Exec[puppet_grafana_daemon_reload]')
 
       is_expected.to contain_exec('puppet_grafana_daemon_reload').that_notifies('Service[grafana-server]')
