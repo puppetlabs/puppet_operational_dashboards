@@ -23,8 +23,23 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 51,
-  "iteration": 1665084784262,
-  "links": [],
+  "iteration": 1665085629822,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [
+        "operational_dashboards"
+      ],
+      "targetBlank": true,
+      "title": "",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "liveNow": false,
   "panels": [
     {
@@ -1352,7 +1367,9 @@
   "refresh": false,
   "schemaVersion": 32,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "operational_dashboards"
+  ],
   "templating": {
     "list": [
       {
