@@ -14,7 +14,7 @@
     },
     {
       "name": "puppet-telegraf",
-      "version_requirement": ">= 4.1.0 < 5.0.0"
+      "version_requirement": ">= 4.3.0 < 5.0.0"
     },
     {
       "name": "puppetlabs-apt",
@@ -26,7 +26,7 @@
     },
     {
       "name": "puppetlabs-influxdb",
-      "version_requirement": ">= 1.0.0 < 2.0.0"
+      "version_requirement": ">= 1.3.1 < 2.0.0"
     },
     {
       "name": "puppetlabs-stdlib",
