@@ -23,6 +23,8 @@
 #   Name of the token to retrieve from InfluxDB if not given $telegraf_token.
 # @param manage_telegraf
 #   Whether to manage installation and configuration of Telegraf.  Defaults to true.
+# @param telegraf_archive_location
+#   Alternate URL to download the telegraf archive.
 # @param manage_telegraf_token
 #   Whether to create and manage a Telegraf token with permissions to query buckets in the default organization.  Defaults to true.
 # @param use_ssl
@@ -48,6 +50,7 @@ class puppet_operational_dashboards (
       default => "/home/${facts['identity']['user']}/.influxdb_token"
   }),
   Boolean $manage_telegraf = true,
+  Optional[String] $telegraf_archive_location = undef,
   Boolean $manage_telegraf_token = true,
   Boolean $use_ssl = true,
 ) {

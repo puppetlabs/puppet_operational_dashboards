@@ -5,6 +5,8 @@
 #   class {'puppet_operational_dashboards::telegraf::agent':
 #     token => '<sensitive_telegraf_token>',
 #   }
+# @param telegraf_archive_location
+#   Set an alternate http URL to download the telegraf archive from.
 # @param token
 #   Telegraf token in Sensitive format.
 # @param influxdb_host
@@ -55,6 +57,7 @@
 #   Location on disk of an InfluxDB admin token.
 #   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
 class puppet_operational_dashboards::telegraf::agent (
+  Optional[String] $telegraf_archive_location = $puppet_operational_dashboards::telegraf_archive_location,
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
@@ -143,10 +146,12 @@ class puppet_operational_dashboards::telegraf::agent (
     default  => $version,
   }
 
+  # Use the archive URL from main class, or use the $version parameter to determine the archive link, stripping the '-1' suffix.
+  $telegraf_archive_location = pick($telegraf_archive_location, "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz")
+
   class { 'telegraf':
     ensure           => $version_ensure,
-    # Use the $version parameter to determine the archive link, stripping the '-1' suffix.
-    archive_location => "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz",
+    archive_location => $telegraf_archive_location,
     interval         => $collection_interval,
     hostname         => '',
     manage_service   => false,
