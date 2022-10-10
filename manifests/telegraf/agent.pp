@@ -75,8 +75,9 @@ class puppet_operational_dashboards::telegraf::agent (
   String $influxdb_org = $puppet_operational_dashboards::initial_org,
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $manage_ssl = true,
+  #TODO: move platform specific parameters to module data
   Boolean $manage_repo = $facts['os']['family'] ? {
-    'RedHat' => true,
+    /(RedHat|Debian)/ => true,
     default  => false,
   },
   Boolean $manage_archive = !$manage_repo,
