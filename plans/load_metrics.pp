@@ -30,6 +30,7 @@
 #   Directory to upload Telegraf configuration files to
 plan puppet_operational_dashboards::load_metrics (
   TargetSpec $targets,
+  String $metrics_dir,
   String $influxdb_org = 'puppetlabs',
   String $influxdb_bucket = 'puppet_data',
   Integer $influxdb_port = 8086,
@@ -39,12 +40,15 @@ plan puppet_operational_dashboards::load_metrics (
   String $conf_dir = '/tmp/telegraf',
   #TODO
   Enum['local', 'remote'] $telegraf_process = 'remote',
-  String $metrics_dir,
   String $dest_dir = '/tmp',
   #TODO
   Optional[String] $token = undef,
   String $cleanup_metrics = 'true',
 ) {
+  unless get_targets($targets).size == 1 {
+    fail_plan('This plan only accepts a single target.')
+  }
+
   $targets.apply_prep
 
   apply ($targets) {
@@ -102,14 +106,14 @@ plan puppet_operational_dashboards::load_metrics (
     ['postgres.conf', 'puppetdb.conf', 'puppetserver.conf', 'system_cpu.conf', 'system_memory.conf', 'system_procs.conf'].each |$script| {
       file { "${conf_dir}/telegraf.conf.d/${script}":
         ensure => file,
-        source => "puppet:///modules/puppet_operational_dashboards/scripts/${script}",
+        source => "puppet:///modules/puppet_operational_dashboards/plan_files/${script}",
       }
     }
   }
 
   upload_file($metrics_dir, $dest_dir, $targets)
   return run_script(
-    'puppet_operational_dashboards/scripts/import_archives.sh',
+    'puppet_operational_dashboards/plan_files/import_archives.sh',
     $targets,
     'arguments' => [$conf_dir, $dest_dir, $cleanup_metrics]
   )
