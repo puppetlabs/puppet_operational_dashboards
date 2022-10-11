@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 
 describe 'puppet_operational_dashboards' do
   let(:facts) { { os: { family: 'RedHat' } } }
