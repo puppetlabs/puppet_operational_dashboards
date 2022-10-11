@@ -59,12 +59,11 @@ Then, set either of the following depending on the installation method
 * [grafana::package_source](https://forge.puppet.com/modules/puppet/grafana/reference#package_source)
 * [grafana::archive_source](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#archive_source)
 
-#TODO: document these in the PR that generates the changelog and reference
 For Telegraf, set:
 
-* `puppet_operational_dashboards::telegraf::agent::manage_repo` to `false`
-* `puppet_operational_dashboards::telegraf::agent::manage_archive` to `true`
-* `puppet_operational_dashboards::telegraf::agent::archive_location` to an internal URL containing the archive file for Telegraf
+* [puppet_operational_dashboards::telegraf::agent::manage_repo](https://forge.puppet.com/modules/puppetlabs/puppet_operational_dashboards/reference#manage_repo) to `false`
+* [puppet_operational_dashboards::telegraf::agent::manage_archive](https://forge.puppet.com/modules/puppetlabs/puppet_operational_dashboards/reference#manage_archive) to `true`
+* [puppet_operational_dashboards::telegraf::agent::archive_location](https://forge.puppet.com/modules/puppetlabs/puppet_operational_dashboards/reference#archive_location) to an internal URL containing the archive file for Telegraf
 
 ### Beginning with puppet_operational_dashboards
 
