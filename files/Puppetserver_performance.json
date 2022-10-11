@@ -23,15 +23,16 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 36,
-  "iteration": 1655825047788,
+  "iteration": 1665085451362,
   "links": [
     {
       "icon": "external link",
       "includeVars": true,
       "keepTime": true,
       "tags": [
-        "PuppetServer"
+        "operational_dashboards"
       ],
+      "targetBlank": true,
       "type": "dashboards"
     }
   ],
@@ -3058,9 +3059,11 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 31,
+  "schemaVersion": 32,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "operational_dashboards"
+  ],
   "templating": {
     "list": [
       {

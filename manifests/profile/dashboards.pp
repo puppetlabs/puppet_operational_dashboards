@@ -143,7 +143,7 @@ class puppet_operational_dashboards::profile::dashboards (
     }
   }
 
-  ['Puppetserver', 'Puppetdb', 'Postgresql', 'Filesync'].each |$service| {
+  ['Puppetserver', 'Puppetdb', 'Postgresql', 'Filesync', 'System'].each |$service| {
     grafana_dashboard { "${service} Performance":
       grafana_user     => 'admin',
       grafana_password => $grafana_password.unwrap,

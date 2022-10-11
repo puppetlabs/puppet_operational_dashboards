@@ -22,16 +22,17 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 43,
-  "iteration": 1657147911886,
+  "id": 40,
+  "iteration": 1665085752700,
   "links": [
     {
       "icon": "external link",
       "includeVars": true,
       "keepTime": true,
       "tags": [
-        "archive"
+        "operational_dashboards"
       ],
+      "targetBlank": true,
       "type": "dashboards"
     }
   ],
@@ -1464,9 +1465,11 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 31,
+  "schemaVersion": 32,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "operational_dashboards"
+  ],
   "templating": {
     "list": [
       {

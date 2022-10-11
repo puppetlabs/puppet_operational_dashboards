@@ -22,15 +22,22 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 21,
-  "iteration": 1651513742359,
+  "id": 38,
+  "iteration": 1665085372129,
   "links": [
     {
+      "asDropdown": false,
       "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
       "tags": [
-        "telegraf"
+        "operational_dashboards"
       ],
-      "type": "dashboards"
+      "targetBlank": true,
+      "title": "",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
     }
   ],
   "liveNow": false,
@@ -2224,14 +2231,16 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 31,
+  "schemaVersion": 32,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "operational_dashboards"
+  ],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "influxdb_puppet",
           "value": "influxdb_puppet"
         },
