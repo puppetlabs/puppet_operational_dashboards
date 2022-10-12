@@ -2,14 +2,23 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v1.5.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.5.0) (2022-10-11)
+## [v1.6.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.6.0) (2022-10-12)
 
-[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.4.0...v1.5.0)
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.5.0...v1.6.0)
 
 ### Added
 
+- Add file sync client metrics to archive script [\#91](https://github.com/puppetlabs/puppet_operational_dashboards/pull/91) ([m0dular](https://github.com/m0dular))
 - \(SUP-3688\) Plans to provision and import metrics [\#87](https://github.com/puppetlabs/puppet_operational_dashboards/pull/87) ([m0dular](https://github.com/m0dular))
 - \(SUP-3565\) Support Telegraf archive install on EL [\#75](https://github.com/puppetlabs/puppet_operational_dashboards/pull/75) ([m0dular](https://github.com/m0dular))
+
+### Fixed
+
+- Check type of $targets parameter [\#92](https://github.com/puppetlabs/puppet_operational_dashboards/pull/92) ([m0dular](https://github.com/m0dular))
+
+## [v1.5.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.5.0) (2022-10-11)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.4.0...v1.5.0)
 
 ## [v1.4.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.4.0) (2022-09-30)
 

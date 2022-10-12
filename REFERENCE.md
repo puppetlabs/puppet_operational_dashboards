@@ -801,7 +801,7 @@ Data type: `String`
 
 Name of the InfluxDB bucket to configure and query. Defaults to 'puppet_data'
 
-Default value: `'puppet_data'`
+Default value: `'influxdb_puppet'`
 
 ##### <a name="influxdb_port"></a>`influxdb_port`
 
