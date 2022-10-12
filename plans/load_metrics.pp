@@ -32,7 +32,7 @@ plan puppet_operational_dashboards::load_metrics (
   TargetSpec $targets,
   String $metrics_dir,
   String $influxdb_org = 'puppetlabs',
-  String $influxdb_bucket = 'puppet_data',
+  String $influxdb_bucket = 'influxdb_puppet',
   Integer $influxdb_port = 8086,
   String $grafana_datasource = $influxdb_bucket,
   String $telegraf_token = 'puppet telegraf token',
