@@ -32,7 +32,7 @@ plan puppet_operational_dashboards::load_metrics (
   TargetSpec $targets,
   String $metrics_dir,
   String $influxdb_org = 'puppetlabs',
-  String $influxdb_bucket = 'puppet_data',
+  String $influxdb_bucket = 'influxdb_puppet',
   Integer $influxdb_port = 8086,
   String $grafana_datasource = $influxdb_bucket,
   String $telegraf_token = 'puppet telegraf token',
@@ -49,14 +49,16 @@ plan puppet_operational_dashboards::load_metrics (
     fail_plan('This plan only accepts a single target.')
   }
 
-  $targets.apply_prep
+  # Handle being passed a String or a Target
+  $target = get_targets($targets)[0].name
+  $target.apply_prep
 
-  apply ($targets) {
+  apply ($target) {
     $token_vars = {
       name     => $grafana_datasource,
-      token    => Sensitive(Deferred('influxdb::retrieve_token', ["http://${targets}:8086", $telegraf_token, $token_file])),
+      token    => Sensitive(Deferred('influxdb::retrieve_token', ["http://${target}:8086", $telegraf_token, $token_file])),
       database => $influxdb_bucket,
-      url      => "http://${targets}:8086",
+      url      => "http://${target}:8086",
     }
 
     influxdb_org { $influxdb_org:
@@ -89,8 +91,8 @@ plan puppet_operational_dashboards::load_metrics (
       bucket => $influxdb_bucket,
       org => $influxdb_org,
       port => $influxdb_port,
-      host => $targets,
-      token => Sensitive(Deferred('influxdb::retrieve_token', ["http://${targets}:8086", $telegraf_token, $token_file])),
+      host => $target,
+      token => Sensitive(Deferred('influxdb::retrieve_token', ["http://${target}:8086", $telegraf_token, $token_file])),
     }
 
     file { $conf_dir:
@@ -111,10 +113,10 @@ plan puppet_operational_dashboards::load_metrics (
     }
   }
 
-  upload_file($metrics_dir, $dest_dir, $targets)
+  upload_file($metrics_dir, $dest_dir, $target)
   return run_script(
     'puppet_operational_dashboards/plan_files/import_archives.sh',
-    $targets,
+    $target,
     'arguments' => [$conf_dir, $dest_dir, $cleanup_metrics]
   )
 }
