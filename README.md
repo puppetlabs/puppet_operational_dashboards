@@ -189,7 +189,7 @@ This dashboard is to inspect Puppet server performance and troubleshoot the `pe-
 This dashboard is to inspect File-sync related performance. Available Graphs:
 - Number of Fetch / Commits vs Lock wait / held
   - Average Lock Held Time
-  - Avergee Lock Wait Time
+  - Average Lock Wait Time
   - Number of Commits
   - Number of Fetches
 - File-Sync timing - Client Services
