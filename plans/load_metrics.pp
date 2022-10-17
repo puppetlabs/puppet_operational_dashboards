@@ -6,6 +6,8 @@
 # summary and parameters from the plan.
 # @summary A plan created with bolt plan new.
 # @param targets The targets to run on.
+# @param support_script_file
+#   Path to a support script tarball
 # @param metrics_dir
 #   Path to the 'metrics' directory from a PE support script
 # @param dest_dir
@@ -30,7 +32,8 @@
 #   Directory to upload Telegraf configuration files to
 plan puppet_operational_dashboards::load_metrics (
   TargetSpec $targets,
-  String $metrics_dir,
+  Optional[String] $metrics_dir = undef,
+  Optional[String] $support_script_file = undef,
   String $influxdb_org = 'puppetlabs',
   String $influxdb_bucket = 'influxdb_puppet',
   Integer $influxdb_port = 8086,
@@ -47,6 +50,13 @@ plan puppet_operational_dashboards::load_metrics (
 ) {
   unless get_targets($targets).size == 1 {
     fail_plan('This plan only accepts a single target.')
+  }
+
+  unless $metrics_dir or $support_script_file {
+    fail_plan('Must specify one of $metrics_dir or $support_script_file')
+  }
+  if $metrics_dir and $support_script_file {
+    fail_plan('$metrics_dir and $support_script_file are mutually exclusive')
   }
 
   # Handle being passed a String or a Target
@@ -113,10 +123,22 @@ plan puppet_operational_dashboards::load_metrics (
     }
   }
 
-  upload_file($metrics_dir, $dest_dir, $target)
-  return run_script(
-    'puppet_operational_dashboards/plan_files/import_archives.sh',
-    $target,
-    'arguments' => [$conf_dir, $dest_dir, $cleanup_metrics]
-  )
+  if $support_script_file {
+    $sup_script = split($support_script_file, '/')[-1]
+    upload_file($support_script_file, $dest_dir, $target)
+
+    return run_script(
+      'puppet_operational_dashboards/plan_files/import_archives.sh',
+      $target,
+      'arguments' => ['-t', $conf_dir, '-s', "${dest_dir}/${sup_script}", '-c', $cleanup_metrics]
+    )
+  }
+  else {
+    upload_file($metrics_dir, $dest_dir, $targets)
+    return run_script(
+      'puppet_operational_dashboards/plan_files/import_archives.sh',
+      $targets,
+      'arguments' => ['-t', $conf_dir, '-m', $dest_dir, '-c', $cleanup_metrics]
+    )
+  }
 }
