@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.7.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.7.0) (2022-10-18)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.6.0...v1.7.0)
+
+### Added
+
+- Accept a support script tarball for archive metrics ingest [\#96](https://github.com/puppetlabs/puppet_operational_dashboards/pull/96) ([m0dular](https://github.com/m0dular))
+
 ## [v1.6.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.6.0) (2022-10-12)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.5.0...v1.6.0)

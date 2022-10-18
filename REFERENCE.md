@@ -746,6 +746,7 @@ summary and parameters from the plan.
 The following parameters are available in the `puppet_operational_dashboards::load_metrics` plan:
 
 * [`targets`](#targets)
+* [`support_script_file`](#support_script_file)
 * [`metrics_dir`](#metrics_dir)
 * [`dest_dir`](#dest_dir)
 * [`cleanup_metrics`](#cleanup_metrics)
@@ -765,11 +766,21 @@ Data type: `TargetSpec`
 
 The targets to run on.
 
+##### <a name="support_script_file"></a>`support_script_file`
+
+Data type: `Optional[String]`
+
+Path to a support script tarball
+
+Default value: ``undef``
+
 ##### <a name="metrics_dir"></a>`metrics_dir`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 Path to the 'metrics' directory from a PE support script
+
+Default value: ``undef``
 
 ##### <a name="dest_dir"></a>`dest_dir`
 
