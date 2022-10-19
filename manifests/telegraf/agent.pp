@@ -32,6 +32,8 @@
 #   Defaults to the private key of the local machine for generating a CSR for the Puppet CA
 # @param ssl_ca_file
 #   CA certificate issued by the CA which signed the certificate specified by $ssl_cert_file.  Defaults to the Puppet CA.
+# @param insecure_skip_verify
+#   Skip verification of SSL certificate.  Defaults to true.
 # @param version
 #   Version of the Telegraf package to install. Defaults to '1.21.2'.
 # @param archive_location
@@ -75,6 +77,7 @@ class puppet_operational_dashboards::telegraf::agent (
   String $influxdb_org = $puppet_operational_dashboards::initial_org,
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $manage_ssl = true,
+  Boolean $insecure_skip_verify = true,
   #TODO: move platform specific parameters to module data
   Boolean $manage_repo = $facts['os']['family'] ? {
     /(RedHat|Debian)/ => true,
@@ -125,7 +128,7 @@ class puppet_operational_dashboards::telegraf::agent (
         {
           'tls_ca'               => '/etc/telegraf/ca.pem',
           'tls_cert'             => '/etc/telegraf/cert.pem',
-          'insecure_skip_verify' => true,
+          'insecure_skip_verify' => $insecure_skip_verify,
           'bucket'               => $influxdb_bucket,
           'organization'         => $influxdb_org,
           'token'                => '$INFLUX_TOKEN',
