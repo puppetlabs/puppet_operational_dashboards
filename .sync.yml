@@ -10,6 +10,12 @@ common:
 
 ".gitlab-ci.yml":
   delete: true
+.gitignore:
+  paths:
+    - ".modules/"
+    - "*_cache*"
+    - "*.log"
+    - ".rerun.json"
 appveyor.yml:
   delete: true
 .gitpod.Dockerfile:

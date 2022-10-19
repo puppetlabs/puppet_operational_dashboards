@@ -1,8 +1,12 @@
 ---
 name: puppet_operational_dashboards
 modules:
-- name: puppetlabs-stdlib
+- name: puppet-archive
 - name: puppetlabs-influxdb
 - name: puppet-grafana
 - name: puppet-telegraf
-- name: puppetlabs-apt
+- name: puppetlabs-inifile
+plans:
+- puppet_operational_dashboards::*
+tasks:
+- puppet_operational_dashboards::*
