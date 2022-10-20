@@ -1,0 +1,3 @@
+---
+puppet_operational_dashboards::telegraf::agent::manage_repo: false
+puppet_operational_dashboards::telegraf::agent::version: '1.22.2-1'

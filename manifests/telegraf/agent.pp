@@ -78,21 +78,13 @@ class puppet_operational_dashboards::telegraf::agent (
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $manage_ssl = true,
   Boolean $insecure_skip_verify = true,
-  #TODO: move platform specific parameters to module data
-  Boolean $manage_repo = $facts['os']['family'] ? {
-    /(RedHat|Debian)/ => true,
-    default  => false,
-  },
+  Boolean $manage_repo,
   Boolean $manage_archive = !$manage_repo,
   Boolean $manage_user = true,
   String  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
   String  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
   String  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-  # Only the latest telegraf package seems to be available for Ubuntu
-  String $version = $facts['os']['name'] ? {
-    'Ubuntu' => 'latest',
-    default  => '1.22.2-1',
-  },
+  String $version,
   # Use the $version parameter to determine the archive link, stripping the '-1' suffix.
   String $archive_location = "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz",
   String $archive_install_dir = '/opt/telegraf',
