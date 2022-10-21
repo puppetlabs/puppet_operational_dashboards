@@ -2230,7 +2230,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": true,
+  "refresh": "5m",
   "schemaVersion": 32,
   "style": "dark",
   "tags": [
