@@ -3058,7 +3058,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": true,
   "schemaVersion": 32,
   "style": "dark",
   "tags": [
