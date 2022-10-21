@@ -1364,7 +1364,7 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "5m",
   "schemaVersion": 32,
   "style": "dark",
   "tags": [
