@@ -1,10 +1,14 @@
 ---
 version: 5
 hierarchy:
+  - name: 'OS name'
+    data_hash: yaml_data
+    datadir: data
+    path: "os/name/%{facts.os.name}.yaml"
   - name: 'OS family'
     data_hash: yaml_data
     datadir: data
-    path: "os/%{facts.os.family}.yaml"
+    path: "os/family/%{facts.os.family}.yaml"
   - name: 'Common'
     data_hash: yaml_data
     datadir: data
