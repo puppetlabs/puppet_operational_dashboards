@@ -52,7 +52,7 @@ For InfluxDB, set:
 
 For Grafana, set:
 
-* [grafana::install_method](https://forge.puppet.com/modules/puppet/grafana/reference#install_method) to either `archive` or `package` depending on your preferred method.
+* [puppet_operational_dashboards::profile::dashboards::grafana_install](https://forge.puppet.com/modules/puppetlabs/puppet_operational_dashboards/reference#grafana_install) to either `archive` or `package` depending on your preferred method.
 
 Then, set either of the following depending on the installation method
 
