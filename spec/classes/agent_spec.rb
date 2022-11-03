@@ -19,13 +19,6 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
-
-      case os_facts[:os]['name']
-      when 'Ubuntu'
-        it { is_expected.to contain_class('telegraf').with(ensure: 'latest') }
-      else
-        it { is_expected.to contain_class('telegraf').with(ensure: '1.22.2-1') }
-      end
     end
   end
 
@@ -48,8 +41,8 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
 
     it {
       is_expected.to contain_class('telegraf').with(
-        ensure: '1.22.2-1',
-        archive_location: 'https://dl.influxdata.com/telegraf/releases/telegraf-1.22.2_linux_amd64.tar.gz',
+        ensure: '1.24.3-1',
+        archive_location: 'https://dl.influxdata.com/telegraf/releases/telegraf-1.24.3_linux_amd64.tar.gz',
         interval: '10m',
         manage_service: false,
         outputs: influxdb_v2,
