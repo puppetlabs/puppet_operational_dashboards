@@ -11,8 +11,6 @@ body = '[{"type":"read","name":"global_command-parse-time","mbean":"puppetlabs.p
    urls = <%= $urls %>
 [[json_v2]]
    measurement_name = 'puppetdb'
-   timestamp_key = 'timestamp'
-   timestamp_format = 'unix'
    [[json_v2.object]]
       path = '@this'
       tags = ["request_mbean"]
