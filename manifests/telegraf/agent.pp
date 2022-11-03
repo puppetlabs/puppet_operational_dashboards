@@ -35,10 +35,10 @@
 # @param insecure_skip_verify
 #   Skip verification of SSL certificate.  Defaults to true.
 # @param version
-#   Version of the Telegraf package to install. Defaults to '1.21.2'.
+#   Version of the Telegraf package to install. Defaults to '1.24.3'.
 # @param archive_location
 #   URL containing an archive source for the telegraf package.  Defaults to downloading $version from dl.influxdata.com
-#   Version of the Telegraf package to install. Defaults to '1.21.2'.
+#   Version of the Telegraf package to install. Defaults to '1.24.3'.
 # @param archive_install_dir
 #   Directory to install $archive_location to.  Defaults to /opt/telegraf.
 # @param collection_method
@@ -147,20 +147,8 @@ class puppet_operational_dashboards::telegraf::agent (
     notify => Service['telegraf'],
   }
 
-  if $facts['os']['name'] == 'Ubuntu' and $version != 'latest' {
-    notify { 'telegraf_ubuntu_warn':
-      message  => "Using 'latest' for Telegraf package on Ubuntu",
-      loglevel => 'warning',
-    }
-  }
-
-  $version_ensure = $facts['os']['name'] ? {
-    'Ubuntu' => 'latest',
-    default  => $version,
-  }
-
   class { 'telegraf':
-    ensure              => $version_ensure,
+    ensure              => $version,
     manage_repo         => $manage_repo,
     manage_archive      => $manage_archive,
     manage_user         => $manage_user,
