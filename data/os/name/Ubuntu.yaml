@@ -1,2 +1,1 @@
 ---
-puppet_operational_dashboards::telegraf::agent::version: 'latest'
