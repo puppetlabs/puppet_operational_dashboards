@@ -431,6 +431,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`ssl_cert_file`](#ssl_cert_file)
 * [`ssl_key_file`](#ssl_key_file)
 * [`ssl_ca_file`](#ssl_ca_file)
+* [`insecure_skip_verify`](#insecure_skip_verify)
 * [`version`](#version)
 * [`archive_location`](#archive_location)
 * [`archive_install_dir`](#archive_install_dir)
@@ -506,8 +507,6 @@ Data type: `Boolean`
 
 Whether to install Telegraf from a repository.  Defaults to true on the RedHat family of platforms.
 
-Default value: `$facts['os']['family']`
-
 ##### <a name="manage_archive"></a>`manage_archive`
 
 Data type: `Boolean`
@@ -549,20 +548,26 @@ CA certificate issued by the CA which signed the certificate specified by $ssl_c
 
 Default value: `'/etc/puppetlabs/puppet/ssl/certs/ca.pem'`
 
+##### <a name="insecure_skip_verify"></a>`insecure_skip_verify`
+
+Data type: `Boolean`
+
+Skip verification of SSL certificate.  Defaults to true.
+
+Default value: ``true``
+
 ##### <a name="version"></a>`version`
 
 Data type: `String`
 
-Version of the Telegraf package to install. Defaults to '1.21.2'.
-
-Default value: `$facts['os']['name']`
+Version of the Telegraf package to install. Defaults to '1.24.3'.
 
 ##### <a name="archive_location"></a>`archive_location`
 
 Data type: `String`
 
 URL containing an archive source for the telegraf package.  Defaults to downloading $version from dl.influxdata.com
-Version of the Telegraf package to install. Defaults to '1.21.2'.
+Version of the Telegraf package to install. Defaults to '1.24.3'.
 
 Default value: `"https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz"`
 
