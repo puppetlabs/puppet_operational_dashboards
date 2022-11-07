@@ -35,10 +35,10 @@
 # @param insecure_skip_verify
 #   Skip verification of SSL certificate.  Defaults to true.
 # @param version
-#   Version of the Telegraf package to install. Defaults to '1.21.2'.
+#   Version of the Telegraf package to install. Defaults to '1.24.3'.
 # @param archive_location
 #   URL containing an archive source for the telegraf package.  Defaults to downloading $version from dl.influxdata.com
-#   Version of the Telegraf package to install. Defaults to '1.21.2'.
+#   Version of the Telegraf package to install. Defaults to '1.24.3'.
 # @param archive_install_dir
 #   Directory to install $archive_location to.  Defaults to /opt/telegraf.
 # @param collection_method
@@ -68,6 +68,8 @@
 #   Location on disk of an InfluxDB admin token.
 #   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
 class puppet_operational_dashboards::telegraf::agent (
+  String $version,
+  Boolean $manage_repo,
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
@@ -78,13 +80,11 @@ class puppet_operational_dashboards::telegraf::agent (
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $manage_ssl = true,
   Boolean $insecure_skip_verify = true,
-  Boolean $manage_repo,
   Boolean $manage_archive = !$manage_repo,
   Boolean $manage_user = true,
   String  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
   String  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
   String  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-  String $version,
   # Use the $version parameter to determine the archive link, stripping the '-1' suffix.
   String $archive_location = "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz",
   String $archive_install_dir = '/opt/telegraf',
@@ -147,20 +147,8 @@ class puppet_operational_dashboards::telegraf::agent (
     notify => Service['telegraf'],
   }
 
-  if $facts['os']['name'] == 'Ubuntu' and $version != 'latest' {
-    notify { 'telegraf_ubuntu_warn':
-      message  => "Using 'latest' for Telegraf package on Ubuntu",
-      loglevel => 'warning',
-    }
-  }
-
-  $version_ensure = $facts['os']['name'] ? {
-    'Ubuntu' => 'latest',
-    default  => $version,
-  }
-
   class { 'telegraf':
-    ensure              => $version_ensure,
+    ensure              => $version,
     manage_repo         => $manage_repo,
     manage_archive      => $manage_archive,
     manage_user         => $manage_user,
