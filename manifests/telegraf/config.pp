@@ -12,9 +12,9 @@
 define puppet_operational_dashboards::telegraf::config (
   Array[String[1]] $hosts,
   Enum['https', 'http'] $protocol,
+  Integer[1] $http_timeout_seconds,
   String $service = $title,
   Enum['present', 'absent'] $ensure = 'present',
-  Integer[1] $http_timeout_seconds,
 ) {
   unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm'] {
     fail("Unknown service type ${service}")

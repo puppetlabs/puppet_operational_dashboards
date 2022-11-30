@@ -237,7 +237,7 @@ class puppet_operational_dashboards::telegraf::agent (
         hosts                => $puppetdb_hosts,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
-        require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
@@ -246,7 +246,7 @@ class puppet_operational_dashboards::telegraf::agent (
         hosts                => $puppetserver_hosts,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
-        require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
@@ -268,17 +268,19 @@ class puppet_operational_dashboards::telegraf::agent (
   elsif $collection_method == 'local' {
     if 'Puppet_enterprise::Profile::Puppetdb' in $profiles or 'puppetdb' in $local_services {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
-        hosts    => [$trusted['certname']],
-        protocol => $protocol,
-        require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        hosts                => [$trusted['certname']],
+        protocol             => $protocol,
+        http_timeout_seconds => $http_timeout_seconds,
+        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
     if 'Puppet_enterprise::Profile::Master' in $profiles or 'puppetserver' in $local_services {
       puppet_operational_dashboards::telegraf::config { 'puppetserver':
-        hosts    => [$trusted['certname']],
-        protocol => $protocol,
-        require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        hosts                => [$trusted['certname']],
+        protocol             => $protocol,
+        http_timeout_seconds => $http_timeout_seconds,
+        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
