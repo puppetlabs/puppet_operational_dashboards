@@ -67,6 +67,8 @@
 # @param influxdb_token_file
 #   Location on disk of an InfluxDB admin token.
 #   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
+# @param http_timeout_seconds
+#   Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
   Boolean $manage_repo,
@@ -97,6 +99,7 @@ class puppet_operational_dashboards::telegraf::agent (
 
   Array[String] $profiles = puppet_operational_dashboards::pe_profiles_on_host(),
   Array[String] $local_services = [],
+  Integer[1] $http_timeout_seconds = 5,
 ) {
   unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services].any |$service| { $service } {
     fail('No services detected on node.')
@@ -231,16 +234,18 @@ class puppet_operational_dashboards::telegraf::agent (
   if $collection_method == 'all' {
     unless $puppetdb_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
-        hosts    => $puppetdb_hosts,
-        protocol => $protocol,
+        hosts                => $puppetdb_hosts,
+        protocol             => $protocol,
+        http_timeout_seconds => $http_timeout_seconds,
         require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
     unless $puppetserver_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { 'puppetserver':
-        hosts    => $puppetserver_hosts,
-        protocol => $protocol,
+        hosts                => $puppetserver_hosts,
+        protocol             => $protocol,
+        http_timeout_seconds => $http_timeout_seconds,
         require  => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
