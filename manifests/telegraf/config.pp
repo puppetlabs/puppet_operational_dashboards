@@ -7,9 +7,12 @@
 #   Array of hosts running the service
 # @param ensure
 #   Whether the resource should be present or absent
+# @param http_timeout_seconds
+#   Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
 define puppet_operational_dashboards::telegraf::config (
   Array[String[1]] $hosts,
   Enum['https', 'http'] $protocol,
+  Integer[1] $http_timeout_seconds,
   String $service = $title,
   Enum['present', 'absent'] $ensure = 'present',
 ) {
@@ -29,7 +32,7 @@ define puppet_operational_dashboards::telegraf::config (
 
     $inputs = epp(
       "puppet_operational_dashboards/${service}_metrics.epp",
-      { urls     => $urls, protocol => $protocol }
+      { urls => $urls, protocol => $protocol, http_timeout_seconds => $http_timeout_seconds }
     ).influxdb::from_toml()
 
     telegraf::input { "${service}_metrics":

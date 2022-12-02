@@ -7,6 +7,7 @@ describe 'puppet_operational_dashboards::telegraf::config' do
     {
       ensure: 'present',
       protocol: 'https',
+      http_timeout_seconds: 5,
       hosts: ['localhost.foo.com'],
     }
   end
@@ -132,6 +133,7 @@ describe 'puppet_operational_dashboards::telegraf::config' do
       {
         ensure: 'present',
         protocol: 'http',
+        http_timeout_seconds: 5,
         hosts: ['localhost.foo.com'],
       }
     end
