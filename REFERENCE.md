@@ -444,6 +444,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`local_services`](#local_services)
 * [`token_name`](#token_name)
 * [`influxdb_token_file`](#influxdb_token_file)
+* [`http_timeout_seconds`](#http_timeout_seconds)
 
 ##### <a name="token"></a>`token`
 
@@ -659,6 +660,14 @@ This token is used in this class in a Deferred function call to retrieve a Teleg
 
 Default value: `$puppet_operational_dashboards::influxdb_token_file`
 
+##### <a name="http_timeout_seconds"></a>`http_timeout_seconds`
+
+Data type: `Integer[1]`
+
+Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
+
+Default value: `5`
+
 ## Defined types
 
 ### <a name="puppet_operational_dashboardstelegrafconfig"></a>`puppet_operational_dashboards::telegraf::config`
@@ -673,6 +682,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`protocol`](#protocol)
 * [`hosts`](#hosts)
 * [`ensure`](#ensure)
+* [`http_timeout_seconds`](#http_timeout_seconds)
 
 ##### <a name="service"></a>`service`
 
@@ -701,6 +711,12 @@ Data type: `Enum['present', 'absent']`
 Whether the resource should be present or absent
 
 Default value: `'present'`
+
+##### <a name="http_timeout_seconds"></a>`http_timeout_seconds`
+
+Data type: `Integer[1]`
+
+Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
 
 ## Functions
 
