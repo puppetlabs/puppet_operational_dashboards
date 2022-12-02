@@ -6,17 +6,6 @@ All notable changes to this project will be documented in this file. The format 
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.7.0...v1.8.0)
 
-### Added
-
-- \(SUP-3761\) Add thread and file descriptor panels [\#106](https://github.com/puppetlabs/puppet_operational_dashboards/pull/106) ([m0dular](https://github.com/m0dular))
-- \(SUP-3735\) have dashboards autorefresh [\#103](https://github.com/puppetlabs/puppet_operational_dashboards/pull/103) ([MartyEwings](https://github.com/MartyEwings))
-- mv telegraf agent os-specific params to hiera data [\#101](https://github.com/puppetlabs/puppet_operational_dashboards/pull/101) ([zoojar](https://github.com/zoojar))
-- added insecure\_skip\_verify param [\#100](https://github.com/puppetlabs/puppet_operational_dashboards/pull/100) ([zoojar](https://github.com/zoojar))
-
-### Fixed
-
-- \(SUP-3764\) Fix compatability with Telegraf 1.24.3 [\#109](https://github.com/puppetlabs/puppet_operational_dashboards/pull/109) ([m0dular](https://github.com/m0dular))
-
 ## [v1.7.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.7.0) (2022-10-18)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.6.0...v1.7.0)
