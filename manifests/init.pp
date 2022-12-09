@@ -67,6 +67,7 @@ class puppet_operational_dashboards (
     influxdb_org { $initial_org:
       ensure     => present,
       use_ssl    => $use_ssl,
+      port        => $influxdb_port,
       token      => $influxdb_token,
       require    => Class['influxdb'],
       token_file => $influxdb_token_file,
@@ -74,6 +75,7 @@ class puppet_operational_dashboards (
     influxdb_bucket { $initial_bucket:
       ensure     => present,
       use_ssl    => $use_ssl,
+      port        => $influxdb_port,
       org        => $initial_org,
       token      => $influxdb_token,
       require    => [Class['influxdb'], Influxdb_org[$initial_org]],
@@ -92,6 +94,7 @@ class puppet_operational_dashboards (
     influxdb_auth { $telegraf_token_name:
       ensure      => present,
       use_ssl     => $use_ssl,
+      port        => $influxdb_port,
       org         => $initial_org,
       token       => $influxdb_token,
       token_file  => $influxdb_token_file,
