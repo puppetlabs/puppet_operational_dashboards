@@ -12,6 +12,8 @@
 #   FQDN of the InfluxDB host.  Defaults to a the value of influxdb::host, or $facts['fqdn'] if unset
 # @param influxdb_port
 #   Port used by the InfluxDB service.  Defaults to the value of influxdb::port, or 8086 if unset
+# @param influxdb_version
+#   If managing InfluxDB, allows selecting a version outside the default in the influsdb module.
 # @param initial_org
 #   Name of the InfluxDB organization to configure. Defaults to the value of influxdb::initial_org, or 'puppetlabs' if unset
 # @param initial_bucket
@@ -37,6 +39,7 @@ class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
   Integer $influxdb_port = lookup(influxdb::port, undef, undef, 8086),
+  String $influxdb_version = lookup(influxdb::version, undef, undef, '2.1.1'),
   String $initial_org = lookup(influxdb::initial_org, undef, undef, 'puppetlabs'),
   String $initial_bucket = lookup(influxdb::initial_bucket, undef, undef, 'puppet_data'),
 
@@ -59,6 +62,7 @@ class puppet_operational_dashboards (
     class { 'influxdb':
       host        => $influxdb_host,
       port        => $influxdb_port,
+      version     => $influxdb_version,
       use_ssl     => $use_ssl,
       initial_org => $initial_org,
       token_file  => $influxdb_token_file,
@@ -67,7 +71,7 @@ class puppet_operational_dashboards (
     influxdb_org { $initial_org:
       ensure     => present,
       use_ssl    => $use_ssl,
-      port        => $influxdb_port,
+      port       => $influxdb_port,
       token      => $influxdb_token,
       require    => Class['influxdb'],
       token_file => $influxdb_token_file,
@@ -75,7 +79,7 @@ class puppet_operational_dashboards (
     influxdb_bucket { $initial_bucket:
       ensure     => present,
       use_ssl    => $use_ssl,
-      port        => $influxdb_port,
+      port       => $influxdb_port,
       org        => $initial_org,
       token      => $influxdb_token,
       require    => [Class['influxdb'], Influxdb_org[$initial_org]],
