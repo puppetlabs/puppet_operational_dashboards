@@ -718,57 +718,6 @@
               "value": "/$url/"
             }
           ]
-        },
-        {
-          "alias": "$tag_url-client-update",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "I",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "average-client-status-update-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
         }
       ],
       "timeFrom": null,
