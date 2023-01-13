@@ -234,7 +234,7 @@ class puppet_operational_dashboards::telegraf::agent (
   if $collection_method == 'all' {
     unless $puppetdb_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
-        hosts                => $puppetdb_hosts,
+        hosts                => $puppetdb_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
@@ -243,7 +243,7 @@ class puppet_operational_dashboards::telegraf::agent (
 
     unless $puppetserver_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { 'puppetserver':
-        hosts                => $puppetserver_hosts,
+        hosts                => $puppetserver_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
@@ -251,7 +251,7 @@ class puppet_operational_dashboards::telegraf::agent (
     }
 
     unless $postgres_hosts.empty() {
-      $postgres_hosts.each |$pg_host| {
+      $postgres_hosts.sort.each |$pg_host| {
         $inputs = epp(
           'puppet_operational_dashboards/postgres.epp',
           { certname     => $pg_host }
