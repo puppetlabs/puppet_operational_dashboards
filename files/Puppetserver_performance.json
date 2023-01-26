@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 36,
-  "iteration": 1667252496882,
+  "id": 1,
+  "iteration": 1674760945898,
   "links": [
     {
       "icon": "external link",
@@ -1416,6 +1416,110 @@
               "value": "/^$url$/"
             }
           ]
+        },
+        {
+          "alias": "$tag_url-gc-old_gen",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Old_Generation_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-young_gen",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Young_Generation_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
         }
       ],
       "title": "Garbage Collection Times",
@@ -1582,6 +1686,118 @@
               {
                 "params": [
                   "gc-stats_PS_Scavenge_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-old_gen",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Old_Generation_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-young_gen",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Young_Generation_count"
                 ],
                 "type": "field"
               },
