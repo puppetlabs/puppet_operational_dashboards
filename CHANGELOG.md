@@ -9,6 +9,13 @@ All notable changes to this project will be documented in this file. The format 
 ### Added
 
 - timeouts for http inputs are now configurable [\#114](https://github.com/puppetlabs/puppet_operational_dashboards/pull/114) ([SimonHoenscheid](https://github.com/SimonHoenscheid))
+
+## [v1.8.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.8.0) (2022-11-07)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.7.0...v1.8.0)
+
+### Added
+
 - \(SUP-3761\) Add thread and file descriptor panels [\#106](https://github.com/puppetlabs/puppet_operational_dashboards/pull/106) ([m0dular](https://github.com/m0dular))
 - \(SUP-3735\) have dashboards autorefresh [\#103](https://github.com/puppetlabs/puppet_operational_dashboards/pull/103) ([MartyEwings](https://github.com/MartyEwings))
 - mv telegraf agent os-specific params to hiera data [\#101](https://github.com/puppetlabs/puppet_operational_dashboards/pull/101) ([zoojar](https://github.com/zoojar))
@@ -17,10 +24,6 @@ All notable changes to this project will be documented in this file. The format 
 ### Fixed
 
 - \(SUP-3764\) Fix compatability with Telegraf 1.24.3 [\#109](https://github.com/puppetlabs/puppet_operational_dashboards/pull/109) ([m0dular](https://github.com/m0dular))
-
-## [v1.8.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.8.0) (2022-11-07)
-
-[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.7.0...v1.8.0)
 
 ## [v1.7.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.7.0) (2022-10-18)
 
@@ -37,8 +40,6 @@ All notable changes to this project will be documented in this file. The format 
 ### Added
 
 - Add file sync client metrics to archive script [\#91](https://github.com/puppetlabs/puppet_operational_dashboards/pull/91) ([m0dular](https://github.com/m0dular))
-- \(SUP-3688\) Plans to provision and import metrics [\#87](https://github.com/puppetlabs/puppet_operational_dashboards/pull/87) ([m0dular](https://github.com/m0dular))
-- \(SUP-3565\) Support Telegraf archive install on EL [\#75](https://github.com/puppetlabs/puppet_operational_dashboards/pull/75) ([m0dular](https://github.com/m0dular))
 
 ### Fixed
 
@@ -47,6 +48,11 @@ All notable changes to this project will be documented in this file. The format 
 ## [v1.5.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.5.0) (2022-10-11)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.4.0...v1.5.0)
+
+### Added
+
+- \(SUP-3688\) Plans to provision and import metrics [\#87](https://github.com/puppetlabs/puppet_operational_dashboards/pull/87) ([m0dular](https://github.com/m0dular))
+- \(SUP-3565\) Support Telegraf archive install on EL [\#75](https://github.com/puppetlabs/puppet_operational_dashboards/pull/75) ([m0dular](https://github.com/m0dular))
 
 ## [v1.4.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.4.0) (2022-09-30)
 
