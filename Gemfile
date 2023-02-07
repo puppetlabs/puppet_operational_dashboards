@@ -34,7 +34,8 @@ group :development do
   gem "rubocop-performance", '= 1.9.1',                require: false
   gem "rubocop-rspec", '= 2.0.1',                      require: false
   gem "rb-readline", '= 0.5.5',                        require: false, platforms: [:mswin, :mingw, :x64_mingw]
-  gem "github_changelog_generator",                    require: false
+  gem "github_changelog_generator", '= 1.16.4',        require: false
+  gem "concurrent-ruby", '= 1.1.10',                   require: false
   gem "toml-rb",                                       require: false
   gem "octokit", '= 4.21.0',                           require: false
 end
