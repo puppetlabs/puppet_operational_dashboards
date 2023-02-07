@@ -7,24 +7,24 @@
 ### Classes
 
 * [`puppet_operational_dashboards`](#puppet_operational_dashboards): Installs Telegraf, InfluxDB, and Grafana to collect and display Puppet metrics
-* [`puppet_operational_dashboards::enterprise_infrastructure`](#puppet_operational_dashboardsenterprise_infrastructure): Installs dependancies for Operational dashboards on PE infrastructure components
-* [`puppet_operational_dashboards::profile::dashboards`](#puppet_operational_dashboardsprofiledashboards): Installs Grafana and several dashboards to display Puppet metrics.  Included via the base class.
-* [`puppet_operational_dashboards::profile::postgres_access`](#puppet_operational_dashboardsprofilepostgres_access): Allows Telegraf to connect and collect metrics from postgres nodes
-* [`puppet_operational_dashboards::telegraf::agent`](#puppet_operational_dashboardstelegrafagent): Installs and configures Telegraf to query hosts in a Puppet infrastructure. Included by the base class
+* [`puppet_operational_dashboards::enterprise_infrastructure`](#puppet_operational_dashboards--enterprise_infrastructure): Installs dependancies for Operational dashboards on PE infrastructure components
+* [`puppet_operational_dashboards::profile::dashboards`](#puppet_operational_dashboards--profile--dashboards): Installs Grafana and several dashboards to display Puppet metrics.  Included via the base class.
+* [`puppet_operational_dashboards::profile::postgres_access`](#puppet_operational_dashboards--profile--postgres_access): Allows Telegraf to connect and collect metrics from postgres nodes
+* [`puppet_operational_dashboards::telegraf::agent`](#puppet_operational_dashboards--telegraf--agent): Installs and configures Telegraf to query hosts in a Puppet infrastructure. Included by the base class
 
 ### Defined types
 
-* [`puppet_operational_dashboards::telegraf::config`](#puppet_operational_dashboardstelegrafconfig): Defined type to create Telegraf configurations for a given service
+* [`puppet_operational_dashboards::telegraf::config`](#puppet_operational_dashboards--telegraf--config): Defined type to create Telegraf configurations for a given service
 
 ### Functions
 
-* [`puppet_operational_dashboards::hosts_with_profile`](#puppet_operational_dashboardshosts_with_profile): function used to determine hosts with a profile class
-* [`puppet_operational_dashboards::pe_profiles_on_host`](#puppet_operational_dashboardspe_profiles_on_host): function used to determine hosts with a Puppet Enterprise profile
+* [`puppet_operational_dashboards::hosts_with_profile`](#puppet_operational_dashboards--hosts_with_profile): function used to determine hosts with a profile class
+* [`puppet_operational_dashboards::pe_profiles_on_host`](#puppet_operational_dashboards--pe_profiles_on_host): function used to determine hosts with a Puppet Enterprise profile
 
 ### Plans
 
-* [`puppet_operational_dashboards::load_metrics`](#puppet_operational_dashboardsload_metrics): A plan created with bolt plan new.
-* [`puppet_operational_dashboards::provision_dashboard`](#puppet_operational_dashboardsprovision_dashboard): A plan to provision a non-SSL operational dashboards node
+* [`puppet_operational_dashboards::load_metrics`](#puppet_operational_dashboards--load_metrics): A plan created with bolt plan new.
+* [`puppet_operational_dashboards::provision_dashboard`](#puppet_operational_dashboards--provision_dashboard): A plan to provision a non-SSL operational dashboards node
 
 ## Classes
 
@@ -49,28 +49,28 @@ class {'puppet_operational_dashboards':
 
 The following parameters are available in the `puppet_operational_dashboards` class:
 
-* [`manage_influxdb`](#manage_influxdb)
-* [`influxdb_host`](#influxdb_host)
-* [`influxdb_port`](#influxdb_port)
-* [`initial_org`](#initial_org)
-* [`initial_bucket`](#initial_bucket)
-* [`influxdb_token`](#influxdb_token)
-* [`telegraf_token_name`](#telegraf_token_name)
-* [`manage_telegraf`](#manage_telegraf)
-* [`manage_telegraf_token`](#manage_telegraf_token)
-* [`use_ssl`](#use_ssl)
-* [`influxdb_token_file`](#influxdb_token_file)
-* [`telegraf_token`](#telegraf_token)
+* [`manage_influxdb`](#-puppet_operational_dashboards--manage_influxdb)
+* [`influxdb_host`](#-puppet_operational_dashboards--influxdb_host)
+* [`influxdb_port`](#-puppet_operational_dashboards--influxdb_port)
+* [`initial_org`](#-puppet_operational_dashboards--initial_org)
+* [`initial_bucket`](#-puppet_operational_dashboards--initial_bucket)
+* [`influxdb_token`](#-puppet_operational_dashboards--influxdb_token)
+* [`telegraf_token_name`](#-puppet_operational_dashboards--telegraf_token_name)
+* [`manage_telegraf`](#-puppet_operational_dashboards--manage_telegraf)
+* [`manage_telegraf_token`](#-puppet_operational_dashboards--manage_telegraf_token)
+* [`use_ssl`](#-puppet_operational_dashboards--use_ssl)
+* [`influxdb_token_file`](#-puppet_operational_dashboards--influxdb_token_file)
+* [`telegraf_token`](#-puppet_operational_dashboards--telegraf_token)
 
-##### <a name="manage_influxdb"></a>`manage_influxdb`
+##### <a name="-puppet_operational_dashboards--manage_influxdb"></a>`manage_influxdb`
 
 Data type: `Boolean`
 
 Whether to manage installation and configuration of InfluxDB.  Defaults to true
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="influxdb_host"></a>`influxdb_host`
+##### <a name="-puppet_operational_dashboards--influxdb_host"></a>`influxdb_host`
 
 Data type: `String`
 
@@ -78,7 +78,7 @@ FQDN of the InfluxDB host.  Defaults to a the value of influxdb::host, or $facts
 
 Default value: `lookup(influxdb::host, undef, undef, $facts['networking']['fqdn'])`
 
-##### <a name="influxdb_port"></a>`influxdb_port`
+##### <a name="-puppet_operational_dashboards--influxdb_port"></a>`influxdb_port`
 
 Data type: `Integer`
 
@@ -86,7 +86,7 @@ Port used by the InfluxDB service.  Defaults to the value of influxdb::port, or 
 
 Default value: `lookup(influxdb::port, undef, undef, 8086)`
 
-##### <a name="initial_org"></a>`initial_org`
+##### <a name="-puppet_operational_dashboards--initial_org"></a>`initial_org`
 
 Data type: `String`
 
@@ -94,7 +94,7 @@ Name of the InfluxDB organization to configure. Defaults to the value of influxd
 
 Default value: `lookup(influxdb::initial_org, undef, undef, 'puppetlabs')`
 
-##### <a name="initial_bucket"></a>`initial_bucket`
+##### <a name="-puppet_operational_dashboards--initial_bucket"></a>`initial_bucket`
 
 Data type: `String`
 
@@ -102,7 +102,7 @@ Name of the InfluxDB bucket to configure and query. Defaults to the value of inf
 
 Default value: `lookup(influxdb::initial_bucket, undef, undef, 'puppet_data')`
 
-##### <a name="influxdb_token"></a>`influxdb_token`
+##### <a name="-puppet_operational_dashboards--influxdb_token"></a>`influxdb_token`
 
 Data type: `Optional[Sensitive[String]]`
 
@@ -111,7 +111,7 @@ See the puppetlabs/influxdb documentation for more information about this token.
 
 Default value: `lookup(influxdb::token, undef, undef, undef)`
 
-##### <a name="telegraf_token_name"></a>`telegraf_token_name`
+##### <a name="-puppet_operational_dashboards--telegraf_token_name"></a>`telegraf_token_name`
 
 Data type: `String`
 
@@ -119,31 +119,31 @@ Name of the token to retrieve from InfluxDB if not given $telegraf_token.
 
 Default value: `'puppet telegraf token'`
 
-##### <a name="manage_telegraf"></a>`manage_telegraf`
+##### <a name="-puppet_operational_dashboards--manage_telegraf"></a>`manage_telegraf`
 
 Data type: `Boolean`
 
 Whether to manage installation and configuration of Telegraf.  Defaults to true.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="manage_telegraf_token"></a>`manage_telegraf_token`
+##### <a name="-puppet_operational_dashboards--manage_telegraf_token"></a>`manage_telegraf_token`
 
 Data type: `Boolean`
 
 Whether to create and manage a Telegraf token with permissions to query buckets in the default organization.  Defaults to true.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="use_ssl"></a>`use_ssl`
+##### <a name="-puppet_operational_dashboards--use_ssl"></a>`use_ssl`
 
 Data type: `Boolean`
 
 Whether to use SSL when querying InfluxDB.  Defaults to true
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="influxdb_token_file"></a>`influxdb_token_file`
+##### <a name="-puppet_operational_dashboards--influxdb_token_file"></a>`influxdb_token_file`
 
 Data type: `String`
 
@@ -151,20 +151,24 @@ Location on disk of an InfluxDB admin token.
 This file is written to by the influxdb class during installation and read by the type and providers,
 as well Deferred functions in this module.
 
-Default value: `lookup(influxdb::token_file, undef, undef, $facts['identity']['user'] ? {
+Default value:
+
+```puppet
+lookup(influxdb::token_file, undef, undef, $facts['identity']['user'] ? {
       'root'  => '/root/.influxdb_token',
       default => "/home/${facts['identity']['user']}/.influxdb_token"
-  })`
+  })
+```
 
-##### <a name="telegraf_token"></a>`telegraf_token`
+##### <a name="-puppet_operational_dashboards--telegraf_token"></a>`telegraf_token`
 
 Data type: `Optional[Sensitive[String]]`
 
 Telegraf token in Sensitive format.
 
-Default value: ``undef``
+Default value: `undef`
 
-### <a name="puppet_operational_dashboardsenterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
+### <a name="puppet_operational_dashboards--enterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
 
 When applied to an appropriate node group this class applies the toml gem and database access
 On appropriate infrastructure nodes in PE
@@ -181,9 +185,9 @@ include puppet_operational_dashboards::enterprise_infrastructure
 
 The following parameters are available in the `puppet_operational_dashboards::enterprise_infrastructure` class:
 
-* [`profiles`](#profiles)
+* [`profiles`](#-puppet_operational_dashboards--enterprise_infrastructure--profiles)
 
-##### <a name="profiles"></a>`profiles`
+##### <a name="-puppet_operational_dashboards--enterprise_infrastructure--profiles"></a>`profiles`
 
 Data type: `Array[String]`
 
@@ -191,7 +195,7 @@ Array of PE profiles on the node with this class applied.
 
 Default value: `puppet_operational_dashboards::pe_profiles_on_host()`
 
-### <a name="puppet_operational_dashboardsprofiledashboards"></a>`puppet_operational_dashboards::profile::dashboards`
+### <a name="puppet_operational_dashboards--profile--dashboards"></a>`puppet_operational_dashboards::profile::dashboards`
 
 Installs Grafana and several dashboards to display Puppet metrics.  Included via the base class.
 
@@ -214,25 +218,25 @@ class {'puppet_operational_dashboards::profile::dashboards':
 
 The following parameters are available in the `puppet_operational_dashboards::profile::dashboards` class:
 
-* [`token`](#token)
-* [`grafana_host`](#grafana_host)
-* [`grafana_port`](#grafana_port)
-* [`grafana_timeout`](#grafana_timeout)
-* [`grafana_password`](#grafana_password)
-* [`grafana_version`](#grafana_version)
-* [`grafana_datasource`](#grafana_datasource)
-* [`grafana_install`](#grafana_install)
-* [`use_ssl`](#use_ssl)
-* [`manage_grafana`](#manage_grafana)
-* [`manage_grafana_repo`](#manage_grafana_repo)
-* [`influxdb_host`](#influxdb_host)
-* [`influxdb_port`](#influxdb_port)
-* [`influxdb_bucket`](#influxdb_bucket)
-* [`telegraf_token_name`](#telegraf_token_name)
-* [`influxdb_token_file`](#influxdb_token_file)
-* [`provisioning_datasource_file`](#provisioning_datasource_file)
+* [`token`](#-puppet_operational_dashboards--profile--dashboards--token)
+* [`grafana_host`](#-puppet_operational_dashboards--profile--dashboards--grafana_host)
+* [`grafana_port`](#-puppet_operational_dashboards--profile--dashboards--grafana_port)
+* [`grafana_timeout`](#-puppet_operational_dashboards--profile--dashboards--grafana_timeout)
+* [`grafana_password`](#-puppet_operational_dashboards--profile--dashboards--grafana_password)
+* [`grafana_version`](#-puppet_operational_dashboards--profile--dashboards--grafana_version)
+* [`grafana_datasource`](#-puppet_operational_dashboards--profile--dashboards--grafana_datasource)
+* [`grafana_install`](#-puppet_operational_dashboards--profile--dashboards--grafana_install)
+* [`use_ssl`](#-puppet_operational_dashboards--profile--dashboards--use_ssl)
+* [`manage_grafana`](#-puppet_operational_dashboards--profile--dashboards--manage_grafana)
+* [`manage_grafana_repo`](#-puppet_operational_dashboards--profile--dashboards--manage_grafana_repo)
+* [`influxdb_host`](#-puppet_operational_dashboards--profile--dashboards--influxdb_host)
+* [`influxdb_port`](#-puppet_operational_dashboards--profile--dashboards--influxdb_port)
+* [`influxdb_bucket`](#-puppet_operational_dashboards--profile--dashboards--influxdb_bucket)
+* [`telegraf_token_name`](#-puppet_operational_dashboards--profile--dashboards--telegraf_token_name)
+* [`influxdb_token_file`](#-puppet_operational_dashboards--profile--dashboards--influxdb_token_file)
+* [`provisioning_datasource_file`](#-puppet_operational_dashboards--profile--dashboards--provisioning_datasource_file)
 
-##### <a name="token"></a>`token`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--token"></a>`token`
 
 Data type: `Optional[Sensitive[String]]`
 
@@ -240,7 +244,7 @@ Token in Sensitive format used to query InfluxDB. The token must grant priviledg
 
 Default value: `$puppet_operational_dashboards::telegraf_token`
 
-##### <a name="grafana_host"></a>`grafana_host`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_host"></a>`grafana_host`
 
 Data type: `String`
 
@@ -248,7 +252,7 @@ FQDN of the Grafana host.  Defaults to the FQDN of the agent receiving the catal
 
 Default value: `$facts['networking']['fqdn']`
 
-##### <a name="grafana_port"></a>`grafana_port`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_port"></a>`grafana_port`
 
 Data type: `Integer`
 
@@ -256,7 +260,7 @@ Port used by the Grafana service.  Defaults to 3000
 
 Default value: `3000`
 
-##### <a name="grafana_timeout"></a>`grafana_timeout`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_timeout"></a>`grafana_timeout`
 
 Data type: `Integer`
 
@@ -264,7 +268,7 @@ How long to wait for the Grafana service to start.  Defaults to 10 seconds.
 
 Default value: `10`
 
-##### <a name="grafana_password"></a>`grafana_password`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_password"></a>`grafana_password`
 
 Data type: `Sensitive[String]`
 
@@ -272,7 +276,7 @@ Grafana admin password in Sensitive format.  Defaults to 'admin'
 
 Default value: `Sensitive('admin')`
 
-##### <a name="grafana_version"></a>`grafana_version`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_version"></a>`grafana_version`
 
 Data type: `String`
 
@@ -280,7 +284,7 @@ Version of the Grafana package to install.  Defaults to '8.2.2'
 
 Default value: `'8.2.7'`
 
-##### <a name="grafana_datasource"></a>`grafana_datasource`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_datasource"></a>`grafana_datasource`
 
 Data type: `String`
 
@@ -288,15 +292,21 @@ Name to use for the Grafana datasource.  Defaults to 'influxdb_puppet'
 
 Default value: `'influxdb_puppet'`
 
-##### <a name="grafana_install"></a>`grafana_install`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_install"></a>`grafana_install`
 
 Data type: `String`
 
 Method to use for installing Grafana.  Defaults to using a repository on EL and Debian/Ubuntu, and package for other platforms
 
-Default value: `$facts['os']['family']`
+Default value:
 
-##### <a name="use_ssl"></a>`use_ssl`
+```puppet
+$facts['os']['family'] ? {
+    /(RedHat|Debian)/ => 'repo',
+    default           => 'package'
+```
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--use_ssl"></a>`use_ssl`
 
 Data type: `Boolean`
 
@@ -304,23 +314,23 @@ Whether to use SSL when querying InfluxDB.  Defaults to true
 
 Default value: `$puppet_operational_dashboards::use_ssl`
 
-##### <a name="manage_grafana"></a>`manage_grafana`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--manage_grafana"></a>`manage_grafana`
 
 Data type: `Boolean`
 
 Whether to manage installation and configuration of Grafana.  Defaults to true
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="manage_grafana_repo"></a>`manage_grafana_repo`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--manage_grafana_repo"></a>`manage_grafana_repo`
 
 Data type: `Boolean`
 
 Whether to manage the Grafana repository definition.  Defaults to true.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="influxdb_host"></a>`influxdb_host`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--influxdb_host"></a>`influxdb_host`
 
 Data type: `String`
 
@@ -329,7 +339,7 @@ which looks up the value of influxdb::host with a default of $facts['fqdn']
 
 Default value: `$puppet_operational_dashboards::influxdb_host`
 
-##### <a name="influxdb_port"></a>`influxdb_port`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--influxdb_port"></a>`influxdb_port`
 
 Data type: `Integer`
 
@@ -338,7 +348,7 @@ which looks up the value of influxdb::port with a default of 8086
 
 Default value: `$puppet_operational_dashboards::influxdb_port`
 
-##### <a name="influxdb_bucket"></a>`influxdb_bucket`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--influxdb_bucket"></a>`influxdb_bucket`
 
 Data type: `String`
 
@@ -347,7 +357,7 @@ which looks up the value of influxdb::initial_bucket with a default of 'puppet_d
 
 Default value: `$puppet_operational_dashboards::initial_bucket`
 
-##### <a name="telegraf_token_name"></a>`telegraf_token_name`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--telegraf_token_name"></a>`telegraf_token_name`
 
 Data type: `String`
 
@@ -355,7 +365,7 @@ Name of the token to retrieve from InfluxDB if not given $token
 
 Default value: `$puppet_operational_dashboards::telegraf_token_name`
 
-##### <a name="influxdb_token_file"></a>`influxdb_token_file`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--influxdb_token_file"></a>`influxdb_token_file`
 
 Data type: `String`
 
@@ -364,7 +374,7 @@ This token is used in this class in a Deferred function call to retrieve a Teleg
 
 Default value: `$puppet_operational_dashboards::influxdb_token_file`
 
-##### <a name="provisioning_datasource_file"></a>`provisioning_datasource_file`
+##### <a name="-puppet_operational_dashboards--profile--dashboards--provisioning_datasource_file"></a>`provisioning_datasource_file`
 
 Data type: `String`
 
@@ -372,7 +382,7 @@ Location on disk to store datasource definition
 
 Default value: `'/etc/grafana/provisioning/datasources/influxdb.yaml'`
 
-### <a name="puppet_operational_dashboardsprofilepostgres_access"></a>`puppet_operational_dashboards::profile::postgres_access`
+### <a name="puppet_operational_dashboards--profile--postgres_access"></a>`puppet_operational_dashboards::profile::postgres_access`
 
 Allows Telegraf to connect and collect metrics from postgres nodes
 
@@ -388,9 +398,9 @@ include puppet_operational_dashboards::profile::postgres_access
 
 The following parameters are available in the `puppet_operational_dashboards::profile::postgres_access` class:
 
-* [`telegraf_hosts`](#telegraf_hosts)
+* [`telegraf_hosts`](#-puppet_operational_dashboards--profile--postgres_access--telegraf_hosts)
 
-##### <a name="telegraf_hosts"></a>`telegraf_hosts`
+##### <a name="-puppet_operational_dashboards--profile--postgres_access--telegraf_hosts"></a>`telegraf_hosts`
 
 Data type: `Array`
 
@@ -398,7 +408,7 @@ A list of FQDNs running Telegraf to allow access to
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_operational_dashboards::Telegraf::Agent')`
 
-### <a name="puppet_operational_dashboardstelegrafagent"></a>`puppet_operational_dashboards::telegraf::agent`
+### <a name="puppet_operational_dashboards--telegraf--agent"></a>`puppet_operational_dashboards::telegraf::agent`
 
 Installs and configures Telegraf to query hosts in a Puppet infrastructure. Included by the base class
 
@@ -418,35 +428,35 @@ class {'puppet_operational_dashboards::telegraf::agent':
 
 The following parameters are available in the `puppet_operational_dashboards::telegraf::agent` class:
 
-* [`token`](#token)
-* [`influxdb_host`](#influxdb_host)
-* [`influxdb_port`](#influxdb_port)
-* [`influxdb_org`](#influxdb_org)
-* [`influxdb_bucket`](#influxdb_bucket)
-* [`use_ssl`](#use_ssl)
-* [`manage_ssl`](#manage_ssl)
-* [`manage_repo`](#manage_repo)
-* [`manage_archive`](#manage_archive)
-* [`manage_user`](#manage_user)
-* [`ssl_cert_file`](#ssl_cert_file)
-* [`ssl_key_file`](#ssl_key_file)
-* [`ssl_ca_file`](#ssl_ca_file)
-* [`insecure_skip_verify`](#insecure_skip_verify)
-* [`version`](#version)
-* [`archive_location`](#archive_location)
-* [`archive_install_dir`](#archive_install_dir)
-* [`collection_method`](#collection_method)
-* [`collection_interval`](#collection_interval)
-* [`puppetserver_hosts`](#puppetserver_hosts)
-* [`puppetdb_hosts`](#puppetdb_hosts)
-* [`postgres_hosts`](#postgres_hosts)
-* [`profiles`](#profiles)
-* [`local_services`](#local_services)
-* [`token_name`](#token_name)
-* [`influxdb_token_file`](#influxdb_token_file)
-* [`http_timeout_seconds`](#http_timeout_seconds)
+* [`token`](#-puppet_operational_dashboards--telegraf--agent--token)
+* [`influxdb_host`](#-puppet_operational_dashboards--telegraf--agent--influxdb_host)
+* [`influxdb_port`](#-puppet_operational_dashboards--telegraf--agent--influxdb_port)
+* [`influxdb_org`](#-puppet_operational_dashboards--telegraf--agent--influxdb_org)
+* [`influxdb_bucket`](#-puppet_operational_dashboards--telegraf--agent--influxdb_bucket)
+* [`use_ssl`](#-puppet_operational_dashboards--telegraf--agent--use_ssl)
+* [`manage_ssl`](#-puppet_operational_dashboards--telegraf--agent--manage_ssl)
+* [`manage_repo`](#-puppet_operational_dashboards--telegraf--agent--manage_repo)
+* [`manage_archive`](#-puppet_operational_dashboards--telegraf--agent--manage_archive)
+* [`manage_user`](#-puppet_operational_dashboards--telegraf--agent--manage_user)
+* [`ssl_cert_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_cert_file)
+* [`ssl_key_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_key_file)
+* [`ssl_ca_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_ca_file)
+* [`insecure_skip_verify`](#-puppet_operational_dashboards--telegraf--agent--insecure_skip_verify)
+* [`version`](#-puppet_operational_dashboards--telegraf--agent--version)
+* [`archive_location`](#-puppet_operational_dashboards--telegraf--agent--archive_location)
+* [`archive_install_dir`](#-puppet_operational_dashboards--telegraf--agent--archive_install_dir)
+* [`collection_method`](#-puppet_operational_dashboards--telegraf--agent--collection_method)
+* [`collection_interval`](#-puppet_operational_dashboards--telegraf--agent--collection_interval)
+* [`puppetserver_hosts`](#-puppet_operational_dashboards--telegraf--agent--puppetserver_hosts)
+* [`puppetdb_hosts`](#-puppet_operational_dashboards--telegraf--agent--puppetdb_hosts)
+* [`postgres_hosts`](#-puppet_operational_dashboards--telegraf--agent--postgres_hosts)
+* [`profiles`](#-puppet_operational_dashboards--telegraf--agent--profiles)
+* [`local_services`](#-puppet_operational_dashboards--telegraf--agent--local_services)
+* [`token_name`](#-puppet_operational_dashboards--telegraf--agent--token_name)
+* [`influxdb_token_file`](#-puppet_operational_dashboards--telegraf--agent--influxdb_token_file)
+* [`http_timeout_seconds`](#-puppet_operational_dashboards--telegraf--agent--http_timeout_seconds)
 
-##### <a name="token"></a>`token`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--token"></a>`token`
 
 Data type: `Optional[Sensitive[String]]`
 
@@ -454,7 +464,7 @@ Telegraf token in Sensitive format.
 
 Default value: `$puppet_operational_dashboards::telegraf_token`
 
-##### <a name="influxdb_host"></a>`influxdb_host`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--influxdb_host"></a>`influxdb_host`
 
 Data type: `String`
 
@@ -462,7 +472,7 @@ FQDN of the InfluxDB host.  Defaults to $facts['fqdn']
 
 Default value: `$puppet_operational_dashboards::influxdb_host`
 
-##### <a name="influxdb_port"></a>`influxdb_port`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--influxdb_port"></a>`influxdb_port`
 
 Data type: `Integer`
 
@@ -470,7 +480,7 @@ Port used by the InfluxDB service.  Defaults to 8086.
 
 Default value: `$puppet_operational_dashboards::influxdb_port`
 
-##### <a name="influxdb_org"></a>`influxdb_org`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--influxdb_org"></a>`influxdb_org`
 
 Data type: `String`
 
@@ -478,7 +488,7 @@ Name of the InfluxDB organization. Defaults to 'puppetlabs'.
 
 Default value: `$puppet_operational_dashboards::initial_org`
 
-##### <a name="influxdb_bucket"></a>`influxdb_bucket`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--influxdb_bucket"></a>`influxdb_bucket`
 
 Data type: `String`
 
@@ -486,7 +496,7 @@ Name of the InfluxDB bucket to query. Defaults to 'puppet_data'.
 
 Default value: `$puppet_operational_dashboards::initial_bucket`
 
-##### <a name="use_ssl"></a>`use_ssl`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--use_ssl"></a>`use_ssl`
 
 Data type: `Boolean`
 
@@ -494,37 +504,37 @@ Whether to use SSL when querying InfluxDB.  Defaults to true
 
 Default value: `$puppet_operational_dashboards::use_ssl`
 
-##### <a name="manage_ssl"></a>`manage_ssl`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_ssl"></a>`manage_ssl`
 
 Data type: `Boolean`
 
 Whether to manage Telegraf ssl configuration.  Defaults to true.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="manage_repo"></a>`manage_repo`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_repo"></a>`manage_repo`
 
 Data type: `Boolean`
 
 Whether to install Telegraf from a repository.  Defaults to true on the RedHat family of platforms.
 
-##### <a name="manage_archive"></a>`manage_archive`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_archive"></a>`manage_archive`
 
 Data type: `Boolean`
 
 Whether to install Telegraf from an archive source.  Defaults to true on platforms other than RedHat.
 
-Default value: `!`
+Default value: `!$manage_repo`
 
-##### <a name="manage_user"></a>`manage_user`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_user"></a>`manage_user`
 
 Data type: `Boolean`
 
 Whether to manage the telegraf user when installing from archive.  Defaults to true.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="ssl_cert_file"></a>`ssl_cert_file`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--ssl_cert_file"></a>`ssl_cert_file`
 
 Data type: `String`
 
@@ -532,7 +542,7 @@ SSL certificate to be used by the telegraf service.  Defaults to the agent certi
 
 Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
 
-##### <a name="ssl_key_file"></a>`ssl_key_file`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--ssl_key_file"></a>`ssl_key_file`
 
 Data type: `String`
 
@@ -541,7 +551,7 @@ Defaults to the private key of the local machine for generating a CSR for the Pu
 
 Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem"`
 
-##### <a name="ssl_ca_file"></a>`ssl_ca_file`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--ssl_ca_file"></a>`ssl_ca_file`
 
 Data type: `String`
 
@@ -549,21 +559,21 @@ CA certificate issued by the CA which signed the certificate specified by $ssl_c
 
 Default value: `'/etc/puppetlabs/puppet/ssl/certs/ca.pem'`
 
-##### <a name="insecure_skip_verify"></a>`insecure_skip_verify`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--insecure_skip_verify"></a>`insecure_skip_verify`
 
 Data type: `Boolean`
 
 Skip verification of SSL certificate.  Defaults to true.
 
-Default value: ``true``
+Default value: `true`
 
-##### <a name="version"></a>`version`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--version"></a>`version`
 
 Data type: `String`
 
 Version of the Telegraf package to install. Defaults to '1.24.3'.
 
-##### <a name="archive_location"></a>`archive_location`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--archive_location"></a>`archive_location`
 
 Data type: `String`
 
@@ -572,7 +582,7 @@ Version of the Telegraf package to install. Defaults to '1.24.3'.
 
 Default value: `"https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz"`
 
-##### <a name="archive_install_dir"></a>`archive_install_dir`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--archive_install_dir"></a>`archive_install_dir`
 
 Data type: `String`
 
@@ -580,7 +590,7 @@ Directory to install $archive_location to.  Defaults to /opt/telegraf.
 
 Default value: `'/opt/telegraf'`
 
-##### <a name="collection_method"></a>`collection_method`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--collection_method"></a>`collection_method`
 
 Data type: `Enum['all', 'local', 'none']`
 
@@ -591,7 +601,7 @@ Determines how metrics will be collected.
 
 Default value: `'all'`
 
-##### <a name="collection_interval"></a>`collection_interval`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--collection_interval"></a>`collection_interval`
 
 Data type: `String`
 
@@ -599,7 +609,7 @@ How frequently to collect metrics.  Defaults to '10m'.
 
 Default value: `'10m'`
 
-##### <a name="puppetserver_hosts"></a>`puppetserver_hosts`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--puppetserver_hosts"></a>`puppetserver_hosts`
 
 Data type: `Array`
 
@@ -608,7 +618,7 @@ FOSS users need to supply a list of FQDNs
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Master')`
 
-##### <a name="puppetdb_hosts"></a>`puppetdb_hosts`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--puppetdb_hosts"></a>`puppetdb_hosts`
 
 Data type: `Array`
 
@@ -617,7 +627,7 @@ FOSS users need to supply a list of FQDNs
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Puppetdb')`
 
-##### <a name="postgres_hosts"></a>`postgres_hosts`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--postgres_hosts"></a>`postgres_hosts`
 
 Data type: `Array`
 
@@ -626,7 +636,7 @@ FOSS users need to supply a list of FQDNs.
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Database')`
 
-##### <a name="profiles"></a>`profiles`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--profiles"></a>`profiles`
 
 Data type: `Array[String]`
 
@@ -635,7 +645,7 @@ FOSS users can use the $local_services parameter.
 
 Default value: `puppet_operational_dashboards::pe_profiles_on_host()`
 
-##### <a name="local_services"></a>`local_services`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--local_services"></a>`local_services`
 
 Data type: `Array[String]`
 
@@ -643,7 +653,7 @@ Array of FOSS services to collect from when collection_method is set to 'local'.
 
 Default value: `[]`
 
-##### <a name="token_name"></a>`token_name`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--token_name"></a>`token_name`
 
 Data type: `String`
 
@@ -651,7 +661,7 @@ Name of the token to retrieve from InfluxDB if not given $token
 
 Default value: `$puppet_operational_dashboards::telegraf_token_name`
 
-##### <a name="influxdb_token_file"></a>`influxdb_token_file`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--influxdb_token_file"></a>`influxdb_token_file`
 
 Data type: `String`
 
@@ -660,7 +670,7 @@ This token is used in this class in a Deferred function call to retrieve a Teleg
 
 Default value: `$puppet_operational_dashboards::influxdb_token_file`
 
-##### <a name="http_timeout_seconds"></a>`http_timeout_seconds`
+##### <a name="-puppet_operational_dashboards--telegraf--agent--http_timeout_seconds"></a>`http_timeout_seconds`
 
 Data type: `Integer[1]`
 
@@ -670,7 +680,7 @@ Default value: `5`
 
 ## Defined types
 
-### <a name="puppet_operational_dashboardstelegrafconfig"></a>`puppet_operational_dashboards::telegraf::config`
+### <a name="puppet_operational_dashboards--telegraf--config"></a>`puppet_operational_dashboards::telegraf::config`
 
 Defined type to create Telegraf configurations for a given service
 
@@ -678,13 +688,13 @@ Defined type to create Telegraf configurations for a given service
 
 The following parameters are available in the `puppet_operational_dashboards::telegraf::config` defined type:
 
-* [`service`](#service)
-* [`protocol`](#protocol)
-* [`hosts`](#hosts)
-* [`ensure`](#ensure)
-* [`http_timeout_seconds`](#http_timeout_seconds)
+* [`service`](#-puppet_operational_dashboards--telegraf--config--service)
+* [`protocol`](#-puppet_operational_dashboards--telegraf--config--protocol)
+* [`hosts`](#-puppet_operational_dashboards--telegraf--config--hosts)
+* [`ensure`](#-puppet_operational_dashboards--telegraf--config--ensure)
+* [`http_timeout_seconds`](#-puppet_operational_dashboards--telegraf--config--http_timeout_seconds)
 
-##### <a name="service"></a>`service`
+##### <a name="-puppet_operational_dashboards--telegraf--config--service"></a>`service`
 
 Data type: `String`
 
@@ -692,19 +702,19 @@ Name of the service to query.  Is the title of the resource.
 
 Default value: `$title`
 
-##### <a name="protocol"></a>`protocol`
+##### <a name="-puppet_operational_dashboards--telegraf--config--protocol"></a>`protocol`
 
 Data type: `Enum['https', 'http']`
 
 Protocol to use in requests, either https or http
 
-##### <a name="hosts"></a>`hosts`
+##### <a name="-puppet_operational_dashboards--telegraf--config--hosts"></a>`hosts`
 
 Data type: `Array[String[1]]`
 
 Array of hosts running the service
 
-##### <a name="ensure"></a>`ensure`
+##### <a name="-puppet_operational_dashboards--telegraf--config--ensure"></a>`ensure`
 
 Data type: `Enum['present', 'absent']`
 
@@ -712,7 +722,7 @@ Whether the resource should be present or absent
 
 Default value: `'present'`
 
-##### <a name="http_timeout_seconds"></a>`http_timeout_seconds`
+##### <a name="-puppet_operational_dashboards--telegraf--config--http_timeout_seconds"></a>`http_timeout_seconds`
 
 Data type: `Integer[1]`
 
@@ -720,7 +730,7 @@ Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slo
 
 ## Functions
 
-### <a name="puppet_operational_dashboardshosts_with_profile"></a>`puppet_operational_dashboards::hosts_with_profile`
+### <a name="puppet_operational_dashboards--hosts_with_profile"></a>`puppet_operational_dashboards::hosts_with_profile`
 
 Type: Puppet Language
 
@@ -740,7 +750,7 @@ Data type: `String`
 
 The full name of the profile to query.
 
-### <a name="puppet_operational_dashboardspe_profiles_on_host"></a>`puppet_operational_dashboards::pe_profiles_on_host`
+### <a name="puppet_operational_dashboards--pe_profiles_on_host"></a>`puppet_operational_dashboards::pe_profiles_on_host`
 
 Type: Puppet Language
 
@@ -756,7 +766,7 @@ Returns: `Array[String]` An array of PE profiles representing the Puppet server,
 
 ## Plans
 
-### <a name="puppet_operational_dashboardsload_metrics"></a>`puppet_operational_dashboards::load_metrics`
+### <a name="puppet_operational_dashboards--load_metrics"></a>`puppet_operational_dashboards::load_metrics`
 
 The summary sets the description of the plan that will appear
 in 'bolt plan show' output. Bolt uses puppet-strings to parse the
@@ -766,44 +776,44 @@ summary and parameters from the plan.
 
 The following parameters are available in the `puppet_operational_dashboards::load_metrics` plan:
 
-* [`targets`](#targets)
-* [`support_script_file`](#support_script_file)
-* [`metrics_dir`](#metrics_dir)
-* [`dest_dir`](#dest_dir)
-* [`cleanup_metrics`](#cleanup_metrics)
-* [`influxdb_org`](#influxdb_org)
-* [`influxdb_bucket`](#influxdb_bucket)
-* [`influxdb_port`](#influxdb_port)
-* [`grafana_datasource`](#grafana_datasource)
-* [`telegraf_token`](#telegraf_token)
-* [`token_file`](#token_file)
-* [`conf_dir`](#conf_dir)
-* [`telegraf_process`](#telegraf_process)
-* [`token`](#token)
+* [`targets`](#-puppet_operational_dashboards--load_metrics--targets)
+* [`support_script_file`](#-puppet_operational_dashboards--load_metrics--support_script_file)
+* [`metrics_dir`](#-puppet_operational_dashboards--load_metrics--metrics_dir)
+* [`dest_dir`](#-puppet_operational_dashboards--load_metrics--dest_dir)
+* [`cleanup_metrics`](#-puppet_operational_dashboards--load_metrics--cleanup_metrics)
+* [`influxdb_org`](#-puppet_operational_dashboards--load_metrics--influxdb_org)
+* [`influxdb_bucket`](#-puppet_operational_dashboards--load_metrics--influxdb_bucket)
+* [`influxdb_port`](#-puppet_operational_dashboards--load_metrics--influxdb_port)
+* [`grafana_datasource`](#-puppet_operational_dashboards--load_metrics--grafana_datasource)
+* [`telegraf_token`](#-puppet_operational_dashboards--load_metrics--telegraf_token)
+* [`token_file`](#-puppet_operational_dashboards--load_metrics--token_file)
+* [`conf_dir`](#-puppet_operational_dashboards--load_metrics--conf_dir)
+* [`telegraf_process`](#-puppet_operational_dashboards--load_metrics--telegraf_process)
+* [`token`](#-puppet_operational_dashboards--load_metrics--token)
 
-##### <a name="targets"></a>`targets`
+##### <a name="-puppet_operational_dashboards--load_metrics--targets"></a>`targets`
 
 Data type: `TargetSpec`
 
 The targets to run on.
 
-##### <a name="support_script_file"></a>`support_script_file`
+##### <a name="-puppet_operational_dashboards--load_metrics--support_script_file"></a>`support_script_file`
 
 Data type: `Optional[String]`
 
 Path to a support script tarball
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="metrics_dir"></a>`metrics_dir`
+##### <a name="-puppet_operational_dashboards--load_metrics--metrics_dir"></a>`metrics_dir`
 
 Data type: `Optional[String]`
 
 Path to the 'metrics' directory from a PE support script
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="dest_dir"></a>`dest_dir`
+##### <a name="-puppet_operational_dashboards--load_metrics--dest_dir"></a>`dest_dir`
 
 Data type: `String`
 
@@ -811,7 +821,7 @@ Directory to upload $metrics_dir to
 
 Default value: `'/tmp'`
 
-##### <a name="cleanup_metrics"></a>`cleanup_metrics`
+##### <a name="-puppet_operational_dashboards--load_metrics--cleanup_metrics"></a>`cleanup_metrics`
 
 Data type: `String`
 
@@ -819,7 +829,7 @@ Whether to delete metrics after processing
 
 Default value: `'true'`
 
-##### <a name="influxdb_org"></a>`influxdb_org`
+##### <a name="-puppet_operational_dashboards--load_metrics--influxdb_org"></a>`influxdb_org`
 
 Data type: `String`
 
@@ -827,7 +837,7 @@ Name of the InfluxDB organization to configure. Defaults to 'puppetlabs'
 
 Default value: `'puppetlabs'`
 
-##### <a name="influxdb_bucket"></a>`influxdb_bucket`
+##### <a name="-puppet_operational_dashboards--load_metrics--influxdb_bucket"></a>`influxdb_bucket`
 
 Data type: `String`
 
@@ -835,7 +845,7 @@ Name of the InfluxDB bucket to configure and query. Defaults to 'puppet_data'
 
 Default value: `'influxdb_puppet'`
 
-##### <a name="influxdb_port"></a>`influxdb_port`
+##### <a name="-puppet_operational_dashboards--load_metrics--influxdb_port"></a>`influxdb_port`
 
 Data type: `Integer`
 
@@ -843,7 +853,7 @@ Port used by the InfluxDB service.  Defaults to the value of influxdb::port, or 
 
 Default value: `8086`
 
-##### <a name="grafana_datasource"></a>`grafana_datasource`
+##### <a name="-puppet_operational_dashboards--load_metrics--grafana_datasource"></a>`grafana_datasource`
 
 Data type: `String`
 
@@ -851,7 +861,7 @@ Name of the Grafana datasource.  Must match the name of the InfluxDB bucket
 
 Default value: `$influxdb_bucket`
 
-##### <a name="telegraf_token"></a>`telegraf_token`
+##### <a name="-puppet_operational_dashboards--load_metrics--telegraf_token"></a>`telegraf_token`
 
 Data type: `String`
 
@@ -859,7 +869,7 @@ Name of the token to retrieve from InfluxDB. Defaults to 'puppet telegraf token'
 
 Default value: `'puppet telegraf token'`
 
-##### <a name="token_file"></a>`token_file`
+##### <a name="-puppet_operational_dashboards--load_metrics--token_file"></a>`token_file`
 
 Data type: `String`
 
@@ -869,7 +879,7 @@ as well Deferred functions in this module.
 
 Default value: `'/root/.influxdb_token'`
 
-##### <a name="conf_dir"></a>`conf_dir`
+##### <a name="-puppet_operational_dashboards--load_metrics--conf_dir"></a>`conf_dir`
 
 Data type: `String`
 
@@ -877,7 +887,7 @@ Directory to upload Telegraf configuration files to
 
 Default value: `'/tmp/telegraf'`
 
-##### <a name="telegraf_process"></a>`telegraf_process`
+##### <a name="-puppet_operational_dashboards--load_metrics--telegraf_process"></a>`telegraf_process`
 
 Data type: `Enum['local', 'remote']`
 
@@ -885,15 +895,15 @@ Data type: `Enum['local', 'remote']`
 
 Default value: `'remote'`
 
-##### <a name="token"></a>`token`
+##### <a name="-puppet_operational_dashboards--load_metrics--token"></a>`token`
 
 Data type: `Optional[String]`
 
 
 
-Default value: ``undef``
+Default value: `undef`
 
-### <a name="puppet_operational_dashboardsprovision_dashboard"></a>`puppet_operational_dashboards::provision_dashboard`
+### <a name="puppet_operational_dashboards--provision_dashboard"></a>`puppet_operational_dashboards::provision_dashboard`
 
 A plan to provision a non-SSL operational dashboards node
 
@@ -901,9 +911,9 @@ A plan to provision a non-SSL operational dashboards node
 
 The following parameters are available in the `puppet_operational_dashboards::provision_dashboard` plan:
 
-* [`targets`](#targets)
+* [`targets`](#-puppet_operational_dashboards--provision_dashboard--targets)
 
-##### <a name="targets"></a>`targets`
+##### <a name="-puppet_operational_dashboards--provision_dashboard--targets"></a>`targets`
 
 Data type: `TargetSpec`
 
