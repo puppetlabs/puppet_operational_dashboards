@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 37,
-  "iteration": 1667252860566,
+  "id": 2,
+  "iteration": 1674761113822,
   "links": [
     {
       "asDropdown": false,
@@ -284,7 +284,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": "${datasource}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -295,7 +295,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 9,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -334,33 +334,15 @@
           },
           "unit": "ms"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*uptime$"
-            },
-            "properties": [
-              {
-                "id": "custom.fillOpacity",
-                "value": 0
-              },
-              {
-                "id": "unit",
-                "value": "ms"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 12,
         "x": 0,
         "y": 7
       },
-      "id": 22,
-      "links": [],
+      "id": 27,
       "options": {
         "legend": {
           "calcs": [],
@@ -371,59 +353,9 @@
           "mode": "single"
         }
       },
-      "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_url-mark-sweep-gc",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "puppetdb",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "gc-stats_PS_MarkSweep_last-gc-info_duration-ms"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-scavenge-gc",
+          "alias": "$tag_url-gc-mark-sweep",
           "groupBy": [
             {
               "params": [
@@ -448,7 +380,61 @@
           "measurement": "puppetdb",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "B",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_MarkSweep_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-scavenge",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
@@ -468,18 +454,120 @@
             {
               "key": "url",
               "operator": "=~",
-              "value": "/$url/"
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-old_gen",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Old_Generation_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-young_gen",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Young_Generation_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
             }
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Garbage Collection Times",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": "${datasource}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -490,7 +578,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 9,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -526,36 +614,17 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "none"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*uptime$"
-            },
-            "properties": [
-              {
-                "id": "custom.fillOpacity",
-                "value": 0
-              },
-              {
-                "id": "unit",
-                "value": "ms"
-              }
-            ]
           }
-        ]
+        },
+        "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 12,
         "x": 12,
         "y": 7
       },
-      "id": 23,
-      "links": [],
+      "id": 29,
       "options": {
         "legend": {
           "calcs": [],
@@ -566,63 +635,9 @@
           "mode": "single"
         }
       },
-      "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_url-mark-sweep",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "puppetdb",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "gc-stats_PS_MarkSweep_count"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              },
-              {
-                "params": [],
-                "type": "non_negative_difference"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-scavenge",
+          "alias": "$tag_url-gc-mark-sweep",
           "groupBy": [
             {
               "params": [
@@ -647,7 +662,65 @@
           "measurement": "puppetdb",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "B",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_MarkSweep_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-scavenge",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
@@ -671,13 +744,123 @@
             {
               "key": "url",
               "operator": "=~",
-              "value": "/$url/"
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-old_gen",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Old_Generation_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-young_gen",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetdb",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Young_Generation_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
             }
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Garbage Collection Counts",
       "type": "timeseries"
     },
@@ -755,7 +938,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 15
       },
       "id": 24,
       "links": [],
@@ -950,7 +1133,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 15
       },
       "id": 25,
       "links": [],
@@ -1128,7 +1311,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 22
       },
       "id": 5,
       "links": [],
@@ -1263,7 +1446,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 21
+        "y": 22
       },
       "id": 6,
       "links": [],
@@ -1398,7 +1581,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 29
       },
       "id": 4,
       "links": [],
@@ -1523,7 +1706,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 36
       },
       "id": 9,
       "links": [],
@@ -1654,7 +1837,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 35
+        "y": 36
       },
       "id": 11,
       "links": [],
@@ -1785,7 +1968,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 43
       },
       "id": 16,
       "links": [],
@@ -1928,7 +2111,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 42
+        "y": 43
       },
       "id": 17,
       "links": [],
@@ -2072,7 +2255,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 50
       },
       "id": 10,
       "links": [],
@@ -2203,7 +2386,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 49
+        "y": 50
       },
       "id": 12,
       "links": [],
@@ -2334,7 +2517,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 57
       },
       "id": 15,
       "links": [],
@@ -2477,7 +2660,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 65
+        "y": 66
       },
       "id": 13,
       "links": [],
@@ -2620,7 +2803,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 65
+        "y": 66
       },
       "id": 14,
       "links": [],
@@ -2767,7 +2950,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 72
+        "y": 73
       },
       "id": 20,
       "links": [],
@@ -2910,7 +3093,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 72
+        "y": 73
       },
       "id": 21,
       "links": [],
@@ -3053,7 +3236,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 79
+        "y": 80
       },
       "id": 18,
       "links": [],
@@ -3190,7 +3373,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 79
+        "y": 80
       },
       "id": 19,
       "links": [],
@@ -3285,7 +3468,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "5m",
+  "refresh": false,
   "schemaVersion": 32,
   "style": "dark",
   "tags": [
