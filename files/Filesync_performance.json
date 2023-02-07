@@ -172,7 +172,7 @@
             [
               {
                 "params": [
-                  "average-lock-held-time"
+                  "file-sync-client-service_status_experimental_metrics_average-lock-held-time"
                 ],
                 "type": "field"
               },
@@ -222,7 +222,7 @@
             [
               {
                 "params": [
-                  "average-lock-wait-time"
+                  "file-sync-client-service_status_experimental_metrics_average-lock-wait-time"
                 ],
                 "type": "field"
               },
@@ -347,7 +347,7 @@
             [
               {
                 "params": [
-                  "average-clone-time"
+                  "file-sync-client-service_status_experimental_metrics_average-clone-time"
                 ],
                 "type": "field"
               },
@@ -397,7 +397,7 @@
             [
               {
                 "params": [
-                  "average-fetch-time"
+                  "file-sync-client-service_status_experimental_metrics_average-fetch-time"
                 ],
                 "type": "field"
               },
@@ -447,7 +447,7 @@
             [
               {
                 "params": [
-                  "average-sync-clean-check-time"
+                  "file-sync-client-service_status_experimental_metrics_average-sync-clean-check-time"
                 ],
                 "type": "field"
               },
@@ -497,7 +497,7 @@
             [
               {
                 "params": [
-                  "average-sync-time"
+                  "file-sync-client-service_status_experimental_metrics_average-sync-time"
                 ],
                 "type": "field"
               },
@@ -548,7 +548,7 @@
             [
               {
                 "params": [
-                  "average-begin-sync-callback-time"
+                  "file-sync-client-service_status_experimental_metrics_average-begin-sync-callback-time"
                 ],
                 "type": "field"
               },
@@ -599,7 +599,7 @@
             [
               {
                 "params": [
-                  "average-end-sync-callback-time"
+                  "file-sync-client-service_status_experimental_metrics_average-end-sync-callback-time"
                 ],
                 "type": "field"
               },
@@ -650,7 +650,7 @@
             [
               {
                 "params": [
-                  "average-versioned-sync-prep-time"
+                  "file-sync-client-service_status_experimental_metrics_average-versioned-sync-prep-time"
                 ],
                 "type": "field"
               },
@@ -701,58 +701,7 @@
             [
               {
                 "params": [
-                  "average-client-status-update-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-client-update",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "I",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "average-client-status-update-time"
+                  "file-sync-client-service_status_experimental_metrics_average-client-status-update-time"
                 ],
                 "type": "field"
               },
@@ -881,7 +830,7 @@
             [
               {
                 "params": [
-                  "num-fetches"
+                  "file-sync-client-service_status_experimental_metrics_num-fetches"
                 ],
                 "type": "field"
               },
@@ -937,7 +886,7 @@
             [
               {
                 "params": [
-                  "num-clones"
+                  "file-sync-client-service_status_experimental_metrics_num-clones"
                 ],
                 "type": "field"
               },
@@ -993,7 +942,7 @@
             [
               {
                 "params": [
-                  "num-syncs"
+                  "file-sync-client-service_status_experimental_metrics_num-syncs"
                 ],
                 "type": "field"
               },
@@ -1049,7 +998,7 @@
             [
               {
                 "params": [
-                  "num-sync-clean-checks"
+                  "file-sync-client-service_status_experimental_metrics_num-sync-clean-checks"
                 ],
                 "type": "field"
               },
@@ -1222,56 +1171,6 @@
           ]
         },
         {
-          "alias": "$tag_url-Ave Clean Check Time",
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-sync-clean-check-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
           "alias": "$tag_url-Ave Pre-commit Hook Time",
           "dsType": "influxdb",
           "groupBy": [
@@ -1297,7 +1196,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "D",
+          "refId": "C",
           "resultFormat": "time_series",
           "select": [
             [
