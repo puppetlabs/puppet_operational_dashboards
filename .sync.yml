@@ -47,6 +47,9 @@ Gemfile:
   optional:
     ":development":
     - gem: github_changelog_generator
+      version: '= 1.16.4'
+    - gem: concurrent-ruby
+      version: '= 1.1.10'
     - gem: 'toml-rb'
     - gem: 'octokit'
       version:
