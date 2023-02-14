@@ -172,7 +172,7 @@
             [
               {
                 "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-lock-held-time"
+                  "average-lock-held-time"
                 ],
                 "type": "field"
               },
@@ -222,7 +222,7 @@
             [
               {
                 "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-lock-wait-time"
+                  "average-lock-wait-time"
                 ],
                 "type": "field"
               },
