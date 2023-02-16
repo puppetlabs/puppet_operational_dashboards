@@ -10,4 +10,10 @@ plan puppet_operational_dashboards::provision_dashboard (
       use_ssl => false,
     }
   }
+  # Apply the class twice so we can use the token created by the first application
+  apply ($targets) {
+    class { 'puppet_operational_dashboards':
+      use_ssl => false,
+    }
+  }
 }

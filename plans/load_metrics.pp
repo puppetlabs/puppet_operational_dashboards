@@ -41,10 +41,16 @@ plan puppet_operational_dashboards::load_metrics (
   String $telegraf_token = 'puppet telegraf token',
   String $token_file = '/root/.influxdb_token',
   String $conf_dir = '/tmp/telegraf',
-  #TODO
+  # 40 day default for bucket retention
+  Array[Hash] $retention_rules = [{
+      'type' => 'expire',
+      'everySeconds' => 3456000,
+      'shardGroupDurationSeconds' => 604800,
+  }],
+#TODO
   Enum['local', 'remote'] $telegraf_process = 'remote',
   String $dest_dir = '/tmp',
-  #TODO
+#TODO
   Optional[String] $token = undef,
   String $cleanup_metrics = 'true',
 ) {
@@ -77,11 +83,12 @@ plan puppet_operational_dashboards::load_metrics (
     }
 
     influxdb_bucket { $influxdb_bucket:
-      ensure     => present,
-      use_ssl    => false,
-      org        => $influxdb_org,
-      require    => Influxdb_org[$influxdb_org],
-      token_file => $token_file,
+      ensure          => present,
+      use_ssl         => false,
+      org             => $influxdb_org,
+      token_file      => $token_file,
+      retention_rules => $retention_rules,
+      require         => Influxdb_org[$influxdb_org],
     }
 
     service { 'grafana-server':
