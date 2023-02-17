@@ -19,7 +19,7 @@
 # @param grafana_password
 #   Grafana admin password in Sensitive format.  Defaults to 'admin'
 # @param grafana_version
-#   Version of the Grafana package to install.  Defaults to '8.5.15'
+#   Version of the Grafana package to install.  Defaults to '8.5.20'
 # @param grafana_datasource
 #   Name to use for the Grafana datasource.  Defaults to 'influxdb_puppet'
 # @param grafana_install
