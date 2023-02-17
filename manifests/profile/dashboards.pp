@@ -53,7 +53,7 @@ class puppet_operational_dashboards::profile::dashboards (
   Integer $grafana_timeout = 10,
   #TODO: document using task to change
   Sensitive[String] $grafana_password = Sensitive('admin'),
-  String $grafana_version = '8.5.15',
+  String $grafana_version = '8.5.20',
   String $grafana_datasource = 'influxdb_puppet',
   String $grafana_install = $facts['os']['family'] ? {
     /(RedHat|Debian)/ => 'repo',
