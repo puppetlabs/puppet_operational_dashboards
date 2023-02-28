@@ -54,6 +54,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`influxdb_port`](#-puppet_operational_dashboards--influxdb_port)
 * [`initial_org`](#-puppet_operational_dashboards--initial_org)
 * [`initial_bucket`](#-puppet_operational_dashboards--initial_bucket)
+* [`influxdb_bucket_retention_rules`](#-puppet_operational_dashboards--influxdb_bucket_retention_rules)
 * [`influxdb_token`](#-puppet_operational_dashboards--influxdb_token)
 * [`telegraf_token_name`](#-puppet_operational_dashboards--telegraf_token_name)
 * [`manage_telegraf`](#-puppet_operational_dashboards--manage_telegraf)
@@ -101,6 +102,14 @@ Data type: `String`
 Name of the InfluxDB bucket to configure and query. Defaults to the value of influxdb::initial_bucket, or 'puppet_data' if unset
 
 Default value: `lookup(influxdb::initial_bucket, undef, undef, 'puppet_data')`
+
+##### <a name="-puppet_operational_dashboards--influxdb_bucket_retention_rules"></a>`influxdb_bucket_retention_rules`
+
+Data type: `Array`
+
+Value for the initial InfluxDB bucket retention rules, Values are the same as in the influx_bucket type of the InfluxDB module.
+
+Default value: `[{ 'type' => 'expire', 'everySeconds' => 7776000, 'shardGroupDurationSeconds' => 604800 }]`
 
 ##### <a name="-puppet_operational_dashboards--influxdb_token"></a>`influxdb_token`
 
@@ -280,9 +289,9 @@ Default value: `Sensitive('admin')`
 
 Data type: `String`
 
-Version of the Grafana package to install.  Defaults to '8.5.15'
+Version of the Grafana package to install.  Defaults to '8.5.20'
 
-Default value: `'8.5.15'`
+Default value: `'8.5.20'`
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_datasource"></a>`grafana_datasource`
 
@@ -788,6 +797,7 @@ The following parameters are available in the `puppet_operational_dashboards::lo
 * [`telegraf_token`](#-puppet_operational_dashboards--load_metrics--telegraf_token)
 * [`token_file`](#-puppet_operational_dashboards--load_metrics--token_file)
 * [`conf_dir`](#-puppet_operational_dashboards--load_metrics--conf_dir)
+* [`retention_rules`](#-puppet_operational_dashboards--load_metrics--retention_rules)
 * [`telegraf_process`](#-puppet_operational_dashboards--load_metrics--telegraf_process)
 * [`token`](#-puppet_operational_dashboards--load_metrics--token)
 
@@ -886,6 +896,22 @@ Data type: `String`
 Directory to upload Telegraf configuration files to
 
 Default value: `'/tmp/telegraf'`
+
+##### <a name="-puppet_operational_dashboards--load_metrics--retention_rules"></a>`retention_rules`
+
+Data type: `Array[Hash]`
+
+
+
+Default value:
+
+```puppet
+[{
+      'type' => 'expire',
+      'everySeconds' => 3456000,
+      'shardGroupDurationSeconds' => 604800,
+  }]
+```
 
 ##### <a name="-puppet_operational_dashboards--load_metrics--telegraf_process"></a>`telegraf_process`
 

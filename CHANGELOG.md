@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.10.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.10.0) (2023-02-07)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.9.0...v1.10.0)
+
+### Added
+
+- Update default version of grafana installed [\#132](https://github.com/puppetlabs/puppet_operational_dashboards/pull/132) ([elainemccloskey](https://github.com/elainemccloskey))
+- \(SUP-3459\) Add queries for G1GC metrics [\#124](https://github.com/puppetlabs/puppet_operational_dashboards/pull/124) ([m0dular](https://github.com/m0dular))
+- Pass port to InfluxDB resources [\#118](https://github.com/puppetlabs/puppet_operational_dashboards/pull/118) ([m0dular](https://github.com/m0dular))
+
+### Fixed
+
+- Filesync dashboard cleanup [\#123](https://github.com/puppetlabs/puppet_operational_dashboards/pull/123) ([seanmil](https://github.com/seanmil))
+- Ensure consistent config generation order [\#122](https://github.com/puppetlabs/puppet_operational_dashboards/pull/122) ([seanmil](https://github.com/seanmil))
+
 ## [v1.9.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.9.0) (2022-12-02)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.8.0...v1.9.0)
