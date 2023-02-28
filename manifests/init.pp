@@ -16,6 +16,8 @@
 #   Name of the InfluxDB organization to configure. Defaults to the value of influxdb::initial_org, or 'puppetlabs' if unset
 # @param initial_bucket
 #   Name of the InfluxDB bucket to configure and query. Defaults to the value of influxdb::initial_bucket, or 'puppet_data' if unset
+# @param influxdb_bucket_retention_rules
+#   Value for the initial InfluxDB bucket retention rules, Values are the same as in the influx_bucket type of the InfluxDB module.
 # @param influxdb_token
 #   InfluxDB admin token in Sensitive format.  Defaults to the value of influxdb::token.
 #   See the puppetlabs/influxdb documentation for more information about this token.
@@ -39,6 +41,7 @@ class puppet_operational_dashboards (
   Integer $influxdb_port = lookup(influxdb::port, undef, undef, 8086),
   String $initial_org = lookup(influxdb::initial_org, undef, undef, 'puppetlabs'),
   String $initial_bucket = lookup(influxdb::initial_bucket, undef, undef, 'puppet_data'),
+  Array $influxdb_bucket_retention_rules = [{ 'type' => 'expire', 'everySeconds' => 7776000, 'shardGroupDurationSeconds' => 604800 }],
 
   Optional[Sensitive[String]] $influxdb_token = lookup(influxdb::token, undef, undef, undef),
   Optional[Sensitive[String]] $telegraf_token = undef,
@@ -69,17 +72,18 @@ class puppet_operational_dashboards (
       use_ssl    => $use_ssl,
       port       => $influxdb_port,
       token      => $influxdb_token,
-      require    => Class['influxdb'],
       token_file => $influxdb_token_file,
+      require    => Class['influxdb'],
     }
     influxdb_bucket { $initial_bucket:
-      ensure     => present,
-      use_ssl    => $use_ssl,
-      port       => $influxdb_port,
-      org        => $initial_org,
-      token      => $influxdb_token,
-      require    => [Class['influxdb'], Influxdb_org[$initial_org]],
-      token_file => $influxdb_token_file,
+      ensure          => present,
+      use_ssl         => $use_ssl,
+      port            => $influxdb_port,
+      org             => $initial_org,
+      token           => $influxdb_token,
+      retention_rules => $influxdb_bucket_retention_rules,
+      token_file      => $influxdb_token_file,
+      require         => [Class['influxdb'], Influxdb_org[$initial_org]],
     }
 
     Influxdb_auth {
