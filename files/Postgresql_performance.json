@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -20,10 +23,8 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": null,
   "graphTooltip": 1,
   "id": 38,
-  "iteration": 1665085372129,
   "links": [
     {
       "asDropdown": false,
@@ -43,13 +44,18 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -103,20 +109,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_db-temp_bytes",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -174,19 +185,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Temp File Sizes",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -226,7 +240,32 @@
           },
           "unit": "decbytes"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "pe-server-45fe79-0.us-west1-c.c.customer-support-scratchpad.internal-pe-puppetdb-total_bytes"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
@@ -240,32 +279,37 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_db-total_bytes",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "5m"
+                "$Group_by_time"
               ],
               "type": "time"
             },
             {
               "params": [
-                "db"
+                "server"
               ],
               "type": "tag"
             },
             {
               "params": [
-                "server"
+                "db"
               ],
               "type": "tag"
             },
@@ -307,19 +351,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Sizes by Database (total)",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -373,20 +420,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table_name-size_bytes",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -440,19 +492,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Sizes by Table",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -485,8 +540,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -506,20 +560,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table_name-size_bytes",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -573,19 +632,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Sizes by Index",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -618,8 +680,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -639,20 +700,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table_name-size_bytes",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -706,19 +772,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Sizes by Toast",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -752,8 +821,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -777,20 +845,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -845,19 +918,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Autovacuum Activity",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -891,8 +967,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -916,20 +991,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -984,19 +1064,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Vacuum Activity - (not auto, not full)",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1029,8 +1112,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1050,20 +1132,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table-heap_disk_reads",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -1118,19 +1205,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Disk Block Reads (Heap)",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1163,8 +1253,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1184,20 +1273,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table-heap_cache_reads",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -1252,19 +1346,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Cache Reads (Heap)",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1297,8 +1394,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1318,20 +1414,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table-index_disk_reads",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -1386,19 +1487,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Disk Block Reads (Index)",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1431,8 +1535,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1452,20 +1555,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table-index_cache_reads",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -1520,19 +1628,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Heap Reads (Index)",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1565,8 +1676,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1586,20 +1696,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table-toast_disk_reads",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -1654,19 +1769,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Disk Block Reads (Toast)",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1699,8 +1817,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1720,20 +1837,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table-toast_cache_reads",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -1788,19 +1910,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Cache Reads (Toast)",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1834,8 +1959,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1859,16 +1983,21 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table-live_tuples",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
@@ -1899,7 +2028,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"n_live_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_live_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"n_live_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_live_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($Group_by_time), \"table\", \"server\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1927,19 +2056,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Live Tuples",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1973,8 +2105,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1998,16 +2129,21 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_table-dead_tuples",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
@@ -2038,7 +2174,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"n_dead_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_dead_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"n_dead_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_dead_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($Group_by_time), \"table\", \"server\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2066,19 +2202,22 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Dead Tuples",
       "type": "timeseries"
     },
     {
-      "datasource": "$datasource",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2111,8 +2250,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2136,20 +2274,25 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.2",
       "targets": [
         {
           "alias": "$tag_server-$tag_db",
+          "datasource": {
+            "uid": "$datasource"
+          },
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$Group_by_time"
               ],
               "type": "time"
             },
@@ -2224,14 +2367,12 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Deadlocks",
       "type": "timeseries"
     }
   ],
   "refresh": "5m",
-  "schemaVersion": 32,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "operational_dashboards"
@@ -2244,8 +2385,6 @@
           "text": "influxdb_puppet",
           "value": "influxdb_puppet"
         },
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "datasource",
@@ -2260,9 +2399,8 @@
         "type": "datasource"
       },
       {
-        "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "All"
           ],
@@ -2270,10 +2408,11 @@
             "$__all"
           ]
         },
-        "datasource": "$datasource",
+        "datasource": {
+          "type": "influxdb",
+          "uid": "$datasource"
+        },
         "definition": "",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "server",
@@ -2289,11 +2428,85 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "auto": false,
+        "auto_count": 10,
+        "auto_min": "5m",
+        "current": {
+          "selected": false,
+          "text": "5m",
+          "value": "5m"
+        },
+        "hide": 0,
+        "name": "Group_by_time",
+        "options": [
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": true,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "1m,5m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+        "queryValue": "",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
       }
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
