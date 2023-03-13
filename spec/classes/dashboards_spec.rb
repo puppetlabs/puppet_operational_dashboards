@@ -2,7 +2,13 @@ require 'spec_helper'
 
 describe 'puppet_operational_dashboards::profile::dashboards' do
   let(:facts) { { os: { family: 'RedHat' } } }
-  let(:pre_condition) { 'include puppet_operational_dashboards' }
+  let(:pre_condition) do
+    <<-PRE_COND
+      class{ 'puppet_operational_dashboards':
+        include_pe_metrics => true,
+      }
+    PRE_COND
+  end
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
@@ -35,7 +41,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       is_expected.to contain_file('/etc/grafana/provisioning/datasources/influxdb.yaml').that_requires('Class[grafana::install]')
       is_expected.to contain_file('/etc/grafana/provisioning/datasources/influxdb.yaml').that_notifies('Service[grafana-server]')
 
-      ['Filesync Performance', 'Postgresql Performance', 'Puppetdb Performance', 'Puppetserver Performance'].each do |dashboard|
+      ['Filesync Performance', 'Postgresql Performance', 'Puppetdb Performance', 'Puppetserver Performance', 'Orchestrator Performance'].each do |dashboard|
         is_expected.to contain_grafana_dashboard(dashboard).that_requires('Class[grafana::install]')
       end
 
@@ -62,7 +68,8 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
         influxdb_bucket: 'puppet_data',
         telegraf_token_name: 'puppet telegraf token',
         influxdb_token_file: '/root/.influxdb_token',
-        manage_grafana: false
+        manage_grafana: false,
+        include_pe_metrics: true,
       }
     end
 
@@ -72,7 +79,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       is_expected.not_to contain_file('grafana-conf-d')
 
       # We expect the dashboards to be managed, but to not require the install class
-      ['Filesync Performance', 'Postgresql Performance', 'Puppetdb Performance', 'Puppetserver Performance'].each do |dashboard|
+      ['Filesync Performance', 'Postgresql Performance', 'Puppetdb Performance', 'Puppetserver Performance', 'Orchestrator Performance'].each do |dashboard|
         is_expected.to contain_grafana_dashboard(dashboard)
         is_expected.not_to contain_grafana_dashboard(dashboard).that_requires('Class[grafana::install]')
       end
@@ -90,6 +97,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
         influxdb_bucket: 'puppet_data',
         telegraf_token_name: 'puppet telegraf token',
         influxdb_token_file: '/root/.influxdb_token',
+        include_pe_metrics: true,
       }
     end
 

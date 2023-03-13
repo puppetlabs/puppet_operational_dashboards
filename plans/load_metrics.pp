@@ -122,7 +122,15 @@ plan puppet_operational_dashboards::load_metrics (
     file { "${conf_dir}/telegraf.conf.d":
       ensure => directory,
     }
-    ['postgres.conf', 'puppetdb.conf', 'puppetserver.conf', 'system_cpu.conf', 'system_memory.conf', 'system_procs.conf'].each |$script| {
+    [
+      'postgres.conf',
+      'puppetdb.conf',
+      'puppetserver.conf',
+      'system_cpu.conf',
+      'system_memory.conf',
+      'system_procs.conf',
+      'orchestrator.conf',
+    ].each |$script| {
       file { "${conf_dir}/telegraf.conf.d/${script}":
         ensure => file,
         source => "puppet:///modules/puppet_operational_dashboards/plan_files/${script}",

@@ -16,7 +16,7 @@ define puppet_operational_dashboards::telegraf::config (
   String $service = $title,
   Enum['present', 'absent'] $ensure = 'present',
 ) {
-  unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm'] {
+  unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm', 'orchestrator'] {
     fail("Unknown service type ${service}")
   }
 
@@ -25,6 +25,7 @@ define puppet_operational_dashboards::telegraf::config (
       'puppetdb'     => '8081/metrics/v2/read',
       'puppetdb_jvm'     => '8081/status/v1/services?level=debug',
       'puppetserver'     => '8140/status/v1/services?level=debug',
+      'orchestrator'     => '8143/status/v1/services?level=debug',
     }
 
     # Create a urls[] array with literal quotes around each entry

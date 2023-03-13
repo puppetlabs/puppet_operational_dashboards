@@ -41,6 +41,8 @@ spec/default_facts.yml:
     pe_build: '2021.5.0'
     identity:
       user: 'root'
+    settings:
+      module_groups: 'base+pe_only'
 
     
 Gemfile:

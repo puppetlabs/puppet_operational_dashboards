@@ -9,4 +9,6 @@ macaddress: "AA:AA:AA:AA:AA:AA"
 pe_build: 2021.5.0
 identity:
   user: root
+settings:
+  module_groups: base+pe_only
 
