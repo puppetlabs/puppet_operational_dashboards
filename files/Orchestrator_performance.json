@@ -24,10 +24,10 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 57,
+  "id": 6,
+  "iteration": 1678732665217,
   "links": [
     {
-      "asDropdown": false,
       "icon": "external link",
       "includeVars": true,
       "keepTime": true,
@@ -35,10 +35,7 @@
         "operational_dashboards"
       ],
       "targetBlank": true,
-      "title": "",
-      "tooltip": "",
-      "type": "dashboards",
-      "url": ""
+      "type": "dashboards"
     }
   ],
   "liveNow": false,
@@ -46,7 +43,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${datasource}"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -54,8 +51,270 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^.*uptime"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_url-heap-committed",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "heap-memory_committed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-heap-used",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "heap-memory_used"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-uptime",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "up-time-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [
+                  "uptime"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        }
+      ],
+      "title": "Heap Memory and Uptime",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -97,15 +356,15 @@
               }
             ]
           },
-          "unit": "ms"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
+        "h": 8,
+        "w": 12,
         "x": 0,
-        "y": 0
+        "y": 10
       },
       "id": 3,
       "links": [],
@@ -124,10 +383,9 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_url-lock_held",
+          "alias": "$tag_url-threads",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
+            "uid": "$datasource"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -150,16 +408,18 @@
               "type": "fill"
             }
           ],
-          "measurement": "puppetserver",
+          "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "average-lock-held-time"
+                  "threading_thread-count"
                 ],
                 "type": "field"
               },
@@ -173,15 +433,14 @@
             {
               "key": "url",
               "operator": "=~",
-              "value": "/$url/"
+              "value": "/^$url$/"
             }
           ]
         },
         {
-          "alias": "$tag_url-lock_wait",
+          "alias": "$tag_url-threads-max",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
+            "uid": "$datasource"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -204,16 +463,19 @@
               "type": "fill"
             }
           ],
-          "measurement": "puppetserver",
+          "hide": false,
+          "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "average-lock-wait-time"
+                  "threading_peak-thread-count"
                 ],
                 "type": "field"
               },
@@ -227,18 +489,18 @@
             {
               "key": "url",
               "operator": "=~",
-              "value": "/$url/"
+              "value": "/^$url$/"
             }
           ]
         }
       ],
-      "title": "JRuby Lock Times",
+      "title": "Threads",
       "type": "timeseries"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${datasource}"
+        "uid": "$datasource"
       },
       "fieldConfig": {
         "defaults": {
@@ -246,8 +508,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -282,20 +542,24 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
-          "unit": "ms"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 7
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 10
       },
-      "id": 1,
+      "id": 22,
       "links": [],
       "options": {
         "legend": {
@@ -312,10 +576,9 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_url-$m-clone",
+          "alias": "$tag_url-file-descriptors",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
+            "uid": "$datasource"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -338,10 +601,10 @@
               "type": "fill"
             }
           ],
-          "measurement": "/^$service$/",
+          "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"file-sync-client-service_status_experimental_metrics_average-clone-time\") FROM /^$service$/ WHERE (\"url\" =~ /$url/) AND $timeFilter GROUP BY time($__interval), \"url\" fill(null)",
+          "query": "SELECT distinct(\"average-free-jrubies\") FROM \"puppetserver.jruby-metrics.average-free-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -349,7 +612,7 @@
             [
               {
                 "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-clone-time"
+                  "file-descriptors_used"
                 ],
                 "type": "field"
               },
@@ -363,15 +626,14 @@
             {
               "key": "url",
               "operator": "=~",
-              "value": "/$url/"
+              "value": "/^$url$/"
             }
           ]
         },
         {
-          "alias": "$tag_url-$m-fetch",
+          "alias": "$tag_url-file-descriptors-max",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
+            "uid": "$datasource"
           },
           "dsType": "influxdb",
           "groupBy": [
@@ -394,16 +656,19 @@
               "type": "fill"
             }
           ],
-          "measurement": "/^$service$/",
+          "hide": false,
+          "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT distinct(\"average-free-jrubies\") FROM \"puppetserver.jruby-metrics.average-free-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-fetch-time"
+                  "file-descriptors_max"
                 ],
                 "type": "field"
               },
@@ -417,340 +682,12 @@
             {
               "key": "url",
               "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-$m-sync_clean",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "/^$service$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-sync-clean-check-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-$m-sync",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "/^$service$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-sync-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-$m-sync-callback",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "/^$service$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-begin-sync-callback-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-sync-$m-end_callback",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "/^$service$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "F",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-end-sync-callback-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-$m-sync_prep",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "/^$service$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "G",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-versioned-sync-prep-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-$m-client-update",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "/^$service$/",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "H",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-client-service_status_experimental_metrics_average-client-status-update-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
+              "value": "/^$url$/"
             }
           ]
         }
       ],
-      "title": "Client Service Timings",
+      "title": "File Descriptors",
       "type": "timeseries"
     },
     {
@@ -764,8 +701,1218 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 9,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "id": 30,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_url-gc-mark-sweep",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P4658E92B0B26FCE9"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_MarkSweep_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-scavenge",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P4658E92B0B26FCE9"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_Scavenge_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-old_gen",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P4658E92B0B26FCE9"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Old_Generation_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-young_gen",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P4658E92B0B26FCE9"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Young_Generation_last-gc-info_duration-ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        }
+      ],
+      "title": "Garbage Collection Times",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 9,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 18
+      },
+      "id": 28,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_url-gc-mark-sweep",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P4658E92B0B26FCE9"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_MarkSweep_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-scavenge",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P4658E92B0B26FCE9"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_PS_Scavenge_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-old_gen",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P4658E92B0B26FCE9"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Old_Generation_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-gc-young_gen",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P4658E92B0B26FCE9"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gc-stats_G1_Young_Generation_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        }
+      ],
+      "title": "Garbage Collection Counts",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 9,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 23,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_url-[[tag_route-id]]-mean",
+          "datasource": {
+            "uid": "${datasource}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "route-id"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"mean\") FROM \"orchestrator\" WHERE (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
+          "rawQuery": true,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        }
+      ],
+      "title": "Route Times",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 9,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 24,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_url-[[tag_route-id]]-count",
+          "datasource": {
+            "uid": "${datasource}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "route-id"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT non_negative_difference(distinct(\"count\")) FROM \"orchestrator\" WHERE (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
+          "rawQuery": true,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              },
+              {
+                "params": [],
+                "type": "non_negative_difference"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        }
+      ],
+      "title": "Route Counts",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ns"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 35
+      },
+      "id": 25,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "alias": "$tag_url-on_close",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "puppetlabs.pcp.on-close_mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_connect",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "puppetlabs.pcp.on-connect_mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_message",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "puppetlabs.pcp.on-message_mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_message",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "puppetlabs.pcp.on-send_mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        }
+      ],
+      "title": "PCP Times",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "$datasource"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -812,12 +1959,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 14
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 35
       },
-      "id": 4,
+      "id": 26,
       "links": [],
       "options": {
         "legend": {
@@ -834,11 +1981,11 @@
       "pluginVersion": "8.2.2",
       "targets": [
         {
-          "alias": "$tag_url-$m-fetch",
+          "alias": "$tag_url-on_close",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
+            "uid": "$datasource"
           },
+          "dsType": "influxdb",
           "groupBy": [
             {
               "params": [
@@ -859,85 +2006,24 @@
               "type": "fill"
             }
           ],
-          "hide": false,
-          "measurement": "/^$service$/",
+          "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-client-service_status_experimental_metrics_num-fetches"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              },
-              {
-                "params": [],
-                "type": "non_negative_difference"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/^$url$/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-$m-clone",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "/^$service$/",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "file-sync-client-service_status_experimental_metrics_num-clones"
+                  "puppetlabs.pcp.on-close_rates_5"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
                 "type": "distinct"
-              },
-              {
-                "params": [],
-                "type": "non_negative_difference"
               }
             ]
           ],
@@ -950,11 +2036,11 @@
           ]
         },
         {
-          "alias": "$tag_url-$m-sync",
+          "alias": "$tag_url-on_connect",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
+            "uid": "$datasource"
           },
+          "dsType": "influxdb",
           "groupBy": [
             {
               "params": [
@@ -976,26 +2062,80 @@
             }
           ],
           "hide": false,
-          "measurement": "/^$service$/",
+          "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "puppetlabs.pcp.on-connect_rates_5"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_message",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
           "refId": "C",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "file-sync-client-service_status_experimental_metrics_num-syncs"
+                  "puppetlabs.pcp.on-message_rates_5"
                 ],
                 "type": "field"
               },
               {
                 "params": [],
                 "type": "distinct"
-              },
-              {
-                "params": [],
-                "type": "non_negative_difference"
               }
             ]
           ],
@@ -1008,11 +2148,11 @@
           ]
         },
         {
-          "alias": "$tag_url-$m-sync-clean",
+          "alias": "$tag_url-on_send",
           "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
+            "uid": "$datasource"
           },
+          "dsType": "influxdb",
           "groupBy": [
             {
               "params": [
@@ -1034,265 +2174,18 @@
             }
           ],
           "hide": false,
-          "measurement": "puppetserver",
+          "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "rawQuery": false,
           "refId": "D",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "file-sync-client-service_status_experimental_metrics_num-sync-clean-checks"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              },
-              {
-                "params": [],
-                "type": "non_negative_difference"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/^$url$/"
-            }
-          ]
-        }
-      ],
-      "title": "Client Service Counts",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "dtdurationms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 21
-      },
-      "id": 2,
-      "links": [],
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.5.20",
-      "targets": [
-        {
-          "alias": "$tag_url-commit_add_rm",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-storage-service_status_experimental_metrics_average-commit-add-rm-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/^$url$/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-pre_commit_hook",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-storage-service_status_experimental_metrics_average-pre-commit-hook-time"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/^$url$/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-commit",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-storage-service_status_experimental_metrics_average-commit-time"
+                  "puppetlabs.pcp.on-send_rates_5"
                 ],
                 "type": "field"
               },
@@ -1311,272 +2204,12 @@
           ]
         }
       ],
-      "title": "Storage Service Timings",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 28
-      },
-      "id": 7,
-      "links": [],
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.5.20",
-      "targets": [
-        {
-          "alias": "$tag_url-commits",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-storage-service_status_experimental_metrics_num-commits"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              },
-              {
-                "params": [],
-                "type": "non_negative_difference"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-add/rm",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-storage-service_status_experimental_metrics_num-commit-add-rm-ops"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              },
-              {
-                "params": [],
-                "type": "non_negative_difference"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        },
-        {
-          "alias": "$tag_url-pre_commit_hooks",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "dsType": "influxdb",
-          "groupBy": [
-            {
-              "params": [
-                "$Group_by_time"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "hide": false,
-          "measurement": "puppetserver",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "file-sync-storage-service_status_experimental_metrics_num-pre-commit-hook-ops"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              },
-              {
-                "params": [],
-                "type": "non_negative_difference"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/$url/"
-            }
-          ]
-        }
-      ],
-      "title": "Storage Service Counts",
+      "title": "PCP Counts",
       "type": "timeseries"
     }
   ],
-  "refresh": "",
-  "schemaVersion": 37,
+  "refresh": "5m",
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1630,43 +2263,6 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "hide": 0,
-        "includeAll": true,
-        "label": "service",
-        "multi": true,
-        "name": "service",
-        "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "puppetserver",
-            "value": "puppetserver"
-          },
-          {
-            "selected": false,
-            "text": "orchestrator",
-            "value": "orchestrator"
-          }
-        ],
-        "query": "puppetserver,orchestrator",
-        "queryValue": "",
-        "skipUrlSync": false,
-        "type": "custom"
       },
       {
         "auto": false,
@@ -1774,5 +2370,5 @@
     ]
   },
   "timezone": "utc",
-  "title": "Filesync Performance"
+  "title": "Orchestrator Performance"
 }

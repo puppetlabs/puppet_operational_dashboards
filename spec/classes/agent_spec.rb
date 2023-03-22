@@ -10,6 +10,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
       function puppet_operational_dashboards::hosts_with_profile($profile) { return ['localhost.foo.com'] }
       class{ 'puppet_operational_dashboards':
         influxdb_host => 'localhost.foo.com',
+        include_pe_metrics => true,
       }
     PRE_COND
   end
@@ -111,6 +112,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         class{ 'puppet_operational_dashboards':
           influxdb_host => 'localhost.foo.com',
           use_ssl       => false,
+          include_pe_metrics => true,
         }
       PRE_COND
     end

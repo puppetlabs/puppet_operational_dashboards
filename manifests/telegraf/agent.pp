@@ -57,6 +57,9 @@
 # @param postgres_hosts
 #   Array of Postgres hosts to collect metrics from.  Defaults to all Postgres in a PE infrastructure.
 #   FOSS users need to supply a list of FQDNs.
+# @param orchestrator_hosts
+#   Array of Orchestrator hosts to collect metrics from.  Defaults to all Orchestrator hosts in a PE infrastructure.
+#   FOSS users need to supply a list of FQDNs.
 # @param profiles
 #   Array of PE profiles on the node with this class applied.  Used when collection_method is set to 'local'.
 #   FOSS users can use the $local_services parameter.
@@ -94,6 +97,7 @@ class puppet_operational_dashboards::telegraf::agent (
   String $collection_interval = '10m',
 
   Array $puppetserver_hosts = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Master'),
+  Array $orchestrator_hosts = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Orchestrator'),
   Array $puppetdb_hosts     = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Puppetdb'),
   Array $postgres_hosts     = puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Database'),
 
@@ -250,6 +254,15 @@ class puppet_operational_dashboards::telegraf::agent (
       }
     }
 
+    unless $orchestrator_hosts.empty() {
+      puppet_operational_dashboards::telegraf::config { 'orchestrator':
+        hosts                => $orchestrator_hosts.sort,
+        protocol             => $protocol,
+        http_timeout_seconds => $http_timeout_seconds,
+        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+      }
+    }
+
     unless $postgres_hosts.empty() {
       $postgres_hosts.sort.each |$pg_host| {
         $inputs = epp(
@@ -278,6 +291,15 @@ class puppet_operational_dashboards::telegraf::agent (
     if 'Puppet_enterprise::Profile::Master' in $profiles or 'puppetserver' in $local_services {
       puppet_operational_dashboards::telegraf::config { 'puppetserver':
         hosts                => [$trusted['certname']],
+        protocol             => $protocol,
+        http_timeout_seconds => $http_timeout_seconds,
+        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+      }
+    }
+
+    if 'Puppet_enterprise::Profile::Orchestrator' in $profiles or 'orchestrator' in $local_services {
+      puppet_operational_dashboards::telegraf::config { 'orchestrator':
+        hosts                => $orchestrator_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],

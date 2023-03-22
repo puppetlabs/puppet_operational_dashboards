@@ -46,6 +46,8 @@
 #   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
 # @param provisioning_datasource_file
 #   Location on disk to store datasource definition
+# @param include_pe_metrics
+#   Whether to include Filesync and Orchestrator dashboards
 class puppet_operational_dashboards::profile::dashboards (
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $grafana_host = $facts['networking']['fqdn'],
@@ -68,6 +70,7 @@ class puppet_operational_dashboards::profile::dashboards (
   String $influxdb_bucket = $puppet_operational_dashboards::initial_bucket,
   String $telegraf_token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
+  Boolean $include_pe_metrics = $puppet_operational_dashboards::include_pe_metrics,
 ) {
   $grafana_url = "http://${grafana_host}:${grafana_port}"
 
@@ -153,12 +156,33 @@ class puppet_operational_dashboards::profile::dashboards (
     }
   }
 
-  ['Puppetserver', 'Puppetdb', 'Postgresql', 'Filesync', 'System'].each |$service| {
+  ['Puppetserver', 'Puppetdb', 'Postgresql', 'System'].each |$service| {
     grafana_dashboard { "${service} Performance":
       grafana_user     => 'admin',
       grafana_password => $grafana_password.unwrap,
       grafana_url      => $grafana_url,
       content          => file("puppet_operational_dashboards/${service}_performance.json"),
+    }
+  }
+
+  if $include_pe_metrics {
+    ['Filesync', 'Orchestrator'].each |$pe_service| {
+      grafana_dashboard { "${pe_service} Performance":
+        grafana_user     => 'admin',
+        grafana_password => $grafana_password.unwrap,
+        grafana_url      => $grafana_url,
+        content          => file("puppet_operational_dashboards/${pe_service}_performance.json"),
+      }
+    }
+  }
+  else {
+    ['Filesync', 'Orchestrator'].each |$pe_service| {
+      grafana_dashboard { "${pe_service} Performance":
+        ensure           => absent,
+        grafana_user     => 'admin',
+        grafana_password => $grafana_password.unwrap,
+        grafana_url      => $grafana_url,
+      }
     }
   }
 }

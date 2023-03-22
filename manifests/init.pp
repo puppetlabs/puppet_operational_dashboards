@@ -35,6 +35,8 @@
 #   as well Deferred functions in this module.
 # @param telegraf_token
 #   Telegraf token in Sensitive format.
+# @param include_pe_metrics
+#   Whether to include Filesync and Orchestrator dashboards
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
@@ -53,6 +55,8 @@ class puppet_operational_dashboards (
   Boolean $manage_telegraf = true,
   Boolean $manage_telegraf_token = true,
   Boolean $use_ssl = true,
+  # Check for PE by looking at the compiling server's module_groups setting
+  Boolean $include_pe_metrics = $settings::module_groups =~ 'pe_only',
 ) {
   unless $facts['os']['family'] in ['RedHat', 'Debian', 'Suse'] {
     fail("Installation on ${facts['os']['family']} is not supported")

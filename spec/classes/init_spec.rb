@@ -6,13 +6,14 @@ describe 'puppet_operational_dashboards' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
       let(:facts) { os_facts }
+      let(:params) { { include_pe_metrics: true } }
 
       it { is_expected.to compile }
     end
   end
 
   context 'when using default parameters' do
-    let(:params) { { influxdb_host: 'localhost' } }
+    let(:params) { { influxdb_host: 'localhost', include_pe_metrics: true } }
 
     it {
       is_expected.to contain_class('puppet_operational_dashboards::profile::dashboards')
@@ -79,13 +80,13 @@ describe 'puppet_operational_dashboards' do
   end
 
   context 'when not using ssl' do
-    let(:params) { { influxdb_host: 'localhost', use_ssl: false } }
+    let(:params) { { influxdb_host: 'localhost', use_ssl: false, include_pe_metrics: true } }
 
     it { is_expected.to contain_class('influxdb').with(use_ssl: false) }
   end
 
   context 'when not managing influxdb' do
-    let(:params) { { influxdb_host: 'localhost', manage_influxdb: false } }
+    let(:params) { { influxdb_host: 'localhost', manage_influxdb: false, include_pe_metrics: true } }
 
     it {
       is_expected.not_to contain_class('influxdb')
@@ -99,7 +100,7 @@ describe 'puppet_operational_dashboards' do
   end
 
   context 'when not managing telegraf' do
-    let(:params) { { manage_telegraf: false } }
+    let(:params) { { manage_telegraf: false, include_pe_metrics: true } }
 
     it {
       is_expected.not_to contain_class('puppet_operational_dashboards::telegraf::agent')
@@ -107,7 +108,7 @@ describe 'puppet_operational_dashboards' do
   end
 
   context 'when not managing telegraf token' do
-    let(:params) { { manage_telegraf_token: false } }
+    let(:params) { { manage_telegraf_token: false, include_pe_metrics: true } }
 
     it {
       is_expected.not_to contain_influxdb_auth('puppet telegraf token')
@@ -115,7 +116,7 @@ describe 'puppet_operational_dashboards' do
   end
 
   context 'when passing a token' do
-    let(:params) { { influxdb_host: 'localhost', influxdb_token: RSpec::Puppet::Sensitive.new('puppetlabs') } }
+    let(:params) { { influxdb_host: 'localhost', influxdb_token: RSpec::Puppet::Sensitive.new('puppetlabs'), include_pe_metrics: true } }
 
     it {
       is_expected.to contain_influxdb_org('puppetlabs').with(token: RSpec::Puppet::Sensitive.new('puppetlabs'))
