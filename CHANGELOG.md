@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.11.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.11.0) (2023-02-28)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.10.0...v1.11.0)
+
+### Added
+
+- Add influxdb\_bucket\_retention\_rules parameter [\#141](https://github.com/puppetlabs/puppet_operational_dashboards/pull/141) ([SimonHoenscheid](https://github.com/SimonHoenscheid))
+- update grafana\_version to fix CVE-2022-23552 and CVE-2022-39324 [\#138](https://github.com/puppetlabs/puppet_operational_dashboards/pull/138) ([SimonHoenscheid](https://github.com/SimonHoenscheid))
+
+### Fixed
+
+- Group the total db size by 5m intervals [\#139](https://github.com/puppetlabs/puppet_operational_dashboards/pull/139) ([m0dular](https://github.com/m0dular))
+- Fix JRuby lock wait and held times [\#137](https://github.com/puppetlabs/puppet_operational_dashboards/pull/137) ([m0dular](https://github.com/m0dular))
+
 ## [v1.10.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.10.0) (2023-02-07)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.9.0...v1.10.0)

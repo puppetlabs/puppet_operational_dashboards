@@ -62,6 +62,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`use_ssl`](#-puppet_operational_dashboards--use_ssl)
 * [`influxdb_token_file`](#-puppet_operational_dashboards--influxdb_token_file)
 * [`telegraf_token`](#-puppet_operational_dashboards--telegraf_token)
+* [`include_pe_metrics`](#-puppet_operational_dashboards--include_pe_metrics)
 
 ##### <a name="-puppet_operational_dashboards--manage_influxdb"></a>`manage_influxdb`
 
@@ -177,6 +178,14 @@ Telegraf token in Sensitive format.
 
 Default value: `undef`
 
+##### <a name="-puppet_operational_dashboards--include_pe_metrics"></a>`include_pe_metrics`
+
+Data type: `Boolean`
+
+Whether to include Filesync and Orchestrator dashboards
+
+Default value: `$settings::module_groups =~ 'pe_only'`
+
 ### <a name="puppet_operational_dashboards--enterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
 
 When applied to an appropriate node group this class applies the toml gem and database access
@@ -244,6 +253,7 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 * [`telegraf_token_name`](#-puppet_operational_dashboards--profile--dashboards--telegraf_token_name)
 * [`influxdb_token_file`](#-puppet_operational_dashboards--profile--dashboards--influxdb_token_file)
 * [`provisioning_datasource_file`](#-puppet_operational_dashboards--profile--dashboards--provisioning_datasource_file)
+* [`include_pe_metrics`](#-puppet_operational_dashboards--profile--dashboards--include_pe_metrics)
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--token"></a>`token`
 
@@ -391,6 +401,14 @@ Location on disk to store datasource definition
 
 Default value: `'/etc/grafana/provisioning/datasources/influxdb.yaml'`
 
+##### <a name="-puppet_operational_dashboards--profile--dashboards--include_pe_metrics"></a>`include_pe_metrics`
+
+Data type: `Boolean`
+
+Whether to include Filesync and Orchestrator dashboards
+
+Default value: `$puppet_operational_dashboards::include_pe_metrics`
+
 ### <a name="puppet_operational_dashboards--profile--postgres_access"></a>`puppet_operational_dashboards::profile::postgres_access`
 
 Allows Telegraf to connect and collect metrics from postgres nodes
@@ -459,6 +477,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`puppetserver_hosts`](#-puppet_operational_dashboards--telegraf--agent--puppetserver_hosts)
 * [`puppetdb_hosts`](#-puppet_operational_dashboards--telegraf--agent--puppetdb_hosts)
 * [`postgres_hosts`](#-puppet_operational_dashboards--telegraf--agent--postgres_hosts)
+* [`orchestrator_hosts`](#-puppet_operational_dashboards--telegraf--agent--orchestrator_hosts)
 * [`profiles`](#-puppet_operational_dashboards--telegraf--agent--profiles)
 * [`local_services`](#-puppet_operational_dashboards--telegraf--agent--local_services)
 * [`token_name`](#-puppet_operational_dashboards--telegraf--agent--token_name)
@@ -644,6 +663,15 @@ Array of Postgres hosts to collect metrics from.  Defaults to all Postgres in a 
 FOSS users need to supply a list of FQDNs.
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Database')`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--orchestrator_hosts"></a>`orchestrator_hosts`
+
+Data type: `Array`
+
+Array of Orchestrator hosts to collect metrics from.  Defaults to all Orchestrator hosts in a PE infrastructure.
+FOSS users need to supply a list of FQDNs.
+
+Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Orchestrator')`
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--profiles"></a>`profiles`
 
