@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.12.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.12.0) (2023-03-27)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.11.0...v1.12.0)
+
+### Added
+
+- \(SUP-4087\) Add Orchestrator metrics [\#148](https://github.com/puppetlabs/puppet_operational_dashboards/pull/148) ([m0dular](https://github.com/m0dular))
+- \(SUP-4065\) Add parameter for group\_by interval [\#146](https://github.com/puppetlabs/puppet_operational_dashboards/pull/146) ([m0dular](https://github.com/m0dular))
+
+### Fixed
+
+- Fix null checks in puppetserver import script [\#149](https://github.com/puppetlabs/puppet_operational_dashboards/pull/149) ([m0dular](https://github.com/m0dular))
+- limit apt workaround scope to Debian [\#145](https://github.com/puppetlabs/puppet_operational_dashboards/pull/145) ([vchepkov](https://github.com/vchepkov))
+
 ## [v1.11.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.11.0) (2023-02-28)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.10.0...v1.11.0)
