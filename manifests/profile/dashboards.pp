@@ -48,6 +48,8 @@
 #   Location on disk to store datasource definition
 # @param include_pe_metrics
 #   Whether to include Filesync and Orchestrator dashboards
+# @param manage_system_board
+#   Whether the System Performance dashboard should be created
 class puppet_operational_dashboards::profile::dashboards (
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $grafana_host = $facts['networking']['fqdn'],
@@ -71,6 +73,7 @@ class puppet_operational_dashboards::profile::dashboards (
   String $telegraf_token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
   Boolean $include_pe_metrics = $puppet_operational_dashboards::include_pe_metrics,
+  Boolean $manage_system_board = $puppet_opertational_dashboards::manage_system_board,
 ) {
   $grafana_url = "http://${grafana_host}:${grafana_port}"
 
@@ -156,12 +159,21 @@ class puppet_operational_dashboards::profile::dashboards (
     }
   }
 
-  ['Puppetserver', 'Puppetdb', 'Postgresql', 'System'].each |$service| {
+  ['Puppetserver', 'Puppetdb', 'Postgresql'].each |$service| {
     grafana_dashboard { "${service} Performance":
       grafana_user     => 'admin',
       grafana_password => $grafana_password.unwrap,
       grafana_url      => $grafana_url,
       content          => file("puppet_operational_dashboards/${service}_performance.json"),
+    }
+  }
+
+  if $manage_system_board {
+    grafana_dashboard { 'System Performance':
+      grafana_user     => 'admin',
+      grafana_password => $grafana_password.unwrap,
+      grafana_url      => $grafana_url,
+      content          => file('puppet_operational_dashboards/System_performance.json'),
     }
   }
 
