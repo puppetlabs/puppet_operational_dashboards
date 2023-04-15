@@ -73,7 +73,7 @@ class puppet_operational_dashboards::profile::dashboards (
   String $telegraf_token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
   Boolean $include_pe_metrics = $puppet_operational_dashboards::include_pe_metrics,
-  Boolean $manage_system_board = $puppet_opertational_dashboards::manage_system_board,
+  Boolean $manage_system_board = $puppet_operational_dashboards::manage_system_board,
 ) {
   $grafana_url = "http://${grafana_host}:${grafana_port}"
 
