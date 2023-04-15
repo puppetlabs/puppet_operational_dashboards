@@ -168,13 +168,16 @@ class puppet_operational_dashboards::profile::dashboards (
     }
   }
 
-  if $manage_system_board {
-    grafana_dashboard { 'System Performance':
-      grafana_user     => 'admin',
-      grafana_password => $grafana_password.unwrap,
-      grafana_url      => $grafana_url,
-      content          => file('puppet_operational_dashboards/System_performance.json'),
-    }
+  $ensure_system_performance =  $manage_system_board ? {
+    true    => 'present',
+    default => 'absent',
+  }
+  grafana_dashboard { 'System Performance':
+    ensure           => $ensure_system_performance,
+    grafana_user     => 'admin',
+    grafana_password => $grafana_password.unwrap,
+    grafana_url      => $grafana_url,
+    content          => file('puppet_operational_dashboards/System_performance.json'),
   }
 
   if $include_pe_metrics {
