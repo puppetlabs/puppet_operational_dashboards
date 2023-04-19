@@ -6,6 +6,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
     <<-PRE_COND
       class{ 'puppet_operational_dashboards':
         include_pe_metrics => true,
+        manage_system_board => true,
       }
     PRE_COND
   end
