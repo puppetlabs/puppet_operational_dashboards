@@ -71,6 +71,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
         influxdb_token_file: '/root/.influxdb_token',
         manage_grafana: false,
         include_pe_metrics: true,
+        manage_system_board: true,
       }
     end
 
@@ -99,6 +100,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
         telegraf_token_name: 'puppet telegraf token',
         influxdb_token_file: '/root/.influxdb_token',
         include_pe_metrics: true,
+        manage_system_board: true,
       }
     end
 
