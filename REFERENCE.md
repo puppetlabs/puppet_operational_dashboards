@@ -63,6 +63,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`influxdb_token_file`](#-puppet_operational_dashboards--influxdb_token_file)
 * [`telegraf_token`](#-puppet_operational_dashboards--telegraf_token)
 * [`include_pe_metrics`](#-puppet_operational_dashboards--include_pe_metrics)
+* [`manage_system_board`](#-puppet_operational_dashboards--manage_system_board)
 
 ##### <a name="-puppet_operational_dashboards--manage_influxdb"></a>`manage_influxdb`
 
@@ -186,6 +187,14 @@ Whether to include Filesync and Orchestrator dashboards
 
 Default value: `$settings::module_groups =~ 'pe_only'`
 
+##### <a name="-puppet_operational_dashboards--manage_system_board"></a>`manage_system_board`
+
+Data type: `Boolean`
+
+Whether the System Performance dashboard should be added to grafana
+
+Default value: `true`
+
 ### <a name="puppet_operational_dashboards--enterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
 
 When applied to an appropriate node group this class applies the toml gem and database access
@@ -254,6 +263,7 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 * [`influxdb_token_file`](#-puppet_operational_dashboards--profile--dashboards--influxdb_token_file)
 * [`provisioning_datasource_file`](#-puppet_operational_dashboards--profile--dashboards--provisioning_datasource_file)
 * [`include_pe_metrics`](#-puppet_operational_dashboards--profile--dashboards--include_pe_metrics)
+* [`manage_system_board`](#-puppet_operational_dashboards--profile--dashboards--manage_system_board)
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--token"></a>`token`
 
@@ -409,6 +419,14 @@ Whether to include Filesync and Orchestrator dashboards
 
 Default value: `$puppet_operational_dashboards::include_pe_metrics`
 
+##### <a name="-puppet_operational_dashboards--profile--dashboards--manage_system_board"></a>`manage_system_board`
+
+Data type: `Boolean`
+
+Whether the System Performance dashboard should be created
+
+Default value: `$puppet_operational_dashboards::manage_system_board`
+
 ### <a name="puppet_operational_dashboards--profile--postgres_access"></a>`puppet_operational_dashboards::profile::postgres_access`
 
 Allows Telegraf to connect and collect metrics from postgres nodes
@@ -468,6 +486,9 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`ssl_cert_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_cert_file)
 * [`ssl_key_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_key_file)
 * [`ssl_ca_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_ca_file)
+* [`puppet_ssl_cert_file`](#-puppet_operational_dashboards--telegraf--agent--puppet_ssl_cert_file)
+* [`puppet_ssl_key_file`](#-puppet_operational_dashboards--telegraf--agent--puppet_ssl_key_file)
+* [`puppet_ssl_ca_file`](#-puppet_operational_dashboards--telegraf--agent--puppet_ssl_ca_file)
 * [`insecure_skip_verify`](#-puppet_operational_dashboards--telegraf--agent--insecure_skip_verify)
 * [`version`](#-puppet_operational_dashboards--telegraf--agent--version)
 * [`archive_location`](#-puppet_operational_dashboards--telegraf--agent--archive_location)
@@ -564,7 +585,7 @@ Default value: `true`
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--ssl_cert_file"></a>`ssl_cert_file`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
 SSL certificate to be used by the telegraf service.  Defaults to the agent certificate issued by the Puppet CA for the local machine.
 
@@ -572,7 +593,7 @@ Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--ssl_key_file"></a>`ssl_key_file`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
 Private key used in the CSR for the certificate specified by $ssl_cert_file.
 Defaults to the private key of the local machine for generating a CSR for the Puppet CA
@@ -581,9 +602,34 @@ Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--ssl_ca_file"></a>`ssl_ca_file`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
 CA certificate issued by the CA which signed the certificate specified by $ssl_cert_file.  Defaults to the Puppet CA.
+
+Default value: `'/etc/puppetlabs/puppet/ssl/certs/ca.pem'`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--puppet_ssl_cert_file"></a>`puppet_ssl_cert_file`
+
+Data type: `Stdlib::Absolutepath`
+
+SSL certificate to be used by the telegraf inputs.  Defaults to the agent certificate issued by the Puppet CA for the local machine.
+
+Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--puppet_ssl_key_file"></a>`puppet_ssl_key_file`
+
+Data type: `Stdlib::Absolutepath`
+
+Private key used in the CSR for the certificate specified by $puppet_ssl_cert_file.
+Defaults to the private key of the local machine for generating a CSR for the Puppet CA
+
+Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem"`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--puppet_ssl_ca_file"></a>`puppet_ssl_ca_file`
+
+Data type: `Stdlib::Absolutepath`
+
+CA certificate issued by the CA which signed the certificate specified by $puppet_ssl_cert_file.  Defaults to the Puppet CA.
 
 Default value: `'/etc/puppetlabs/puppet/ssl/certs/ca.pem'`
 
