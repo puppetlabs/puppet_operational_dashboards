@@ -9,21 +9,12 @@
 #   Whether the resource should be present or absent
 # @param http_timeout_seconds
 #   Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
-# @param puppet_ssl_ca_file
-#   CA file to use when connecting to puppet services
-# @param puppet_ssl_cert_file
-#   Cert to use when connecting to puppet services
-# @param puppet_ssl_key_file
-#   Key to use when connecting to Puppet services
 define puppet_operational_dashboards::telegraf::config (
   Array[String[1]] $hosts,
   Enum['https', 'http'] $protocol,
   Integer[1] $http_timeout_seconds,
   String $service = $title,
   Enum['present', 'absent'] $ensure = 'present',
-  Stdlib::Absolutepath $puppet_ssl_ca_file = $puppet_operational_dashboards::telegraf::agent::puppet_ssl_ca_file,
-  Stdlib::Absolutepath $puppet_ssl_cert_file = puppet_operational_dashboards::telegraf::agent::puppet_ssl_cert_file,
-  Stdlib::Absolutepath $puppet_ssl_key_file = puppet_operational_dashboards::telegraf::agent::puppet_ssl_key_file,
 ) {
   unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm', 'orchestrator'] {
     fail("Unknown service type ${service}")
@@ -46,9 +37,6 @@ define puppet_operational_dashboards::telegraf::config (
         urls                 => $urls,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
-        puppet_ssl_ca_file   => $puppet_ssl_ca_file,
-        puppet_ssl_cert_file => $puppet_ssl_cert_file,
-        puppet_ssl_key_file  => $puppet_ssl_key_file,
       }
     ).influxdb::from_toml()
 

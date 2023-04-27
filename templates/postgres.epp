@@ -1,10 +1,7 @@
 <%- |
   String $certname,
-  Stdlib::Absolutepath $puppet_ssl_cert_file,
-  Stdlib::Absolutepath $puppet_ssl_key_file,
-  Stdlib::Absolutepath $puppet_ssl_ca_file,
 | -%>
-address = "postgres://telegraf@<%=$certname%>:5432/pe-puppetdb?sslmode=verify-full&sslkey=<%= $puppet_ssl_key_file %>&sslcert=<%= $puppet_ssl_cert_file %>&sslrootcert=<%= $puppet_ssl_ca_file %>"
+address = "postgres://telegraf@<%=$certname%>:5432/pe-puppetdb?sslmode=verify-full&sslkey=/etc/telegraf/puppet_key.pem&sslcert=/etc/telegraf/puppet_cert.pem&sslrootcert=/etc/telegraf/puppet_ca.pem"
 databases = ["pe-puppetdb"]
 outputaddress = "<%=$certname%>"
 [[query]]
