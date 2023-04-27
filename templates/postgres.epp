@@ -1,6 +1,4 @@
-<%- |
-  String $certname,
-| -%>
+<%- | String $certname | -%>
 address = "postgres://telegraf@<%=$certname%>:5432/pe-puppetdb?sslmode=verify-full&sslkey=/etc/telegraf/puppet_key.pem&sslcert=/etc/telegraf/puppet_cert.pem&sslrootcert=/etc/telegraf/puppet_ca.pem"
 databases = ["pe-puppetdb"]
 outputaddress = "<%=$certname%>"
