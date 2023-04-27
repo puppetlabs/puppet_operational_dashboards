@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.13.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.13.0) (2023-03-29)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.12.0...v1.13.0)
+
+### Fixed
+
+- pe\_profiles\_on\_host: Fix orchestrator support [\#151](https://github.com/puppetlabs/puppet_operational_dashboards/pull/151) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v1.12.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.12.0) (2023-03-27)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.11.0...v1.12.0)
