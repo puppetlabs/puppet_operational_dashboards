@@ -301,7 +301,7 @@ class puppet_operational_dashboards::telegraf::agent (
       $postgres_hosts.sort.each |$pg_host| {
         $inputs = epp(
           'puppet_operational_dashboards/postgres.epp',
-          { certname => $pg_host, }
+          { certname => $pg_host }
         ).influxdb::from_toml()
 
         telegraf::input { "postgres_${pg_host}":
@@ -343,7 +343,7 @@ class puppet_operational_dashboards::telegraf::agent (
     if 'Puppet_enterprise::Profile::Database' in $profiles or 'postgres' in $local_services {
       $inputs = epp(
         'puppet_operational_dashboards/postgres.epp',
-        { certname => $trusted['certname'], }
+        { certname => $trusted['certname'] }
       ).influxdb::from_toml()
 
       telegraf::input { "postgres_${trusted['certname']}":
