@@ -32,6 +32,13 @@
 #   Defaults to the private key of the local machine for generating a CSR for the Puppet CA
 # @param ssl_ca_file
 #   CA certificate issued by the CA which signed the certificate specified by $ssl_cert_file.  Defaults to the Puppet CA.
+# @param puppet_ssl_cert_file
+#   SSL certificate to be used by the telegraf inputs.  Defaults to the agent certificate issued by the Puppet CA for the local machine.
+# @param puppet_ssl_key_file
+#   Private key used in the CSR for the certificate specified by $puppet_ssl_cert_file.
+#   Defaults to the private key of the local machine for generating a CSR for the Puppet CA
+# @param puppet_ssl_ca_file
+#   CA certificate issued by the CA which signed the certificate specified by $puppet_ssl_cert_file.  Defaults to the Puppet CA.
 # @param insecure_skip_verify
 #   Skip verification of SSL certificate.  Defaults to true.
 # @param version
@@ -87,9 +94,12 @@ class puppet_operational_dashboards::telegraf::agent (
   Boolean $insecure_skip_verify = true,
   Boolean $manage_archive = !$manage_repo,
   Boolean $manage_user = true,
-  String  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
-  String  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
-  String  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
+  Stdlib::Absolutepath  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
+  Stdlib::Absolutepath  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
+  Stdlib::Absolutepath  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
+  Stdlib::Absolutepath  $puppet_ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
+  Stdlib::Absolutepath  $puppet_ssl_key_file = "/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
+  Stdlib::Absolutepath  $puppet_ssl_ca_file = '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
   # Use the $version parameter to determine the archive link, stripping the '-1' suffix.
   String $archive_location = "https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz",
   String $archive_install_dir = '/opt/telegraf',
@@ -177,6 +187,14 @@ class puppet_operational_dashboards::telegraf::agent (
       require => Class['telegraf::install'],
       notify  => Service['telegraf'],
     }
+    file { '/etc/telegraf/puppet_cert.pem':
+      ensure  => file,
+      source  => "file:///${puppet_ssl_cert_file}",
+      mode    => '0400',
+      owner   => 'telegraf',
+      require => Class['telegraf::install'],
+      notify  => Service['telegraf'],
+    }
     file { '/etc/telegraf/key.pem':
       ensure  => file,
       source  => "file:///${ssl_key_file}",
@@ -185,9 +203,25 @@ class puppet_operational_dashboards::telegraf::agent (
       require => Class['telegraf::install'],
       notify  => Service['telegraf'],
     }
+    file { '/etc/telegraf/puppet_key.pem':
+      ensure  => file,
+      source  => "file:///${puppet_ssl_key_file}",
+      mode    => '0400',
+      owner   => 'telegraf',
+      require => Class['telegraf::install'],
+      notify  => Service['telegraf'],
+    }
     file { '/etc/telegraf/ca.pem':
       ensure  => file,
       source  => "file:///${ssl_ca_file}",
+      mode    => '0400',
+      owner   => 'telegraf',
+      require => Class['telegraf::install'],
+      notify  => Service['telegraf'],
+    }
+    file { '/etc/telegraf/puppet_ca.pem':
+      ensure  => file,
+      source  => "file:///${puppet_ssl_ca_file}",
       mode    => '0400',
       owner   => 'telegraf',
       require => Class['telegraf::install'],
@@ -267,7 +301,7 @@ class puppet_operational_dashboards::telegraf::agent (
       $postgres_hosts.sort.each |$pg_host| {
         $inputs = epp(
           'puppet_operational_dashboards/postgres.epp',
-          { certname     => $pg_host }
+          { certname => $pg_host }
         ).influxdb::from_toml()
 
         telegraf::input { "postgres_${pg_host}":
@@ -309,7 +343,7 @@ class puppet_operational_dashboards::telegraf::agent (
     if 'Puppet_enterprise::Profile::Database' in $profiles or 'postgres' in $local_services {
       $inputs = epp(
         'puppet_operational_dashboards/postgres.epp',
-        { certname     => $trusted['certname'] }
+        { certname => $trusted['certname'] }
       ).influxdb::from_toml()
 
       telegraf::input { "postgres_${trusted['certname']}":

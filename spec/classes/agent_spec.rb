@@ -52,7 +52,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
       is_expected.to contain_service('telegraf').with(ensure: 'running')
       is_expected.to contain_service('telegraf').that_requires(['Class[telegraf::install]', 'Exec[puppet_telegraf_daemon_reload]'])
 
-      ['/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem', '/etc/telegraf/key.pem'].each do |cert_file|
+      ['/etc/telegraf/puppet_ca.pem', '/etc/telegraf/puppet_cert.pem', '/etc/telegraf/puppet_key.pem', '/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem', '/etc/telegraf/key.pem'].each do |cert_file|
         is_expected.to contain_file(cert_file)
       end
 
@@ -76,7 +76,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         %r{urls = \["https://localhost.foo.com:8140/status/v1/services\?level=debug"},
       )
       is_expected.to contain_file('/etc/telegraf/telegraf.d/puppetserver_metrics.conf').with_content(
-        %r{tls_cert = "/etc/telegraf/cert\.pem"},
+        %r{tls_cert = "/etc/telegraf/puppet_cert\.pem"},
       )
       is_expected.to contain_file('/etc/systemd/system/telegraf.service.d/override.conf').that_notifies(['Exec[puppet_telegraf_daemon_reload]', 'Service[telegraf]'])
     }
@@ -133,7 +133,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
     it {
       is_expected.to contain_class('telegraf').with(outputs: influxdb_v2)
 
-      ['/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem', '/etc/telegraf/key.pem'].each do |cert_file|
+      ['/etc/telegraf/puppet_ca.pem', '/etc/telegraf/puppet_cert.pem', '/etc/telegraf/puppet_key.pem', '/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem', '/etc/telegraf/key.pem'].each do |cert_file|
         is_expected.not_to contain_file(cert_file)
       end
 
@@ -141,7 +141,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         %r{urls = \["http://localhost.foo.com:8140/status/v1/services\?level=debug"},
       )
       is_expected.not_to contain_file('/etc/telegraf/telegraf.d/puppetserver_metrics.conf').with_content(
-        %r{tls_cert = "/etc/telegraf/cert\.pem"},
+        %r{tls_cert = "/etc/telegraf/puppet_cert\.pem"},
       )
     }
   end
@@ -181,7 +181,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
     it {
       is_expected.to contain_class('telegraf').with(outputs: influxdb_v2)
 
-      ['/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem', '/etc/telegraf/key.pem'].each do |cert_file|
+      ['/etc/telegraf/puppet_ca.pem', '/etc/telegraf/puppet_cert.pem', '/etc/telegraf/puppet_key.pem', '/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem', '/etc/telegraf/key.pem'].each do |cert_file|
         is_expected.not_to contain_file(cert_file)
       end
     }
