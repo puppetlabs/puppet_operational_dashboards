@@ -140,7 +140,7 @@ describe 'puppet_operational_dashboards::telegraf::config' do
         hosts: ['localhost.foo.com'],
         puppet_ssl_cert_file: '/etc/telegraf/cert.pem',
         puppet_ssl_key_file: '/etc/telegraf/key.pem',
-        puppet_ssl_ca_file: '/etc/telegraf/ca.pem',  
+        puppet_ssl_ca_file: '/etc/telegraf/ca.pem',
       }
     end
 
