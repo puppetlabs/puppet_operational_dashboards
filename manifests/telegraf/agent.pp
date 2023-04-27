@@ -272,9 +272,9 @@ class puppet_operational_dashboards::telegraf::agent (
   if $collection_method == 'all' {
     unless $puppetdb_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
-        ssl_cert             => $puppet_ssl_cert,
-        ssl_key              => $puppet_ssl_key,
-        ssl_ca               => $puppet_ssl_ca,
+        puppet_ssl_cert_file => $puppet_ssl_cert_file,
+        puppet_ssl_key_file  => $puppet_ssl_key_file,
+        puppet_ssl_ca_file   => $puppet_ssl_ca_file,
         hosts                => $puppetdb_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
@@ -284,9 +284,9 @@ class puppet_operational_dashboards::telegraf::agent (
 
     unless $puppetserver_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { 'puppetserver':
-        ssl_cert             => $puppet_ssl_cert,
-        ssl_key              => $puppet_ssl_key,
-        ssl_ca               => $puppet_ssl_ca,
+        puppet_ssl_cert_file => $puppet_ssl_cert_file,
+        puppet_ssl_key_file  => $puppet_ssl_key_file,
+        puppet_ssl_ca_file   => $puppet_ssl_ca_file,
         hosts                => $puppetserver_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
@@ -296,9 +296,9 @@ class puppet_operational_dashboards::telegraf::agent (
 
     unless $orchestrator_hosts.empty() {
       puppet_operational_dashboards::telegraf::config { 'orchestrator':
-        ssl_cert             => $puppet_ssl_cert,
-        ssl_key              => $puppet_ssl_key,
-        ssl_ca               => $puppet_ssl_ca,
+        puppet_ssl_cert_file => $puppet_ssl_cert_file,
+        puppet_ssl_key_file  => $puppet_ssl_key_file,
+        puppet_ssl_ca_file   => $puppet_ssl_ca_file,
         hosts                => $orchestrator_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
@@ -311,10 +311,10 @@ class puppet_operational_dashboards::telegraf::agent (
         $inputs = epp(
           'puppet_operational_dashboards/postgres.epp',
           {
-            certname => $pg_host,
-            ssl_cert => $puppet_ssl_cert,
-            ssl_key  => $puppet_ssl_key,
-            ssl_ca   => $puppet_ssl_ca,
+            certname             => $pg_host,
+            puppet_ssl_cert_file => $puppet_ssl_cert_file,
+            puppet_ssl_key_file  => $puppet_ssl_key_file,
+            puppet_ssl_ca_file   => $puppet_ssl_ca_file,
           }
         ).influxdb::from_toml()
 
@@ -329,9 +329,9 @@ class puppet_operational_dashboards::telegraf::agent (
   elsif $collection_method == 'local' {
     if 'Puppet_enterprise::Profile::Puppetdb' in $profiles or 'puppetdb' in $local_services {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
-        ssl_cert             => $puppet_ssl_cert,
-        ssl_key              => $puppet_ssl_key,
-        ssl_ca               => $puppet_ssl_ca,
+        puppet_ssl_cert_file => $puppet_ssl_cert_file,
+        puppet_ssl_key_file  => $puppet_ssl_key_file,
+        puppet_ssl_ca_file   => $puppet_ssl_ca_file,
         hosts                => [$trusted['certname']],
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
@@ -341,9 +341,9 @@ class puppet_operational_dashboards::telegraf::agent (
 
     if 'Puppet_enterprise::Profile::Master' in $profiles or 'puppetserver' in $local_services {
       puppet_operational_dashboards::telegraf::config { 'puppetserver':
-        ssl_cert             => $puppet_ssl_cert,
-        ssl_key              => $puppet_ssl_key,
-        ssl_ca               => $puppet_ssl_ca,
+        puppet_ssl_cert_file => $puppet_ssl_cert_file,
+        puppet_ssl_key_file  => $puppet_ssl_key_file,
+        puppet_ssl_ca_file   => $puppet_ssl_ca_file,
         hosts                => [$trusted['certname']],
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
@@ -353,9 +353,9 @@ class puppet_operational_dashboards::telegraf::agent (
 
     if 'Puppet_enterprise::Profile::Orchestrator' in $profiles or 'orchestrator' in $local_services {
       puppet_operational_dashboards::telegraf::config { 'orchestrator':
-        ssl_cert             => $puppet_ssl_cert,
-        ssl_key              => $puppet_ssl_key,
-        ssl_ca               => $puppet_ssl_ca,
+        puppet_ssl_cert_file => $puppet_ssl_cert_file,
+        puppet_ssl_key_file  => $puppet_ssl_key_file,
+        puppet_ssl_ca_file   => $puppet_ssl_ca_file,
         hosts                => $orchestrator_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
@@ -367,10 +367,10 @@ class puppet_operational_dashboards::telegraf::agent (
       $inputs = epp(
         'puppet_operational_dashboards/postgres.epp',
         {
-          certname => $trusted['certname'],
-          ssl_cert => $puppet_ssl_cert,
-          ssl_key  => $puppet_ssl_key,
-          ssl_ca   => $puppet_ssl_ca,
+          certname             => $trusted['certname'],
+          puppet_ssl_cert_file => $puppet_ssl_cert_file,
+          puppet_ssl_key_file  => $puppet_ssl_key_file,
+          puppet_ssl_ca_file   => $puppet_ssl_ca_file,
         }
       ).influxdb::from_toml()
 

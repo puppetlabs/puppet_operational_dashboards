@@ -42,14 +42,14 @@ define puppet_operational_dashboards::telegraf::config (
 
     $inputs = epp(
       "puppet_operational_dashboards/${service}_metrics.epp",
-        {
-          urls                 => $urls,
-          protocol             => $protocol,
-          http_timeout_seconds => $http_timeout_seconds,
-          puppet_ssl_ca_file   => $puppet_ssl_ca_file,
-          puppet_ssl_cert_file => $puppet_ssl_cert_file,
-          puppet_ssl_key_file  => $puppet_ssl_key_file,
-        }
+      {
+        urls                 => $urls,
+        protocol             => $protocol,
+        http_timeout_seconds => $http_timeout_seconds,
+        puppet_ssl_ca_file   => $puppet_ssl_ca_file,
+        puppet_ssl_cert_file => $puppet_ssl_cert_file,
+        puppet_ssl_key_file  => $puppet_ssl_key_file,
+      }
     ).influxdb::from_toml()
 
     telegraf::input { "${service}_metrics":
