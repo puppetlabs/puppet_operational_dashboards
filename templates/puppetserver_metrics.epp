@@ -1,8 +1,4 @@
-<%- |
-  Array[String] $urls,
-  Enum['https', 'http'] $protocol,
-  Integer[1] $http_timeout_seconds,
-| -%>
+<%- | Array[String] $urls, Enum['https', 'http'] $protocol, Integer[1] $http_timeout_seconds | -%>
 <% if $protocol == 'https' { -%>
 tls_cert = '/etc/telegraf/puppet_cert.pem'
 tls_key = '/etc/telegraf/puppet_key.pem'
