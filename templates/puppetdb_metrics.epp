@@ -4,11 +4,11 @@
   Integer[1] $http_timeout_seconds,
   Stdlib::Absolutepath $puppet_ssl_cert_file,
   Stdlib::Absolutepath $puppet_ssl_key_file,
-  Stdlib::Absoluteoath $puppet_ssl_ca_file,
+  Stdlib::Absolutepath $puppet_ssl_ca_file,
 | -%>
 <% if $protocol == 'https' { -%>
 tls_cert = "<%= $puppet_ssl_cert_file %>"
-tls_key = "<%= $ssl_key %>"
+tls_key = "<%= $puppet_ssl_key_file %>"
 tls_ca = "<%= $puppet_ssl_ca_file %>"
 <% } -%>
 data_format = "json_v2"

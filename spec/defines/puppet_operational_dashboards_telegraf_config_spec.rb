@@ -9,6 +9,9 @@ describe 'puppet_operational_dashboards::telegraf::config' do
       protocol: 'https',
       http_timeout_seconds: 5,
       hosts: ['localhost.foo.com'],
+      puppet_ssl_cert_file: '/etc/telegraf/cert.pem',
+      puppet_ssl_key_file: '/etc/telegraf/key.pem',
+      puppet_ssl_ca_file: '/etc/telegraf/ca.pem',
     }
   end
 
@@ -135,6 +138,9 @@ describe 'puppet_operational_dashboards::telegraf::config' do
         protocol: 'http',
         http_timeout_seconds: 5,
         hosts: ['localhost.foo.com'],
+        puppet_ssl_cert_file: '/etc/telegraf/cert.pem',
+        puppet_ssl_key_file: '/etc/telegraf/key.pem',
+        puppet_ssl_ca_file: '/etc/telegraf/ca.pem',  
       }
     end
 

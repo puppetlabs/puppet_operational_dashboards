@@ -9,7 +9,7 @@
 <% if $protocol == 'https' { -%>
 tls_cert = "<%= $puppet_ssl_cert_file %>"
 tls_key = "<%= $puppet_ssl_key_file %>"
-tls_ca = "<%= $ssl_ca %>"
+tls_ca = "<%= $puppet_ssl_ca_file %>"
 <% } -%>
 data_format = "json_v2"
 headers = {"Content-type" = "application/json"}
