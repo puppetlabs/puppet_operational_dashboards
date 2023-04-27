@@ -37,6 +37,8 @@
 #   Telegraf token in Sensitive format.
 # @param include_pe_metrics
 #   Whether to include Filesync and Orchestrator dashboards
+# @param manage_system_board
+#   Whether the System Performance dashboard should be added to grafana
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
@@ -57,6 +59,7 @@ class puppet_operational_dashboards (
   Boolean $use_ssl = true,
   # Check for PE by looking at the compiling server's module_groups setting
   Boolean $include_pe_metrics = $settings::module_groups =~ 'pe_only',
+  Boolean $manage_system_board = true,
 ) {
   unless $facts['os']['family'] in ['RedHat', 'Debian', 'Suse'] {
     fail("Installation on ${facts['os']['family']} is not supported")
