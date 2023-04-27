@@ -21,9 +21,9 @@ define puppet_operational_dashboards::telegraf::config (
   Integer[1] $http_timeout_seconds,
   String $service = $title,
   Enum['present', 'absent'] $ensure = 'present',
-  Stdlib::Absolutpath $puppet_ssl_ca_file = $puppet_operational_dashboards::telegraf::agent::puppet_ssl_ca_file,
-  Stdlib::Absolutpath $puppet_ssl_cert_file = puppet_operational_dashboards::telegraf::agent::puppet_ssl_cert_file,
-  Stdlib::Absolutpath $puppet_ssl_key_file = puppet_operational_dashboards::telegraf::agent::puppet_ssl_key_file,
+  Stdlib::Absolutepath $puppet_ssl_ca_file = $puppet_operational_dashboards::telegraf::agent::puppet_ssl_ca_file,
+  Stdlib::Absolutepath $puppet_ssl_cert_file = puppet_operational_dashboards::telegraf::agent::puppet_ssl_cert_file,
+  Stdlib::Absolutepath $puppet_ssl_key_file = puppet_operational_dashboards::telegraf::agent::puppet_ssl_key_file,
 ) {
   unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm', 'orchestrator'] {
     fail("Unknown service type ${service}")

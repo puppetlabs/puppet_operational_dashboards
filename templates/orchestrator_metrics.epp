@@ -2,8 +2,8 @@
   Array[String] $urls,
   Enum['https', 'http'] $protocol,
   Integer[1] $http_timeout_seconds,
-  Stdlib::Absolutpath $puppet_ssl_cert_file,
-  Stdlib::Absolutpath $puppet_ssl_key_file,
+  Stdlib::Absolutepath $puppet_ssl_cert_file,
+  Stdlib::Absolutepath $puppet_ssl_key_file,
   Stdlib::Absolutepath $puppet_ssl_ca_file,
 | -%>
 <% if $protocol == 'https' { -%>
