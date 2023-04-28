@@ -43,7 +43,36 @@ This module is a replacement for the [puppet_metrics_dashboard module](https://f
 
 ### Note on air-gapped environments
 
-If you are applying either the `puppet_operational_dashboards` or `puppet_operational_dashboards::telegraf::agent` classes to a node that cannot access the internet, it is possible to install packages from an archive source located within the air gap.
+If you are applying either the `puppet_operational_dashboards` or `puppet_operational_dashboards::telegraf::agent` classes to a node that cannot access the internet, it is possible to install packages from either an internal repository or archive sources located within the air gap.
+
+### Internal repositories
+To use internal repositories, set the following parameters.
+
+For InfluxDB, the following parameters are configurable:
+
+* [repo_url](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#repo_url) to point to a local URL
+* [repo_gpg_key_url](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#repo_gpg_key_url) to point to a local URL with the repository's GPG key
+* [repo_gpg_key_id](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#repo_gpg_key_id) to specify a different GPG key ID
+
+Alternatively, you may set [manage_repo](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#manage_repo) to `false` to manage the repository configuration yourself.
+
+For Grafana, the equivalent parameters are:
+
+* [repo_url](https://forge.puppet.com/modules/puppet/grafana/reference#repo_url)
+* [repo_gpg_key_url](https://forge.puppet.com/modules/puppet/grafana/reference#repo_gpg_key_url)
+* [repo_key_id](https://forge.puppet.com/modules/puppet/grafana/reference#repo_key_id)
+* [manage_package_repo](https://forge.puppet.com/modules/puppet/grafana/reference#manage_package_repo)
+
+For Telegraf, the following parameters are available:
+
+* [repo_location](https://forge.puppet.com/modules/puppet/telegraf/reference#repo_location)
+* [manage_repo](https://forge.puppet.com/modules/puppet/telegraf/reference#manage_repo)
+
+GPG options are currently not configurable.
+
+### Archive sources
+
+To use archive sources, set the following parameters.
 
 For InfluxDB, set:
 
