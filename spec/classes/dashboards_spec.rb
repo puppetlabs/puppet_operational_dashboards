@@ -111,4 +111,32 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       is_expected.to contain_file('grafana_provisioning_datasource').that_requires('Class[grafana::install]')
     }
   end
+
+  context 'when managing system dashboards' do
+    it {
+      is_expected.to contain_grafana_dashboard('System_v2 Performance').with_ensure('present')
+    }
+  end
+
+  context 'when not managing system dashboards' do
+    let(:pre_condition) { '' }
+    let(:params) do
+      {
+        token: RSpec::Puppet::Sensitive.new('foo'),
+        use_ssl: true,
+        influxdb_host: 'localhost',
+        influxdb_port: 8086,
+        influxdb_bucket: 'puppet_data',
+        telegraf_token_name: 'puppet telegraf token',
+        influxdb_token_file: '/root/.influxdb_token',
+        include_pe_metrics: true,
+        manage_system_board: false,
+      }
+    end
+
+    it {
+      is_expected.to contain_grafana_dashboard('System_v2 Performance').with_ensure('absent')
+      is_expected.to contain_grafana_dashboard('System Performance').with_ensure('absent')
+    }
+  end
 end

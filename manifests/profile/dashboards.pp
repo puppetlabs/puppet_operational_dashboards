@@ -50,6 +50,8 @@
 #   Whether to include Filesync and Orchestrator dashboards
 # @param manage_system_board
 #   Whether the System Performance dashboard should be created
+# @param system_dashboard_version
+#   Version of the system dashboard to manage. v2 is compatible with puppet_metrics_collector version 7 and up
 class puppet_operational_dashboards::profile::dashboards (
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $grafana_host = $facts['networking']['fqdn'],
@@ -74,6 +76,7 @@ class puppet_operational_dashboards::profile::dashboards (
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
   Boolean $include_pe_metrics = $puppet_operational_dashboards::include_pe_metrics,
   Boolean $manage_system_board = $puppet_operational_dashboards::manage_system_board,
+  Enum['v1', 'v2', 'all'] $system_dashboard_version = 'v2',
 ) {
   $grafana_url = "http://${grafana_host}:${grafana_port}"
 
@@ -172,12 +175,34 @@ class puppet_operational_dashboards::profile::dashboards (
     true    => 'present',
     default => 'absent',
   }
-  grafana_dashboard { 'System Performance':
-    ensure           => $ensure_system_performance,
-    grafana_user     => 'admin',
-    grafana_password => $grafana_password.unwrap,
-    grafana_url      => $grafana_url,
-    content          => file('puppet_operational_dashboards/System_performance.json'),
+  $system_dashboards = $system_dashboard_version ? {
+    'all' => ['System', 'System_v2'],
+    'v1'  => ['System'],
+    'v2'  => ['System_v2'],
+  }
+
+  # ensure => absent should remove both versions of the system performance dashboards
+  if $ensure_system_performance == 'absent' {
+    ['System Performance', 'System_v2 Performance'].each |$board| {
+      grafana_dashboard { $board:
+        ensure           => 'absent',
+        grafana_user     => 'admin',
+        grafana_password => $grafana_password.unwrap,
+        grafana_url      => $grafana_url,
+        content          => '{}',
+      }
+    }
+  }
+  else {
+    $system_dashboards.each |$board| {
+      grafana_dashboard { "${board} Performance":
+        ensure           => present,
+        grafana_user     => 'admin',
+        grafana_password => $grafana_password.unwrap,
+        grafana_url      => $grafana_url,
+        content          => file("puppet_operational_dashboards/${board}_performance.json"),
+      }
+    }
   }
 
   if $include_pe_metrics {
