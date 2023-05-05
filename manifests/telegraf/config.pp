@@ -30,7 +30,7 @@ define puppet_operational_dashboards::telegraf::config (
       'pcp'          => 'metrics/v2/read/default:name=puppetlabs.pcp.connections',
     }
 
-      # Create a urls[] array with literal quotes around each entry
+    # Create a urls[] array with literal quotes around each entry
     if $service == 'pcp' {
       $urls = $hosts.map |$host| { "\"${protocol}://${host}/${path}\"" }
     }
