@@ -310,6 +310,27 @@ class puppet_operational_dashboards::telegraf::agent (
         }
       }
     }
+
+    # The port to use for this mbean is 8143 for Orchestrator and 8140 for Puppet server
+    if puppet_operational_dashboards::include_pe_metrics {
+      $pcp_hosts = $puppetserver_hosts.map |$host| {
+        if $host in $orchestrator_hosts {
+          "${host}:8143"
+        }
+        else {
+          "${host}:8140"
+        }
+      }
+
+      unless $pcp_hosts.empty() {
+        puppet_operational_dashboards::telegraf::config { 'pcp':
+          hosts                => $pcp_hosts.sort,
+          protocol             => $protocol,
+          http_timeout_seconds => $http_timeout_seconds,
+          require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        }
+      }
+    }
   }
 
   elsif $collection_method == 'local' {

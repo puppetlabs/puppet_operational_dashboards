@@ -1,0 +1,18 @@
+<%- | Array[String] $urls, Enum['https', 'http'] $protocol, Integer[1] $http_timeout_seconds | -%>
+<% if $protocol == 'https' { -%>
+tls_cert = "/etc/telegraf/puppet_cert.pem"
+tls_key = "/etc/telegraf/puppet_key.pem"
+tls_ca = "/etc/telegraf/puppet_ca.pem"
+<% } -%>
+data_format = "json_v2"
+headers = {"Content-type" = "application/json"}
+timeout = "<%= $http_timeout_seconds %>s"
+   method = 'GET'
+   urls = <%= $urls %>
+[[json_v2]]
+   measurement_name = 'orchestrator'
+   [[json_v2.object]]
+      path = '@this'
+      tags = ["request_mbean"]
+      excluded_keys = ['value_RateUnit', 'value_DurationUnit', 'request_type', 'status', 'timestamp', 'error', 'error_type']
+      disable_prepend_keys = true

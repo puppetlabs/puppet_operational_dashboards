@@ -16,20 +16,27 @@ define puppet_operational_dashboards::telegraf::config (
   String $service = $title,
   Enum['present', 'absent'] $ensure = 'present',
 ) {
-  unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm', 'orchestrator'] {
+  unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm', 'orchestrator', 'pcp'] {
     fail("Unknown service type ${service}")
   }
 
   if $ensure == 'present' {
     $path = $service ? {
       'puppetdb'     => '8081/metrics/v2/read',
-      'puppetdb_jvm'     => '8081/status/v1/services?level=debug',
-      'puppetserver'     => '8140/status/v1/services?level=debug',
-      'orchestrator'     => '8143/status/v1/services?level=debug',
+      'puppetdb_jvm' => '8081/status/v1/services?level=debug',
+      'puppetserver' => '8140/status/v1/services?level=debug',
+      'orchestrator' => '8143/status/v1/services?level=debug',
+      # The class that includes this defined type specifies the port accordingly
+      'pcp'          => 'metrics/v2/read/default:name=puppetlabs.pcp.connections',
     }
 
-    # Create a urls[] array with literal quotes around each entry
-    $urls = $hosts.map |$host| { "\"${protocol}://${host}:${path}\"" }
+      # Create a urls[] array with literal quotes around each entry
+    if $service == 'pcp' {
+      $urls = $hosts.map |$host| { "\"${protocol}://${host}/${path}\"" }
+    }
+    else {
+      $urls = $hosts.map |$host| { "\"${protocol}://${host}:${path}\"" }
+    }
 
     $inputs = epp(
       "puppet_operational_dashboards/${service}_metrics.epp",
@@ -42,14 +49,27 @@ define puppet_operational_dashboards::telegraf::config (
     }
 
     # Create processors.strings.rename entries to rename full url to hostname
-    $renames = {
-      'replace' => $hosts.map |$host| {
-        {
-          'tag'  => 'url',
-          'old'  => "${protocol}://${host}:${path}",
-          'new'  => $host,
-        }
-      },
+    if $service == 'pcp' {
+      $renames = {
+        'replace' => $hosts.map |$host| {
+          {
+            'tag'  => 'url',
+            'old'  => "${protocol}://${host}/${path}",
+            'new'  => $host.split(':')[0],
+          }
+        },
+      }
+    }
+    else {
+      $renames = {
+        'replace' => $hosts.map |$host| {
+          {
+            'tag'  => 'url',
+            'old'  => "${protocol}://${host}:${path}",
+            'new'  => $host,
+          }
+        },
+      }
     }
 
     telegraf::processor { "${service}_renames":
