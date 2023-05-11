@@ -308,146 +308,6 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 10
-      },
-      "id": 32,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "alias": "$tag_url-pcp_connections",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${datasource}"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "url"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "orchestrator",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "Value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "distinct"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "url",
-              "operator": "=~",
-              "value": "/^$url$/"
-            },
-            {
-              "condition": "AND",
-              "key": "mbean",
-              "operator": "=",
-              "value": "puppetlabs.pcp.connections"
-            }
-          ]
-        }
-      ],
-      "title": "PCP Connections",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
         "uid": "$datasource"
       },
       "fieldConfig": {
@@ -507,7 +367,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 10
       },
       "id": 3,
       "links": [],
@@ -554,7 +414,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -610,7 +469,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -702,7 +560,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 10
       },
       "id": 22,
       "links": [],
@@ -749,7 +607,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-free-jrubies\") FROM \"puppetserver.jruby-metrics.average-free-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -805,7 +662,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-free-jrubies\") FROM \"puppetserver.jruby-metrics.average-free-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -897,7 +753,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 18
       },
       "id": 30,
       "options": {
@@ -943,7 +799,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
           "rawQuery": false,
           "refId": "H",
           "resultFormat": "time_series",
@@ -999,7 +854,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1055,7 +909,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -1111,7 +964,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
           "rawQuery": false,
           "refId": "C",
           "resultFormat": "time_series",
@@ -1202,7 +1054,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 18
       },
       "id": 28,
       "options": {
@@ -1248,7 +1100,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
           "rawQuery": false,
           "refId": "H",
           "resultFormat": "time_series",
@@ -1308,7 +1159,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1368,7 +1218,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -1428,7 +1277,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"function\" != null) AND $timeFilter GROUP BY time($__interval), \"url\", \"function\" fill(null)",
           "rawQuery": false,
           "refId": "C",
           "resultFormat": "time_series",
@@ -1524,7 +1372,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 34
+        "y": 26
       },
       "id": 23,
       "options": {
@@ -1667,7 +1515,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 34
+        "y": 26
       },
       "id": 24,
       "options": {
@@ -1814,7 +1662,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 43
+        "y": 35
       },
       "id": 25,
       "links": [],
@@ -1861,7 +1709,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1917,7 +1764,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -1973,7 +1819,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "C",
           "resultFormat": "time_series",
@@ -1982,6 +1827,171 @@
               {
                 "params": [
                   "puppetlabs.pcp.on-message_mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_send",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "orchestrator",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "rawQuery": false,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "puppetlabs.pcp.on-send_mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_close",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "rawQuery": false,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "broker-service_status_metrics_puppetlabs.pcp.on-close_mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_connect",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "rawQuery": false,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "broker-service_status_metrics_puppetlabs.pcp.on-connect_mean"
                 ],
                 "type": "field"
               },
@@ -2026,18 +2036,72 @@
             }
           ],
           "hide": false,
-          "measurement": "orchestrator",
+          "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
-          "refId": "D",
+          "refId": "G",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "puppetlabs.pcp.on-send_mean"
+                  "broker-service_status_metrics_puppetlabs.pcp.on-message_mean"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_send",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "broker-service_status_metrics_puppetlabs.pcp.on-send_mean"
                 ],
                 "type": "field"
               },
@@ -2121,7 +2185,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 43
+        "y": 35
       },
       "id": 26,
       "links": [],
@@ -2168,7 +2232,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2224,7 +2287,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -2280,7 +2342,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "C",
           "resultFormat": "time_series",
@@ -2336,7 +2397,6 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-requested-jrubies\") FROM \"puppetserver.jruby-metrics.average-requested-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "D",
           "resultFormat": "time_series",
@@ -2345,6 +2405,226 @@
               {
                 "params": [
                   "puppetlabs.pcp.on-send_rates_5"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_close",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "rawQuery": false,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "broker-service_status_metrics_puppetlabs.pcp.on-close_rates_5"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_connect",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "rawQuery": false,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "broker-service_status_metrics_puppetlabs.pcp.on-connect_rates_5"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_message",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "rawQuery": false,
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "broker-service_status_metrics_puppetlabs.pcp.on-message_rates_5"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "url",
+              "operator": "=~",
+              "value": "/^$url$/"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_url-on_send",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "url"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "puppetserver",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "rawQuery": false,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "broker-service_status_metrics_puppetlabs.pcp.on-send_rates_5"
                 ],
                 "type": "field"
               },
