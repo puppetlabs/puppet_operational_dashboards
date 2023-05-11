@@ -130,6 +130,7 @@ plan puppet_operational_dashboards::load_metrics (
       'system_memory.conf',
       'system_procs.conf',
       'orchestrator.conf',
+      'sar.conf',
     ].each |$script| {
       file { "${conf_dir}/telegraf.conf.d/${script}":
         ensure => file,
