@@ -27,7 +27,7 @@ fixtures:
     ruby_task_helper: 'https://git@github.com/puppetlabs/puppetlabs-ruby_task_helper'
     cron_core: 'https://github.com/puppetlabs/puppetlabs-cron_core'
     bootstrap: 'https://github.com/puppetlabs/puppetlabs-bootstrap'
-    node_manager: 'https://github.com/WhatsARanjit/puppet-node_manager'
+    node_manager: 'https://github.com/MartyEwings/puppet-node_manager.git'
     apply_helpers: 'https://github.com/puppetlabs/puppetlabs-apply_helpers'
     bolt_shim: 'https://github.com/puppetlabs/puppetlabs-bolt_shim'
     debug: 'https://github.com/nwops/puppet-debug'
