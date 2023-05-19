@@ -122,6 +122,23 @@ plan puppet_operational_dashboards::load_metrics (
     file { "${conf_dir}/telegraf.conf.d":
       ensure => directory,
     }
+    file {"${conf_dir}/sar2influx.rb":
+      ensure => file,
+      mode   => '0775',
+      source => "puppet:///modules/puppet_operational_dashboards/plan_files/sar2influx.rb"
+    }
+
+    # These are special because we don't want to load both and therefore don't write them to conf.d
+    [
+      'sar.conf',
+      'system_sar.conf',
+    ].each |$script| {
+      file { "${conf_dir}/${script}":
+        ensure => file,
+        source => "puppet:///modules/puppet_operational_dashboards/plan_files/${script}",
+      }
+    }
+
     [
       'postgres.conf',
       'puppetdb.conf',
@@ -130,7 +147,6 @@ plan puppet_operational_dashboards::load_metrics (
       'system_memory.conf',
       'system_procs.conf',
       'orchestrator.conf',
-      'sar.conf',
     ].each |$script| {
       file { "${conf_dir}/telegraf.conf.d/${script}":
         ensure => file,

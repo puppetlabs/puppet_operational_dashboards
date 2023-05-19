@@ -19,6 +19,8 @@ while getopts ":t:m:s:c" opt; do
   esac
 done
 
+outfile="$(mktemp -p "$telegraf_dir")"
+
 if [[ $support_script ]]; then
   _tmp="$(mktemp -d -p "$telegraf_dir")"
 
@@ -34,7 +36,22 @@ fi
 
 find metrics -type f -name "*gz" -execdir tar xf "{}" \;
 
-out="$(telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config-directory "${telegraf_dir}/telegraf.conf.d")"
+telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config-directory "${telegraf_dir}/telegraf.conf.d" &>"$outfile"
+
+# Only load one set of sar metrics from either the sa?? files, or from the metrics collector, preferring sa?? files
+for f in metrics/sa/sa??; do
+  if [[ -e $f ]]; then
+    have_system_sar=yes
+    break
+  fi
+done
+
+if [[ $have_system_sar ]]; then
+  telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config "${telegraf_dir}/system_sar.conf" &>>"$outfile"
+else
+  telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config "${telegraf_dir}/sar.conf" &>>"$outfile"
+fi
+
 
 if [[ $cleanup == true ]]; then
   [[ -e ${metrics_dir}/metrics ]] && rm "${metrics_dir}/metrics" -rf
@@ -42,5 +59,4 @@ if [[ $cleanup == true ]]; then
   [[ -e $support_script ]] && rm "$support_script"
 fi
 
-
-echo "$out"
+cat "$outfile"
