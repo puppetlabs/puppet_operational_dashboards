@@ -14,6 +14,12 @@
 #   FQDN of the Grafana host.  Defaults to the FQDN of the agent receiving the catalog.
 # @param grafana_port
 #   Port used by the Grafana service.  Defaults to 3000
+# @param grafana_use_ssl
+#   Enable use of HTTPS/SSL for Grafana. This will only configure the dashboards unless 'manage_grafana' is enabled.  Defaults to false.
+# @param grafana_ssl_cert_file
+#   SSL certificate file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.pem'.
+# @param grafana_ssl_key_file
+#   SSL private key file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.key'.
 # @param grafana_timeout
 #   How long to wait for the Grafana service to start.  Defaults to 10 seconds.
 # @param grafana_password
@@ -56,6 +62,9 @@ class puppet_operational_dashboards::profile::dashboards (
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $grafana_host = $facts['networking']['fqdn'],
   Integer $grafana_port = 3000,
+  Boolean $grafana_use_ssl = false,
+  String $grafana_ssl_cert_file = '/etc/grafana/client.pem',
+  String $grafana_ssl_key_file = '/etc/grafana/client.key',
   Integer $grafana_timeout = 10,
   #TODO: document using task to change
   Sensitive[String] $grafana_password = Sensitive('admin'),
@@ -78,7 +87,11 @@ class puppet_operational_dashboards::profile::dashboards (
   Boolean $manage_system_board = $puppet_operational_dashboards::manage_system_board,
   Enum['v1', 'v2', 'all'] $system_dashboard_version = 'v2',
 ) {
-  $grafana_url = "http://${grafana_host}:${grafana_port}"
+  $grafana_protocol = $grafana_use_ssl ? {
+    true  => 'https',
+    false => 'http',
+  }
+  $grafana_url = "${grafana_protocol}://${grafana_host}:${grafana_port}"
 
   $protocol = $use_ssl ? {
     true  => 'https',
@@ -87,10 +100,18 @@ class puppet_operational_dashboards::profile::dashboards (
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
   if $manage_grafana {
+    if $grafana_use_ssl {
+      $grafana_cfg = { 'server' => {
+          'protocol' => 'https',
+          'cert_file' => $grafana_ssl_cert_file,
+          'cert_key' => $grafana_ssl_key_file,
+      } }
+    }
     class { 'grafana':
       install_method      => $grafana_install,
       version             => $grafana_version,
       manage_package_repo => $manage_grafana_repo,
+      cfg                 => $grafana_cfg,
     }
 
     if $facts['os']['family'] == 'Debian' {
