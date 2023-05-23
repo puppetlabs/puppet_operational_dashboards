@@ -106,7 +106,7 @@ class puppet_operational_dashboards::profile::dashboards (
           'cert_file' => $grafana_ssl_cert_file,
           'cert_key' => $grafana_ssl_key_file,
       } }
-    }
+    } else { $grafana_cfg = undef }
     class { 'grafana':
       install_method      => $grafana_install,
       version             => $grafana_version,
