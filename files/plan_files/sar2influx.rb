@@ -7,23 +7,21 @@ require 'rubygems/requirement'
 require 'tempfile'
 require 'uri'
 
-module PBug
 # Tools for importing SAR archives into InfluxDB
-module ImportSARMetrics
+module PBug::ImportSARMetrics
   VERSION = '0.1.0'.freeze
   REQUIRED_RUBY_VERSION = Gem::Requirement.new('>= 2.1')
 
   # Write data to the standard output
   class StandardOutput
-   def write(data)
-     $stdout.write(data)
-   rescue Errno::EPIPE
-     # Stdout is closed. This is normal when the output of this script is
-     # piped to something else that exits early, like `head`.
-   end
+    def write(data)
+      $stdout.write(data)
+    rescue Errno::EPIPE
+      # Stdout is closed. This is normal when the output of this script is
+      # piped to something else that exits early, like `head`.
+    end
 
-   def close
-   end
+    def close; end
   end
 
   # Write data to InfluxDB using HTTPS
@@ -41,8 +39,8 @@ module ImportSARMetrics
       return if @connection
 
       $stderr.puts('INFO: Connecting to InfluxDB server at %{hostname}:%{port}' %
-                   {hostname: @url.hostname,
-                    port: @url.port})
+                   { hostname: @url.hostname,
+                     port: @url.port })
 
       http = Net::HTTP.new(@url.hostname, @url.port)
       http.keep_alive_timeout = 20
@@ -56,15 +54,15 @@ module ImportSARMetrics
       request['Connection'] = 'keep-alive'
       request['Authorization'] = "Token #{@token}"
       response = @connection.request(request, data)
-      $stderr.puts('%{code}: %{message}' % {code: response.code, message: response.message})
+      $stderr.puts('%{code}: %{message}' % { code: response.code, message: response.message })
       # TODO: Raise an error if the request fails.
     end
 
     def close
       if @connection
         $stderr.puts('INFO: Closing connection to InfluxDB server at %{hostname}:%{port}' %
-               {hostname: @url.hostname,
-                port: @url.port})
+                     { hostname: @url.hostname,
+                       port: @url.port })
 
         @connection.finish
       end
@@ -73,6 +71,7 @@ module ImportSARMetrics
     end
   end
 
+  # Command line arguments
   class CLI
     ARG_SPECS = [['--pattern PATTERN',
                   'Glob pattern of files to load.',
@@ -86,20 +85,20 @@ module ImportSARMetrics
                  ['--db-token PATH',
                   'InfluxDB access token used to authorize writes.',
                   'Required if --db-host is used.',
-                  'Default: ~/.influxdb_token']]
+                  'Default: ~/.influxdb_token']].freeze
 
     def initialize(argv = [])
       @data_files = []
       @action = :parse_data
-      @options = {db_token: File.join(Dir.home, '.influxdb_token')}
+      @options = { db_token: File.join(Dir.home, '.influxdb_token') }
       @output = StandardOutput.new
 
-      store_option = lambda do |hash, key, val|
+      store_option = ->(hash, key, val) do
         hash[key] = val
       end
 
       @optparser = OptionParser.new do |parser|
-        parser.banner = "Usage: sar2influxdb.rb [options] [sa01|sa01] [...]"
+        parser.banner = 'Usage: sar2influxdb.rb [options] [sa01|sa01] [...]'
 
         parser.on_tail('-h', '--help', 'Show help') do
           @action = :show_help
@@ -116,8 +115,8 @@ module ImportSARMetrics
 
       ARG_SPECS.each do |spec|
         # TODO: Yell if ARG_SPECS entry contains no --long-flag.
-        long_flag = spec.find {|e| e.start_with?('--')}.split(' ').first
-        option_name = long_flag.sub(/\A-+(?:\[no-\])?/, '').gsub('-', '_').to_sym
+        long_flag = spec.find { |e| e.start_with?('--') }.split(' ').first
+        option_name = long_flag.sub(%r{\A-+(?:\[no-\])?}, '').tr('-', '_').to_sym
 
         @optparser.on(store_option.curry[@options][option_name], *spec)
       end
@@ -126,10 +125,10 @@ module ImportSARMetrics
       # to parse PT_ environment variables that are set if this script is
       # invoked as a task.
       @optparser.top.list.each do |option|
-        option_name = option.switch_name.gsub('-', '_')
+        option_name = option.switch_name.tr('-', '_')
         task_var = "PT_#{option_name}"
 
-        next unless ENV.has_key?(task_var)
+        next unless ENV.key?(task_var)
 
         @options[option_name.to_sym] = option.parse(ENV[task_var], []).last
       end
@@ -156,7 +155,7 @@ module ImportSARMetrics
         return 0
       end
 
-      if not REQUIRED_RUBY_VERSION.satisfied_by?(Gem::Version.new(RUBY_VERSION))
+      unless REQUIRED_RUBY_VERSION.satisfied_by?(Gem::Version.new(RUBY_VERSION))
         $stderr.puts("import_metrics.rb requires Ruby #{REQUIRED_RUBY_VERSION}")
         return 1
       end
@@ -172,11 +171,11 @@ module ImportSARMetrics
       find_sar_commands!
 
       if @options.key?(:db_host) && !@options.key?(:db_name)
-        raise ArgumentError, "--db-name must be used with --db-host."
+        raise ArgumentError, '--db-name must be used with --db-host.'
       end
 
       if @options.key?(:db_host) && !File.readable?(@options[:db_token])
-        raise ArgumentError, "Use --db-token to specify a file with an InfluxDB access token."
+        raise ArgumentError, 'Use --db-token to specify a file with an InfluxDB access token.'
       end
 
       if @options.key?(:db_host)
@@ -197,7 +196,7 @@ module ImportSARMetrics
         end
       end
 
-      return 0
+      0
     rescue => e
       message = if @options[:debug]
                   ["ERROR #{e.class}: #{e.message}",
@@ -207,7 +206,7 @@ module ImportSARMetrics
                 end
 
       $stderr.puts(message)
-      return 1
+      1
     ensure
       @output.close
     end
@@ -228,29 +227,31 @@ module ImportSARMetrics
       if have_sadf.success?
         @sadf = stdout.chomp!
       else
-        raise RuntimeError, [stdout,
-                             stderr,
-                             "\nsar2influxdb requires sadf from the Linux sysstat package to be on the $PATH."].join("\n")
+        raise [stdout,
+               stderr,
+               "\nsar2influxdb requires sadf from the Linux sysstat package to be on the $PATH."].join("\n")
       end
 
-      stdout, stderr, got_sadf_version  = Open3.capture3(@sadf, '-V')
+      stdout, stderr, got_sadf_version = Open3.capture3(@sadf, '-V')
 
-      unless got_sadf_version.success? && (sadf_version = stdout.match(/sysstat version (\d+\.\d+\.\d+)/))
-        raise RuntimeError, "Could not determine sysstat version. '%{cmd} -V' returned:\n%{stdout}\n%{stderr}" %
-                            {cmd: @sadf,
-                             stdout: stdout,
-                             stderr: stderr}
+      unless got_sadf_version.success? && (sadf_version = stdout.match(%r{sysstat version (\d+\.\d+\.\d+)}))
+        raise "Could not determine sysstat version. '%{cmd} -V' returned:\n%{stdout}\n%{stderr}" %
+          {
+            cmd: @sadf,
+            stdout: stdout,
+            stderr: stderr
+          }
       end
 
       sadf_version = sadf_version.captures.first
 
       unless Gem::Requirement.new('>= 11.1.1').satisfied_by?(Gem::Version.new(sadf_version))
-        raise RuntimeError, "sar2influxdb requires sysstat 11.1.1 or newer. '%{cmd} -V' reported the following version: %{version}" %
-                            {cmd: @sadf,
-                             version: sadf_version}
+        raise "sar2influxdb requires sysstat 11.1.1 or newer. '%{cmd} -V' reported the following version: %{version}" %
+          { cmd: @sadf,
+            version: sadf_version }
       end
 
-      $stderr.puts('INFO: using %{cmd} version: %{version}' % {cmd: @sadf, version: sadf_version})
+      $stderr.puts('INFO: using %{cmd} version: %{version}' % { cmd: @sadf, version: sadf_version })
     end
 
     # Parse SAR data
@@ -278,9 +279,9 @@ module ImportSARMetrics
 
       # Convert SAR data produced by older versions of sysstat.
       err_r, err_w = IO.pipe
-      pid = Process.spawn({'LC_ALL' => 'C', 'LANG' => 'C'},
-                           @sadf, '-c', filename,
-                           {out: [tempfile.path, 'w'], err: err_w, in: '/dev/null'})
+      pid = Process.spawn({ 'LC_ALL' => 'C', 'LANG' => 'C' },
+                          @sadf, '-c', filename,
+                          { out: [tempfile.path, 'w'], err: err_w, in: '/dev/null' })
       stderr_reader = Thread.new do
         stderr = err_r.read
         err_r.close
@@ -292,14 +293,14 @@ module ImportSARMetrics
       err_w.close
 
       sadf_input = case stderr_reader.value
-                   when /File format already up-to-date/
+                   when %r{File format already up-to-date}
                      # sadf -c produces no output, original file is usable.
                      filename
                    else
                      tempfile.path
                    end
 
-      stdin, stdout, wait_thr = Open3.popen2(@sadf, '-Up', sadf_input, '--', '-A')
+      stdin, stdout, _wait_thr = Open3.popen2(@sadf, '-Up', sadf_input, '--', '-A')
       # We have nothing to say to `sadf`.
       stdin.close
 
@@ -307,24 +308,22 @@ module ImportSARMetrics
 
       Enumerator.new do |yielder|
         iterator.each do |line|
-          begin
-            hostname, interval, timestamp, name, field, value = line.split(/\s+/)
-            next if field.nil? # one-off events, like restarts
+          hostname, interval, timestamp, name, field, value = line.split(%r{\s+})
+          next if field.nil? # one-off events, like restarts
 
-            # Sanitize characters that InfluxDB considers special.
+          # Sanitize characters that InfluxDB considers special.
 
-            yielder.yield({hostname: hostname,
-                           interval: interval,
-                           timestamp: timestamp,
-                           name: name,
-                           field: field,
-                           value: value})
-          rescue => e
-            $stderr.puts("ERROR: parsing %{file} failed: %{line}" %
-                         {file: filename,
-                          line: line})
-            raise e
-          end
+          yielder.yield({ hostname: hostname,
+                          interval: interval,
+                          timestamp: timestamp,
+                          name: name,
+                          field: field,
+                          value: value })
+        rescue => e
+          $stderr.puts('ERROR: parsing %{file} failed: %{line}' %
+                       { file: filename,
+                         line: line })
+          raise e
         end
 
         # `sadf` has returned all of its data. Close the pipe out.
@@ -335,8 +334,8 @@ module ImportSARMetrics
 
     # Convert SAR data to InfluxDB line protocol
     def format_sar_data(data)
-      data.select{|entry| entry[:name] != 'LINUX-RESTART'}.map do |entry|
-        entry[:hostname].gsub!('.', '-')
+      data.reject { |entry| entry[:name] == 'LINUX-RESTART' }.map do |entry|
+        entry[:hostname].tr!('.', '-')
         entry[:tags] = if ['all', '-'].include?(entry[:name])
                          'server=%{hostname},name=%{field},device=all' % entry
                        else
@@ -348,8 +347,6 @@ module ImportSARMetrics
     end
   end
 end
-end
-
 
 # Entrypoint for when this file is executed directly.
 if File.expand_path(__FILE__) == File.expand_path($PROGRAM_NAME)
