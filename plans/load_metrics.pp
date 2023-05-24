@@ -122,10 +122,10 @@ plan puppet_operational_dashboards::load_metrics (
     file { "${conf_dir}/telegraf.conf.d":
       ensure => directory,
     }
-    file {"${conf_dir}/sar2influx.rb":
+    file { "${conf_dir}/sar2influx.rb":
       ensure => file,
       mode   => '0775',
-      source => "puppet:///modules/puppet_operational_dashboards/plan_files/sar2influx.rb"
+      source => 'puppet:///modules/puppet_operational_dashboards/plan_files/sar2influx.rb',
     }
 
     # These are special because we don't want to load both and therefore don't write them to conf.d
