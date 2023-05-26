@@ -264,6 +264,7 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 * [`provisioning_datasource_file`](#-puppet_operational_dashboards--profile--dashboards--provisioning_datasource_file)
 * [`include_pe_metrics`](#-puppet_operational_dashboards--profile--dashboards--include_pe_metrics)
 * [`manage_system_board`](#-puppet_operational_dashboards--profile--dashboards--manage_system_board)
+* [`system_dashboard_version`](#-puppet_operational_dashboards--profile--dashboards--system_dashboard_version)
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--token"></a>`token`
 
@@ -426,6 +427,14 @@ Data type: `Boolean`
 Whether the System Performance dashboard should be created
 
 Default value: `$puppet_operational_dashboards::manage_system_board`
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--system_dashboard_version"></a>`system_dashboard_version`
+
+Data type: `Enum['v1', 'v2', 'all']`
+
+Version of the system dashboard to manage. v2 is compatible with puppet_metrics_collector version 7 and up
+
+Default value: `'v2'`
 
 ### <a name="puppet_operational_dashboards--profile--postgres_access"></a>`puppet_operational_dashboards::profile::postgres_access`
 

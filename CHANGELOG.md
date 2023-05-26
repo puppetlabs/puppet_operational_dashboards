@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v1.13.1](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.13.1) (2023-04-27)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.13.0...v1.13.1)
+
+### Changed
+
+- \(SUP-3952\) Remove Puppet 6 as a supported platform [\#158](https://github.com/puppetlabs/puppet_operational_dashboards/pull/158) ([elainemccloskey](https://github.com/elainemccloskey))
+
+### Added
+
+- Allow differentiation between ssl influxdb and puppet ssl connections [\#161](https://github.com/puppetlabs/puppet_operational_dashboards/pull/161) ([tuxmea](https://github.com/tuxmea))
+- \(SUP-4194\) Puppet 8 release prep [\#159](https://github.com/puppetlabs/puppet_operational_dashboards/pull/159) ([elainemccloskey](https://github.com/elainemccloskey))
+- Allow disabling of System Performance dashboard creation [\#157](https://github.com/puppetlabs/puppet_operational_dashboards/pull/157) ([tuxmea](https://github.com/tuxmea))
+- telegraf: Update 1.24.3-1-\>1.25.3-1 [\#155](https://github.com/puppetlabs/puppet_operational_dashboards/pull/155) ([bastelfreak](https://github.com/bastelfreak))
+
+### Fixed
+
+- Restore missing operational\_dashboards tag [\#154](https://github.com/puppetlabs/puppet_operational_dashboards/pull/154) ([m0dular](https://github.com/m0dular))
+
+### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+
+- Bump InfluxDB metadata for new release [\#163](https://github.com/puppetlabs/puppet_operational_dashboards/pull/163) ([m0dular](https://github.com/m0dular))
+
 ## [v1.13.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.13.0) (2023-03-29)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.12.0...v1.13.0)
