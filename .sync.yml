@@ -43,8 +43,10 @@ spec/default_facts.yml:
       user: 'root'
     settings:
       module_groups: 'base+pe_only'
-
-    
+.rubocop.yml:
+  default_configs:
+    "Layout/MultilineOperationIndentation":
+       Enabled: False
 Gemfile:
   optional:
     ":development":
