@@ -70,6 +70,9 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
         telegraf_token_name: 'puppet telegraf token',
         influxdb_token_file: '/root/.influxdb_token',
         manage_grafana: false,
+        grafana_use_ssl: false,
+        grafana_ssl_cert_file: '/etc/grafana/client.pem',
+        grafana_ssl_key_file: '/etc/grafana/client.key',
         include_pe_metrics: true,
         manage_system_board: true,
       }
