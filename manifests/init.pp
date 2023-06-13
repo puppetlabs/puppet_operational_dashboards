@@ -39,6 +39,8 @@
 #   Whether to include Filesync and Orchestrator dashboards
 # @param manage_system_board
 #   Whether the System Performance dashboard should be added to grafana
+# @param manage_grafana
+#   Whether to manage installation and configuration of Grafana.  Defaults to true
 # @param grafana_use_ssl
 #   Enable use of HTTPS/SSL for Grafana. This will only configure the dashboards unless 'manage_grafana' is enabled.  Defaults to false.
 # @param grafana_ssl_cert_file
@@ -66,6 +68,7 @@ class puppet_operational_dashboards (
   # Check for PE by looking at the compiling server's module_groups setting
   Boolean $include_pe_metrics = $settings::module_groups =~ 'pe_only',
   Boolean $manage_system_board = true,
+  Boolean $manage_grafana = true,
   Boolean $grafana_use_ssl = false,
   Stdlib::Absolutepath $grafana_ssl_cert_file = '/etc/grafana/client.pem',
   Stdlib::Absolutepath $grafana_ssl_key_file = '/etc/grafana/client.key',
