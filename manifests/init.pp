@@ -39,6 +39,12 @@
 #   Whether to include Filesync and Orchestrator dashboards
 # @param manage_system_board
 #   Whether the System Performance dashboard should be added to grafana
+# @param grafana_use_ssl
+#   Enable use of HTTPS/SSL for Grafana. This will only configure the dashboards unless 'manage_grafana' is enabled.  Defaults to false.
+# @param grafana_ssl_cert_file
+#   SSL certificate file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.pem'.
+# @param grafana_ssl_key_file
+#   SSL private key file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.key'.
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
@@ -50,7 +56,7 @@ class puppet_operational_dashboards (
   Optional[Sensitive[String]] $influxdb_token = lookup(influxdb::token, undef, undef, undef),
   Optional[Sensitive[String]] $telegraf_token = undef,
   String $telegraf_token_name = 'puppet telegraf token',
-  String $influxdb_token_file = lookup(influxdb::token_file, undef, undef, $facts['identity']['user'] ? {
+  Stdlib::Absolutepath $influxdb_token_file = lookup(influxdb::token_file, undef, undef, $facts['identity']['user'] ? {
       'root'  => '/root/.influxdb_token',
       default => "/home/${facts['identity']['user']}/.influxdb_token"
   }),
@@ -60,6 +66,9 @@ class puppet_operational_dashboards (
   # Check for PE by looking at the compiling server's module_groups setting
   Boolean $include_pe_metrics = $settings::module_groups =~ 'pe_only',
   Boolean $manage_system_board = true,
+  Boolean $grafana_use_ssl = false,
+  Stdlib::Absolutepath $grafana_ssl_cert_file = '/etc/grafana/client.pem',
+  Stdlib::Absolutepath $grafana_ssl_key_file = '/etc/grafana/client.key',
 ) {
   unless $facts['os']['family'] in ['RedHat', 'Debian', 'Suse'] {
     fail("Installation on ${facts['os']['family']} is not supported")
