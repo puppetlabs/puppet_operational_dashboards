@@ -79,11 +79,7 @@ class puppet_operational_dashboards::profile::dashboards (
   Stdlib::Absolutepath $provisioning_datasource_file = '/etc/grafana/provisioning/datasources/influxdb.yaml',
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $use_system_store = $puppet_operational_dashboards::use_system_store,
-<<<<<<< HEAD
   Boolean $manage_grafana = $puppet_operational_dashboards::manage_grafana,
-=======
-  Boolean $manage_grafana = true,
->>>>>>> Account for new use_system_store param
   Boolean $manage_grafana_repo = true,
   String $influxdb_host = $puppet_operational_dashboards::influxdb_host,
   Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,
