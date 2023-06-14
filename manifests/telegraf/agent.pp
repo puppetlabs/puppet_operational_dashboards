@@ -338,6 +338,10 @@ class puppet_operational_dashboards::telegraf::agent (
   }
 
   elsif $collection_method == 'local' {
+    $pcp_port = ('Puppet_enterprise::Profile::Orchestrator' in $profiles or 'orchestrator' in $local_services) ? {
+      true  => 8143,
+      false => 8140
+    }
     if 'Puppet_enterprise::Profile::Puppetdb' in $profiles or 'puppetdb' in $local_services {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
         hosts                => [$trusted['certname']],
@@ -353,6 +357,14 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+      }
+      if $include_pe_metrics {
+        puppet_operational_dashboards::telegraf::config { 'pcp':
+          hosts                => ["${trusted['certname']}:${pcp_port}"],
+          protocol             => $protocol,
+          http_timeout_seconds => $http_timeout_seconds,
+          require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        }
       }
     }
 
