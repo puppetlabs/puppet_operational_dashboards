@@ -19,7 +19,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to compile }
+      it { is_expected.to compile.with_all_deps }
     end
   end
 
@@ -96,6 +96,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         use_ssl: true,
         manage_repo: false,
         manage_archive: true,
+        include_pe_metrics: true,
       }
     end
 
@@ -159,6 +160,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         influxdb_org: 'puppetlabs',
         use_ssl: true,
         manage_ssl: false,
+        include_pe_metrics: true,
       }
     end
 
@@ -200,6 +202,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         influxdb_org: 'puppetlabs',
         use_ssl: true,
         collection_interval: '10s',
+        include_pe_metrics: true,
       }
     end
 
@@ -228,6 +231,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         influxdb_org: 'puppetlabs',
         use_ssl: true,
         collection_method: 'local',
+        include_pe_metrics: true,
       }
     end
 
@@ -249,6 +253,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         influxdb_org: 'puppetlabs',
         use_ssl: true,
         puppetserver_hosts: ['localhost.foo.com'],
+        include_pe_metrics: false,
       }
     end
 
@@ -271,6 +276,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         use_ssl: true,
         collection_method: 'local',
         local_services: ['puppetserver'],
+        include_pe_metrics: false,
       }
     end
 
