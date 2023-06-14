@@ -277,6 +277,35 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
           is_expected.to contain_puppet_operational_dashboards__telegraf__config('puppetserver').with(hosts: ['localhost.foo.com'])
         }
       end
+      context 'when collecting local PE metrics' do
+        let :params do
+          {
+            collection_method: 'local',
+            token: RSpec::Puppet::Sensitive.new(nil),
+            token_name: 'puppet telegraf token',
+            influxdb_token_file: '/root/.influxdb_token',
+            influxdb_host: 'localhost.foo.com',
+            influxdb_port: 8086,
+            influxdb_bucket: 'puppet_data',
+            influxdb_org: 'puppetlabs',
+            use_ssl: true,
+            manage_repo: false,
+            manage_archive: false,
+            http_timeout_seconds: 120,
+            version: '1.26.0',
+            include_pe_metrics: true,
+            profiles: ['Puppet_enterprise::Profile::Master', 'Puppet_enterprise::Profile::Puppetdb', 'Puppet_enterprise::Profile::Orchestrator', 'Puppet_enterprise::Profile::Database'],
+          }
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.to contain_telegraf__processor('pcp_renames') }
+        it { is_expected.to contain_telegraf__processor('orchestrator_renames') }
+        it { is_expected.to contain_puppet_operational_dashboards__telegraf__config('pcp') }
+        it { is_expected.to contain_puppet_operational_dashboards__telegraf__config('orchestrator') }
+        it { is_expected.to contain_telegraf__input('pcp_metrics') }
+        it { is_expected.to contain_telegraf__input('orchestrator_metrics') }
+      end
     end
   end
 end
