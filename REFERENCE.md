@@ -11,6 +11,7 @@
 * [`puppet_operational_dashboards::profile::dashboards`](#puppet_operational_dashboards--profile--dashboards): Installs Grafana and several dashboards to display Puppet metrics.  Included via the base class.
 * [`puppet_operational_dashboards::profile::postgres_access`](#puppet_operational_dashboards--profile--postgres_access): Allows Telegraf to connect and collect metrics from postgres nodes
 * [`puppet_operational_dashboards::telegraf::agent`](#puppet_operational_dashboards--telegraf--agent): Installs and configures Telegraf to query hosts in a Puppet infrastructure. Included by the base class
+* [`puppet_operational_dashboards::telegraf::system_metrics`](#puppet_operational_dashboards--telegraf--system_metrics): configures additional inputs for telegraf to collect system information
 
 ### Defined types
 
@@ -64,6 +65,8 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`telegraf_token`](#-puppet_operational_dashboards--telegraf_token)
 * [`include_pe_metrics`](#-puppet_operational_dashboards--include_pe_metrics)
 * [`manage_system_board`](#-puppet_operational_dashboards--manage_system_board)
+* [`collect_system_metrics`](#-puppet_operational_dashboards--collect_system_metrics)
+* [`manage_telegraf_system_dashboard`](#-puppet_operational_dashboards--manage_telegraf_system_dashboard)
 
 ##### <a name="-puppet_operational_dashboards--manage_influxdb"></a>`manage_influxdb`
 
@@ -195,6 +198,22 @@ Whether the System Performance dashboard should be added to grafana
 
 Default value: `true`
 
+##### <a name="-puppet_operational_dashboards--collect_system_metrics"></a>`collect_system_metrics`
+
+Data type: `Boolean`
+
+Wether telegraf should collect generic system metrics (CPU, Disk, Network utilization)
+
+Default value: `false`
+
+##### <a name="-puppet_operational_dashboards--manage_telegraf_system_dashboard"></a>`manage_telegraf_system_dashboard`
+
+Data type: `Boolean`
+
+Create a dashboard for system metrics collected by telegraf
+
+Default value: `false`
+
 ### <a name="puppet_operational_dashboards--enterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
 
 When applied to an appropriate node group this class applies the toml gem and database access
@@ -265,6 +284,7 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 * [`include_pe_metrics`](#-puppet_operational_dashboards--profile--dashboards--include_pe_metrics)
 * [`manage_system_board`](#-puppet_operational_dashboards--profile--dashboards--manage_system_board)
 * [`system_dashboard_version`](#-puppet_operational_dashboards--profile--dashboards--system_dashboard_version)
+* [`manage_telegraf_system_dashboard`](#-puppet_operational_dashboards--profile--dashboards--manage_telegraf_system_dashboard)
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--token"></a>`token`
 
@@ -435,6 +455,14 @@ Data type: `Enum['v1', 'v2', 'all']`
 Version of the system dashboard to manage. v2 is compatible with puppet_metrics_collector version 7 and up
 
 Default value: `'v2'`
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--manage_telegraf_system_dashboard"></a>`manage_telegraf_system_dashboard`
+
+Data type: `Boolean`
+
+Create a dashboard for system metrics collected by telegraf
+
+Default value: `$puppet_operational_dashboards::manage_telegraf_system_dashboard`
 
 ### <a name="puppet_operational_dashboards--profile--postgres_access"></a>`puppet_operational_dashboards::profile::postgres_access`
 
@@ -778,6 +806,45 @@ Data type: `Boolean`
 Whether to include Filesync and Orchestrator dashboards
 
 Default value: `$puppet_operational_dashboards::include_pe_metrics`
+
+### <a name="puppet_operational_dashboards--telegraf--system_metrics"></a>`puppet_operational_dashboards::telegraf::system_metrics`
+
+configures additional inputs for telegraf to collect system information
+
+#### Parameters
+
+The following parameters are available in the `puppet_operational_dashboards::telegraf::system_metrics` class:
+
+* [`telegraf_inputs`](#-puppet_operational_dashboards--telegraf--system_metrics--telegraf_inputs)
+
+##### <a name="-puppet_operational_dashboards--telegraf--system_metrics--telegraf_inputs"></a>`telegraf_inputs`
+
+Data type: `Hash[String[1], Hash[String[1],NotUndef]]`
+
+hash of all inputs that should be configured
+
+Default value:
+
+```puppet
+{
+    'cpu' => {},
+    'disk' => { 'options' => [{ 'ignore_fs' => ['tmpfs', 'devtmpfs', 'devfs', 'iso9660', 'overlay', 'aufs', 'squashfs', 'nfs4', 'autofs', 'nfs'] }] },
+    'filestat' => {},
+    'internal' => {},
+    'interrupts' => {},
+    'kernel' => {},
+    'kernel_vmstat' => {},
+    'linux_sysctl_fs' => {},
+    'mem' => {},
+    'net' => {},
+    'netstat' => {},
+    'nstat' => {},
+    'processes' => {},
+    'swap' => {},
+    'system' => {},
+    'systemd_units' => {},
+  }
+```
 
 ## Defined types
 

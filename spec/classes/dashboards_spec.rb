@@ -16,6 +16,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       let(:facts) { os_facts }
 
       it { is_expected.to compile }
+      it { is_expected.to contain_grafana_dashboard('Telegraf: system dashboard').with_ensure('absent') }
 
       case os_facts[:osfamily]
       when 'RedHat', 'Debian'
@@ -72,6 +73,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
         manage_grafana: false,
         include_pe_metrics: true,
         manage_system_board: true,
+        manage_telegraf_system_dashboard: false,
       }
     end
 
@@ -101,6 +103,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
         influxdb_token_file: '/root/.influxdb_token',
         include_pe_metrics: true,
         manage_system_board: true,
+        manage_telegraf_system_dashboard: false,
       }
     end
 
@@ -131,6 +134,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
         influxdb_token_file: '/root/.influxdb_token',
         include_pe_metrics: true,
         manage_system_board: false,
+        manage_telegraf_system_dashboard: false,
       }
     end
 
@@ -138,5 +142,24 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       is_expected.to contain_grafana_dashboard('System_v2 Performance').with_ensure('absent')
       is_expected.to contain_grafana_dashboard('System Performance').with_ensure('absent')
     }
+  end
+  context 'with manage_telegraf_system_dashboard' do
+    let(:pre_condition) { '' }
+    let :params do
+      {
+        token: RSpec::Puppet::Sensitive.new('foo'),
+        use_ssl: true,
+        influxdb_host: 'localhost',
+        influxdb_port: 8086,
+        influxdb_bucket: 'puppet_data',
+        telegraf_token_name: 'puppet telegraf token',
+        influxdb_token_file: '/root/.influxdb_token',
+        include_pe_metrics: false,
+        manage_system_board: false,
+        manage_telegraf_system_dashboard: true,
+      }
+    end
+
+    it { is_expected.to contain_grafana_dashboard('Telegraf: system dashboard').with_ensure('present') }
   end
 end

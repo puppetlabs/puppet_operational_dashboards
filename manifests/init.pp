@@ -39,6 +39,10 @@
 #   Whether to include Filesync and Orchestrator dashboards
 # @param manage_system_board
 #   Whether the System Performance dashboard should be added to grafana
+# @param collect_system_metrics
+#   Wether telegraf should collect generic system metrics (CPU, Disk, Network utilization)
+# @param manage_telegraf_system_dashboard
+#   Create a dashboard for system metrics collected by telegraf
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
@@ -60,6 +64,8 @@ class puppet_operational_dashboards (
   # Check for PE by looking at the compiling server's module_groups setting
   Boolean $include_pe_metrics = $settings::module_groups =~ 'pe_only',
   Boolean $manage_system_board = true,
+  Boolean $collect_system_metrics = false,
+  Boolean $manage_telegraf_system_dashboard = false,
 ) {
   unless $facts['os']['family'] in ['RedHat', 'Debian', 'Suse'] {
     fail("Installation on ${facts['os']['family']} is not supported")
@@ -140,6 +146,10 @@ class puppet_operational_dashboards (
 
   if $manage_telegraf {
     include 'puppet_operational_dashboards::telegraf::agent'
+  }
+
+  if $collect_system_metrics {
+    include puppet_operational_dashboards::telegraf::system_metrics
   }
 
   include 'puppet_operational_dashboards::profile::dashboards'

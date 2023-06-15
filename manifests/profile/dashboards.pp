@@ -52,6 +52,8 @@
 #   Whether the System Performance dashboard should be created
 # @param system_dashboard_version
 #   Version of the system dashboard to manage. v2 is compatible with puppet_metrics_collector version 7 and up
+# @param manage_telegraf_system_dashboard
+#   Create a dashboard for system metrics collected by telegraf
 class puppet_operational_dashboards::profile::dashboards (
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $grafana_host = $facts['networking']['fqdn'],
@@ -77,6 +79,7 @@ class puppet_operational_dashboards::profile::dashboards (
   Boolean $include_pe_metrics = $puppet_operational_dashboards::include_pe_metrics,
   Boolean $manage_system_board = $puppet_operational_dashboards::manage_system_board,
   Enum['v1', 'v2', 'all'] $system_dashboard_version = 'v2',
+  Boolean $manage_telegraf_system_dashboard = $puppet_operational_dashboards::manage_telegraf_system_dashboard,
 ) {
   $grafana_url = "http://${grafana_host}:${grafana_port}"
 
@@ -224,5 +227,18 @@ class puppet_operational_dashboards::profile::dashboards (
         grafana_url      => $grafana_url,
       }
     }
+  }
+  if $manage_telegraf_system_dashboard {
+    $ensure = 'present'
+  } else {
+    $ensure = 'absent'
+  }
+  # from https://grafana.com/grafana/dashboards/928-telegraf-system-dashboard/
+  grafana_dashboard { 'Telegraf: system dashboard':
+    ensure           => $ensure,
+    grafana_user     => 'admin',
+    grafana_password => $grafana_password.unwrap,
+    grafana_url      => $grafana_url,
+    content          => file("${module_name}/telegraf-system-dashboard_rev4.json"),
   }
 }
