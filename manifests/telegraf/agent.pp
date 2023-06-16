@@ -79,6 +79,8 @@
 #   This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
 # @param http_timeout_seconds
 #   Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
+# @param include_pe_metrics
+#   Whether to include Filesync and Orchestrator dashboards
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
   Boolean $manage_repo,
@@ -114,6 +116,8 @@ class puppet_operational_dashboards::telegraf::agent (
   Array[String] $profiles = puppet_operational_dashboards::pe_profiles_on_host(),
   Array[String] $local_services = [],
   Integer[1] $http_timeout_seconds = 5,
+  # Check for PE by looking at the compiling server's module_groups setting
+  Boolean $include_pe_metrics = $puppet_operational_dashboards::include_pe_metrics,
 ) {
   unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services].any |$service| { $service } {
     fail('No services detected on node.')
@@ -312,7 +316,7 @@ class puppet_operational_dashboards::telegraf::agent (
     }
 
     # The port to use for this mbean is 8143 for Orchestrator and 8140 for Puppet server
-    if puppet_operational_dashboards::include_pe_metrics {
+    if $include_pe_metrics {
       $pcp_hosts = $puppetserver_hosts.map |$host| {
         if $host in $orchestrator_hosts {
           "${host}:8143"
@@ -334,6 +338,10 @@ class puppet_operational_dashboards::telegraf::agent (
   }
 
   elsif $collection_method == 'local' {
+    $pcp_port = ('Puppet_enterprise::Profile::Orchestrator' in $profiles or 'orchestrator' in $local_services) ? {
+      true  => 8143,
+      false => 8140
+    }
     if 'Puppet_enterprise::Profile::Puppetdb' in $profiles or 'puppetdb' in $local_services {
       puppet_operational_dashboards::telegraf::config { ['puppetdb', 'puppetdb_jvm']:
         hosts                => [$trusted['certname']],
@@ -349,6 +357,14 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+      }
+      if $include_pe_metrics {
+        puppet_operational_dashboards::telegraf::config { 'pcp':
+          hosts                => ["${trusted['certname']}:${pcp_port}"],
+          protocol             => $protocol,
+          http_timeout_seconds => $http_timeout_seconds,
+          require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+        }
       }
     }
 

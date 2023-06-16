@@ -513,6 +513,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`token_name`](#-puppet_operational_dashboards--telegraf--agent--token_name)
 * [`influxdb_token_file`](#-puppet_operational_dashboards--telegraf--agent--influxdb_token_file)
 * [`http_timeout_seconds`](#-puppet_operational_dashboards--telegraf--agent--http_timeout_seconds)
+* [`include_pe_metrics`](#-puppet_operational_dashboards--telegraf--agent--include_pe_metrics)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--token"></a>`token`
 
@@ -769,6 +770,14 @@ Data type: `Integer[1]`
 Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
 
 Default value: `5`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--include_pe_metrics"></a>`include_pe_metrics`
+
+Data type: `Boolean`
+
+Whether to include Filesync and Orchestrator dashboards
+
+Default value: `$puppet_operational_dashboards::include_pe_metrics`
 
 ## Defined types
 
