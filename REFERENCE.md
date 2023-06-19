@@ -310,9 +310,9 @@ Default value: `Sensitive('admin')`
 
 Data type: `String`
 
-Version of the Grafana package to install.  Defaults to '8.5.20'
+Version of the Grafana package to install.  Defaults to '8.5.26'
 
-Default value: `'8.5.20'`
+Default value: `'8.5.26'`
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_datasource"></a>`grafana_datasource`
 
