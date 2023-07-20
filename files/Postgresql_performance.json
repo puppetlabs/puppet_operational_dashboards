@@ -25,7 +25,6 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "id": 3,
-  "iteration": 1684960933098,
   "links": [
     {
       "asDropdown": false,
@@ -55,6 +54,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -190,6 +191,141 @@
     {
       "datasource": {
         "type": "influxdb",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 26,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_server-lag_bytes",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${datasource}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$Group_by_time"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "server::tag"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "postgresql",
+          "orderByTime": "ASC",
+          "policy": "Forever",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "lag_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "distinct"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "server",
+              "operator": "=~",
+              "value": "/^$server$/"
+            }
+          ]
+        }
+      ],
+      "title": "Replication lag",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
         "uid": "$datasource"
       },
       "fieldConfig": {
@@ -198,6 +334,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -243,7 +381,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 17
       },
       "id": 16,
       "links": [],
@@ -337,6 +475,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -382,7 +522,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 26
       },
       "id": 17,
       "links": [],
@@ -476,6 +616,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -521,7 +663,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "id": 18,
       "links": [],
@@ -615,6 +757,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -660,7 +804,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 44
       },
       "id": 19,
       "links": [],
@@ -754,6 +898,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -804,7 +950,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 45
+        "y": 53
       },
       "id": 10,
       "links": [],
@@ -899,6 +1045,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -949,7 +1097,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 45
+        "y": 53
       },
       "id": 11,
       "links": [],
@@ -1044,6 +1192,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1089,7 +1239,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 60
       },
       "id": 13,
       "links": [],
@@ -1184,6 +1334,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1229,7 +1381,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 52
+        "y": 60
       },
       "id": 20,
       "links": [],
@@ -1324,6 +1476,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1369,7 +1523,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 61
+        "y": 69
       },
       "id": 21,
       "links": [],
@@ -1464,6 +1618,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1509,7 +1665,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 61
+        "y": 69
       },
       "id": 22,
       "links": [],
@@ -1604,6 +1760,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1649,7 +1807,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 78
       },
       "id": 23,
       "links": [],
@@ -1744,6 +1902,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1789,7 +1949,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 70
+        "y": 78
       },
       "id": 24,
       "links": [],
@@ -1884,6 +2044,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1934,7 +2096,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 79
+        "y": 87
       },
       "id": 2,
       "links": [],
@@ -2029,6 +2191,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2079,7 +2243,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 79
+        "y": 87
       },
       "id": 25,
       "links": [],
@@ -2174,6 +2338,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -2223,7 +2389,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 96
       },
       "id": 4,
       "links": [],
@@ -2328,8 +2494,8 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
-  "schemaVersion": 36,
+  "refresh": false,
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [
     "operational_dashboards"
@@ -2338,7 +2504,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "influxdb_puppet",
           "value": "influxdb_puppet"
         },
@@ -2349,7 +2515,7 @@
         "name": "datasource",
         "options": [],
         "query": "influxdb",
-        "queryValue": "",
+        "queryValue": "influx",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
