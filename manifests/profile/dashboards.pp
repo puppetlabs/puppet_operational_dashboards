@@ -32,6 +32,8 @@
 #   Method to use for installing Grafana.  Defaults to using a repository on EL and Debian/Ubuntu, and package for other platforms
 # @param use_ssl
 #   Whether to use SSL when querying InfluxDB.  Defaults to true
+# @param use_system_store
+#   Whether to use the system CA bundle.  Defaults to false
 # @param manage_grafana
 #   Whether to manage installation and configuration of Grafana.  Defaults to true
 # @param manage_grafana_repo
@@ -76,6 +78,7 @@ class puppet_operational_dashboards::profile::dashboards (
   },
   Stdlib::Absolutepath $provisioning_datasource_file = '/etc/grafana/provisioning/datasources/influxdb.yaml',
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
+  Boolean $use_system_store = $puppet_operational_dashboards::use_system_store,
   Boolean $manage_grafana = $puppet_operational_dashboards::manage_grafana,
   Boolean $manage_grafana_repo = true,
   String $influxdb_host = $puppet_operational_dashboards::influxdb_host,
@@ -166,7 +169,9 @@ class puppet_operational_dashboards::profile::dashboards (
     else {
       $token_vars = {
         name     => $grafana_datasource,
-        token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $telegraf_token_name, $influxdb_token_file])),
+        token => Sensitive(Deferred('influxdb::retrieve_token',
+          [$influxdb_uri, $telegraf_token_name, $influxdb_token_file, $use_system_store])
+        ),
         database => $influxdb_bucket,
         url      => $influxdb_uri,
       }

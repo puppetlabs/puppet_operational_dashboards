@@ -29,6 +29,8 @@
 #   Whether to create and manage a Telegraf token with permissions to query buckets in the default organization.  Defaults to true.
 # @param use_ssl
 #   Whether to use SSL when querying InfluxDB.  Defaults to true
+# @param use_system_store
+#   Whether to use the system CA bundle.  Defaults to false
 # @param influxdb_token_file
 #   Location on disk of an InfluxDB admin token.
 #   This file is written to by the influxdb class during installation and read by the type and providers,
@@ -65,6 +67,7 @@ class puppet_operational_dashboards (
   Boolean $manage_telegraf = true,
   Boolean $manage_telegraf_token = true,
   Boolean $use_ssl = true,
+  Boolean $use_system_store = lookup(influxdb::use_system_store, undef, undef, false),
   # Check for PE by looking at the compiling server's module_groups setting
   Boolean $include_pe_metrics = $settings::module_groups =~ 'pe_only',
   Boolean $manage_system_board = true,
@@ -79,30 +82,33 @@ class puppet_operational_dashboards (
 
   if $manage_influxdb {
     class { 'influxdb':
-      host        => $influxdb_host,
-      port        => $influxdb_port,
-      use_ssl     => $use_ssl,
-      initial_org => $initial_org,
-      token_file  => $influxdb_token_file,
+      host             => $influxdb_host,
+      port             => $influxdb_port,
+      use_ssl          => $use_ssl,
+      use_system_store => $use_system_store,
+      initial_org      => $initial_org,
+      token_file       => $influxdb_token_file,
     }
 
     influxdb_org { $initial_org:
-      ensure     => present,
-      use_ssl    => $use_ssl,
-      port       => $influxdb_port,
-      token      => $influxdb_token,
-      token_file => $influxdb_token_file,
-      require    => Class['influxdb'],
+      ensure           => present,
+      use_ssl          => $use_ssl,
+      use_system_store => $use_system_store,
+      port             => $influxdb_port,
+      token            => $influxdb_token,
+      token_file       => $influxdb_token_file,
+      require          => Class['influxdb'],
     }
     influxdb_bucket { $initial_bucket:
-      ensure          => present,
-      use_ssl         => $use_ssl,
-      port            => $influxdb_port,
-      org             => $initial_org,
-      token           => $influxdb_token,
-      retention_rules => $influxdb_bucket_retention_rules,
-      token_file      => $influxdb_token_file,
-      require         => [Class['influxdb'], Influxdb_org[$initial_org]],
+      ensure           => present,
+      use_ssl          => $use_ssl,
+      use_system_store => $use_system_store,
+      port             => $influxdb_port,
+      org              => $initial_org,
+      token            => $influxdb_token,
+      retention_rules  => $influxdb_bucket_retention_rules,
+      token_file       => $influxdb_token_file,
+      require          => [Class['influxdb'], Influxdb_org[$initial_org]],
     }
 
     Influxdb_auth {
@@ -115,13 +121,14 @@ class puppet_operational_dashboards (
     # The influxdb::retrieve_token() function cannot find a token during the catalog compilation which creates it
     #   i.e. it takes two agent runs to become available
     influxdb_auth { $telegraf_token_name:
-      ensure      => present,
-      use_ssl     => $use_ssl,
-      port        => $influxdb_port,
-      org         => $initial_org,
-      token       => $influxdb_token,
-      token_file  => $influxdb_token_file,
-      permissions => [
+      ensure           => present,
+      use_ssl          => $use_ssl,
+      use_system_store => $use_system_store,
+      port             => $influxdb_port,
+      org              => $initial_org,
+      token            => $influxdb_token,
+      token_file       => $influxdb_token_file,
+      permissions      => [
         {
           'action'   => 'read',
           'resource' => {

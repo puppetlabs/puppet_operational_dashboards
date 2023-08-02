@@ -89,6 +89,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             influxdb_bucket: 'puppet_data',
             influxdb_org: 'puppetlabs',
             use_ssl: true,
+            use_system_store: false,
             manage_repo: false,
             manage_archive: true,
             include_pe_metrics: true,
@@ -108,6 +109,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             class{ 'puppet_operational_dashboards':
               influxdb_host => 'localhost.foo.com',
               use_ssl       => false,
+              use_system_store => false,
               include_pe_metrics => true,
             }
           PRE_COND
@@ -154,6 +156,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             influxdb_bucket: 'puppet_data',
             influxdb_org: 'puppetlabs',
             use_ssl: true,
+            use_system_store: false,
             manage_ssl: false,
             include_pe_metrics: true,
           }
@@ -196,6 +199,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             influxdb_bucket: 'puppet_data',
             influxdb_org: 'puppetlabs',
             use_ssl: true,
+            use_system_store: false,
             collection_interval: '10s',
             include_pe_metrics: true,
           }
@@ -225,6 +229,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             influxdb_bucket: 'puppet_data',
             influxdb_org: 'puppetlabs',
             use_ssl: true,
+            use_system_store: false,
             collection_method: 'local',
             include_pe_metrics: true,
           }
@@ -246,6 +251,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             influxdb_bucket: 'puppet_data',
             influxdb_org: 'puppetlabs',
             use_ssl: true,
+            use_system_store: false,
             puppetserver_hosts: ['localhost.foo.com'],
             include_pe_metrics: false,
           }
@@ -267,6 +273,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             influxdb_bucket: 'puppet_data',
             influxdb_org: 'puppetlabs',
             use_ssl: true,
+            use_system_store: false,
             collection_method: 'local',
             local_services: ['puppetserver'],
             include_pe_metrics: false,
@@ -289,6 +296,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             influxdb_bucket: 'puppet_data',
             influxdb_org: 'puppetlabs',
             use_ssl: true,
+            use_system_store: false,
             manage_repo: false,
             manage_archive: false,
             http_timeout_seconds: 120,
