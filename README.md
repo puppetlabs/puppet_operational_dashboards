@@ -70,6 +70,40 @@ For Telegraf, the following parameters are available:
 
 GPG options are currently not configurable.
 
+Via Hiera it will look like this:
+
+```yaml
+influxdb::manage_repo: true
+influxdb::archive_source: false
+puppet_operational_dashboards::profile::dashboards::manage_grafana_repo: true
+puppet_operational_dashboards::telegraf::agent::manage_archive: false
+puppet_operational_dashboards::telegraf::agent::manage_repo: true
+```
+
+That will install all components via their upstream repositories. When you want
+to use packages but manage repositories on your own, for example because you
+use Katello or RedHat Satellite:
+
+```yaml
+influxdb::manage_repo: false
+influxdb::archive_source: false
+puppet_operational_dashboards::profile::dashboards::manage_grafana_repo: false
+puppet_operational_dashboards::telegraf::agent::manage_archive: false
+puppet_operational_dashboards::telegraf::agent::manage_repo: false
+```
+
+influxdb needs to install the toml gem at the moment. If you're behind an http
+proxy you can configure that as well:
+
+```yaml
+influxdb::profile::toml::install_options_server:
+  - '-p'
+  - 'http://10.88.96.254.3128'
+influxdb::profile::toml::install_options_agent:
+  - '-p'
+  - 'http://10.88.96.254.3128'
+```
+
 ### Archive sources
 
 To use archive sources, set the following parameters.
