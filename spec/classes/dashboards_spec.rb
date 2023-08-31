@@ -64,6 +64,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       {
         token: RSpec::Puppet::Sensitive.new(nil),
         use_ssl: true,
+        use_system_store: false,
         influxdb_host: 'localhost',
         influxdb_port: 8086,
         influxdb_bucket: 'puppet_data',
@@ -94,6 +95,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       {
         token: RSpec::Puppet::Sensitive.new('foo'),
         use_ssl: true,
+        use_system_store: false,
         influxdb_host: 'localhost',
         influxdb_port: 8086,
         influxdb_bucket: 'puppet_data',
@@ -124,6 +126,7 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       {
         token: RSpec::Puppet::Sensitive.new('foo'),
         use_ssl: true,
+        use_system_store: false,
         influxdb_host: 'localhost',
         influxdb_port: 8086,
         influxdb_bucket: 'puppet_data',

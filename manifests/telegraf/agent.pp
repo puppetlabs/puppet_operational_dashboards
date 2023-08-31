@@ -17,6 +17,8 @@
 #   Name of the InfluxDB bucket to query. Defaults to 'puppet_data'.
 # @param use_ssl
 #   Whether to use SSL when querying InfluxDB.  Defaults to true
+# @param use_system_store
+#   Whether to use the system CA bundle.  Defaults to false
 # @param manage_ssl
 #   Whether to manage Telegraf ssl configuration.  Defaults to true.
 # @param manage_repo
@@ -92,6 +94,7 @@ class puppet_operational_dashboards::telegraf::agent (
   String $influxdb_bucket = $puppet_operational_dashboards::initial_bucket,
   String $influxdb_org = $puppet_operational_dashboards::initial_org,
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
+  Boolean $use_system_store = $puppet_operational_dashboards::use_system_store,
   Boolean $manage_ssl = true,
   Boolean $insecure_skip_verify = true,
   Boolean $manage_archive = !$manage_repo,
@@ -253,7 +256,7 @@ class puppet_operational_dashboards::telegraf::agent (
   }
   else {
     $token_vars = {
-      token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $token_name, $influxdb_token_file])),
+      token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $token_name, $influxdb_token_file, $use_system_store])),
     }
     file { '/etc/systemd/system/telegraf.service.d/override.conf':
       ensure  => file,
