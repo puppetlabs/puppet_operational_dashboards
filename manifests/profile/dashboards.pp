@@ -114,7 +114,7 @@ class puppet_operational_dashboards::profile::dashboards (
       ensure    => file,
       path      => '/etc/systemd/system/grafana-server.service.d/wait.conf',
       subscribe => Exec['puppet_grafana_daemon_reload'],
-      content   => epp('puppet_operational_dashboards/grafana_wait.epp', { timeout => $grafana_timeout }),
+      content   => epp('puppet_operational_dashboards/grafana_wait.epp', { timeout => $grafana_timeout, port => $grafana_port }),
     }
 
     exec { 'puppet_grafana_daemon_reload':
