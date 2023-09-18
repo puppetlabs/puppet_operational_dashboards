@@ -14,6 +14,20 @@
 #   FQDN of the Grafana host.  Defaults to the FQDN of the agent receiving the catalog.
 # @param grafana_port
 #   Port used by the Grafana service.  Defaults to 3000
+# @param grafana_use_ssl
+#   Enable use of HTTPS/SSL for Grafana. Defaults to false.
+# @param manage_grafana_ssl
+#   Whether to manage the SSL certificate files when using the grafana_use_ssl parameter.  Defaults to true
+# @param grafana_cert_file
+#   SSL certificate file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.pem'.
+# @param grafana_key_file
+#   SSL private key file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.key'.
+# @param grafana_cert_file_source
+#   SSL certificate file to use as the source for the grafana_cert_file parameter.
+#   Defaults to using the Puppet issued certs on the agent node.
+# @param grafana_key_file_source
+#   SSL certificate file to use as the source for the grafana_key_file parameter.
+#   Defaults to using the Puppet issued certs on the agent node.
 # @param grafana_timeout
 #   How long to wait for the Grafana service to start.  Defaults to 10 seconds.
 # @param grafana_password
@@ -58,6 +72,12 @@ class puppet_operational_dashboards::profile::dashboards (
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $grafana_host = $facts['networking']['fqdn'],
   Integer $grafana_port = 3000,
+  Boolean $grafana_use_ssl = false,
+  Boolean $manage_grafana_ssl = true,
+  Stdlib::Absolutepath $grafana_cert_file_source = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
+  Stdlib::Absolutepath $grafana_key_file_source ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
+  Stdlib::Absolutepath $grafana_cert_file = '/etc/grafana/client.pem',
+  Stdlib::Absolutepath $grafana_key_file = '/etc/grafana/client.key',
   Integer $grafana_timeout = 10,
   #TODO: document using task to change
   Sensitive[String] $grafana_password = Sensitive('admin'),
@@ -67,7 +87,7 @@ class puppet_operational_dashboards::profile::dashboards (
     /(RedHat|Debian)/ => 'repo',
     default           => 'package',
   },
-  String $provisioning_datasource_file = '/etc/grafana/provisioning/datasources/influxdb.yaml',
+  Stdlib::Absolutepath $provisioning_datasource_file = '/etc/grafana/provisioning/datasources/influxdb.yaml',
   Boolean $use_ssl = $puppet_operational_dashboards::use_ssl,
   Boolean $use_system_store = $puppet_operational_dashboards::use_system_store,
   Boolean $manage_grafana = true,
@@ -76,12 +96,16 @@ class puppet_operational_dashboards::profile::dashboards (
   Integer $influxdb_port = $puppet_operational_dashboards::influxdb_port,
   String $influxdb_bucket = $puppet_operational_dashboards::initial_bucket,
   String $telegraf_token_name = $puppet_operational_dashboards::telegraf_token_name,
-  String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
+  Stdlib::Absolutepath $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
   Boolean $include_pe_metrics = $puppet_operational_dashboards::include_pe_metrics,
   Boolean $manage_system_board = $puppet_operational_dashboards::manage_system_board,
   Enum['v1', 'v2', 'all'] $system_dashboard_version = 'v2',
 ) {
-  $grafana_url = "http://${grafana_host}:${grafana_port}"
+  $grafana_protocol = $grafana_use_ssl ? {
+    true  => 'https',
+    false => 'http',
+  }
+  $grafana_url = "${grafana_protocol}://${grafana_host}:${grafana_port}"
 
   $protocol = $use_ssl ? {
     true  => 'https',
@@ -90,10 +114,39 @@ class puppet_operational_dashboards::profile::dashboards (
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
   if $manage_grafana {
-    class { 'grafana':
-      install_method      => $grafana_install,
-      version             => $grafana_version,
-      manage_package_repo => $manage_grafana_repo,
+    if $grafana_use_ssl {
+      $grafana_cfg = {
+        'server' => {
+          'protocol' => 'https',
+          'cert_file' => $grafana_cert_file,
+          'cert_key' => $grafana_key_file,
+        },
+      }
+      class { 'grafana':
+        install_method      => $grafana_install,
+        version             => $grafana_version,
+        manage_package_repo => $manage_grafana_repo,
+        cfg                 => $grafana_cfg,
+      }
+      if $manage_grafana_ssl {
+        file { $grafana_key_file:
+          ensure => file,
+          source => "file:///${grafana_key_file_source}",
+          notify => Service['grafana-server'],
+        }
+        file { $grafana_cert_file:
+          ensure => file,
+          source => "file:///${grafana_cert_file_source}",
+          notify => Service['grafana-server'],
+        }
+      }
+    }
+    else {
+      class { 'grafana':
+        install_method      => $grafana_install,
+        version             => $grafana_version,
+        manage_package_repo => $manage_grafana_repo,
+      }
     }
 
     file { 'grafana-conf-d':

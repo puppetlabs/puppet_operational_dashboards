@@ -142,4 +142,95 @@ describe 'puppet_operational_dashboards::profile::dashboards' do
       is_expected.to contain_grafana_dashboard('System Performance').with_ensure('absent')
     }
   end
+
+  context 'when using and managing ssl' do
+    let(:pre_condition) { '' }
+    let(:params) do
+      {
+        token: RSpec::Puppet::Sensitive.new('foo'),
+        use_ssl: true,
+        use_system_store: false,
+        influxdb_host: 'localhost',
+        influxdb_port: 8086,
+        influxdb_bucket: 'puppet_data',
+        telegraf_token_name: 'puppet telegraf token',
+        influxdb_token_file: '/root/.influxdb_token',
+        include_pe_metrics: true,
+        manage_system_board: false,
+        manage_grafana: true,
+        grafana_use_ssl: true,
+      }
+    end
+
+    it {
+      is_expected.to contain_file('/etc/grafana/client.pem').with(ensure: 'file')
+      is_expected.to contain_file('/etc/grafana/client.key').with(ensure: 'file')
+
+      is_expected.to contain_class('grafana').with(
+        cfg: { 'server' => { 'protocol' => 'https', 'cert_file' => '/etc/grafana/client.pem', 'cert_key' => '/etc/grafana/client.key' } },
+      )
+
+      is_expected.to contain_grafana_dashboard('Puppetserver Performance').with_grafana_url(%r{^https:})
+    }
+  end
+
+  context 'when using and not managing ssl' do
+    let(:pre_condition) { '' }
+    let(:params) do
+      {
+        token: RSpec::Puppet::Sensitive.new('foo'),
+        use_ssl: true,
+        use_system_store: false,
+        influxdb_host: 'localhost',
+        influxdb_port: 8086,
+        influxdb_bucket: 'puppet_data',
+        telegraf_token_name: 'puppet telegraf token',
+        influxdb_token_file: '/root/.influxdb_token',
+        include_pe_metrics: true,
+        manage_system_board: false,
+        manage_grafana: true,
+        manage_grafana_ssl: false,
+        grafana_use_ssl: true,
+      }
+    end
+
+    it {
+      is_expected.not_to contain_file('/etc/grafana/client.pem')
+      is_expected.not_to contain_file('/etc/grafana/client.key')
+
+      is_expected.to contain_class('grafana').with(
+        cfg: { 'server' => { 'protocol' => 'https', 'cert_file' => '/etc/grafana/client.pem', 'cert_key' => '/etc/grafana/client.key' } },
+      )
+
+      is_expected.to contain_grafana_dashboard('Puppetserver Performance').with_grafana_url(%r{^https:})
+    }
+  end
+  context 'when not using ssl' do
+    let(:pre_condition) { '' }
+    let(:params) do
+      {
+        token: RSpec::Puppet::Sensitive.new('foo'),
+        use_ssl: true,
+        use_system_store: false,
+        influxdb_host: 'localhost',
+        influxdb_port: 8086,
+        influxdb_bucket: 'puppet_data',
+        telegraf_token_name: 'puppet telegraf token',
+        influxdb_token_file: '/root/.influxdb_token',
+        include_pe_metrics: true,
+        manage_system_board: false,
+        manage_grafana: true,
+        grafana_use_ssl: false,
+      }
+    end
+
+    it {
+      is_expected.not_to contain_file('/etc/grafana/client.pem')
+      is_expected.not_to contain_file('/etc/grafana/client.key')
+
+      is_expected.to contain_class('grafana').with(cfg: {})
+
+      is_expected.to contain_grafana_dashboard('Puppetserver Performance').with_grafana_url(%r{^http:})
+    }
+  end
 end
