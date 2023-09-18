@@ -1,6 +1,6 @@
-<%- | Integer $timeout | -%>
+<%- | Integer $timeout, Integer $port | -%>
 # Adapted from https://unix.stackexchange.com/a/584965/226625
-# Wait for the service to be listening on port 3000
+# Wait for the service to be listening on port <%= $port %>
 [Service]
-ExecStartPost=/usr/bin/timeout <%= $timeout %> sh -c 'while ! ss -t -l -n sport = :3000 | sed 1d | grep -q "^LISTEN.*:3000"; do sleep 1; done'
+ExecStartPost=/usr/bin/timeout <%= $timeout %> sh -c 'while ! ss -t -l -n sport = :<%= $port %> | sed 1d | grep -q "^LISTEN.*:<%= $port %>"; do sleep 1; done'
 
