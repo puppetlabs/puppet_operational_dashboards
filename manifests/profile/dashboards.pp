@@ -96,16 +96,6 @@ class puppet_operational_dashboards::profile::dashboards (
       manage_package_repo => $manage_grafana_repo,
     }
 
-    if $facts['os']['family'] == 'Debian' {
-      # Workaround to override the key id for the Grafana apt source
-      Apt::Source <| title == 'grafana' |> {
-        key => {
-          'id'     => '0E22EB88E39E12277A7760AE9E439B102CF3C0C6',
-          'source' => 'https://apt.grafana.com/gpg.key',
-        },
-      }
-    }
-
     file { 'grafana-conf-d':
       ensure => directory,
       path   => '/etc/systemd/system/grafana-server.service.d',
