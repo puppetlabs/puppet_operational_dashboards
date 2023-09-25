@@ -60,6 +60,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`manage_telegraf`](#-puppet_operational_dashboards--manage_telegraf)
 * [`manage_telegraf_token`](#-puppet_operational_dashboards--manage_telegraf_token)
 * [`use_ssl`](#-puppet_operational_dashboards--use_ssl)
+* [`use_system_store`](#-puppet_operational_dashboards--use_system_store)
 * [`influxdb_token_file`](#-puppet_operational_dashboards--influxdb_token_file)
 * [`telegraf_token`](#-puppet_operational_dashboards--telegraf_token)
 * [`include_pe_metrics`](#-puppet_operational_dashboards--include_pe_metrics)
@@ -153,6 +154,14 @@ Data type: `Boolean`
 Whether to use SSL when querying InfluxDB.  Defaults to true
 
 Default value: `true`
+
+##### <a name="-puppet_operational_dashboards--use_system_store"></a>`use_system_store`
+
+Data type: `Boolean`
+
+Whether to use the system CA bundle.  Defaults to false
+
+Default value: `lookup(influxdb::use_system_store, undef, undef, false)`
 
 ##### <a name="-puppet_operational_dashboards--influxdb_token_file"></a>`influxdb_token_file`
 
@@ -248,12 +257,19 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 * [`token`](#-puppet_operational_dashboards--profile--dashboards--token)
 * [`grafana_host`](#-puppet_operational_dashboards--profile--dashboards--grafana_host)
 * [`grafana_port`](#-puppet_operational_dashboards--profile--dashboards--grafana_port)
+* [`grafana_use_ssl`](#-puppet_operational_dashboards--profile--dashboards--grafana_use_ssl)
+* [`manage_grafana_ssl`](#-puppet_operational_dashboards--profile--dashboards--manage_grafana_ssl)
+* [`grafana_cert_file`](#-puppet_operational_dashboards--profile--dashboards--grafana_cert_file)
+* [`grafana_key_file`](#-puppet_operational_dashboards--profile--dashboards--grafana_key_file)
+* [`grafana_cert_file_source`](#-puppet_operational_dashboards--profile--dashboards--grafana_cert_file_source)
+* [`grafana_key_file_source`](#-puppet_operational_dashboards--profile--dashboards--grafana_key_file_source)
 * [`grafana_timeout`](#-puppet_operational_dashboards--profile--dashboards--grafana_timeout)
 * [`grafana_password`](#-puppet_operational_dashboards--profile--dashboards--grafana_password)
 * [`grafana_version`](#-puppet_operational_dashboards--profile--dashboards--grafana_version)
 * [`grafana_datasource`](#-puppet_operational_dashboards--profile--dashboards--grafana_datasource)
 * [`grafana_install`](#-puppet_operational_dashboards--profile--dashboards--grafana_install)
 * [`use_ssl`](#-puppet_operational_dashboards--profile--dashboards--use_ssl)
+* [`use_system_store`](#-puppet_operational_dashboards--profile--dashboards--use_system_store)
 * [`manage_grafana`](#-puppet_operational_dashboards--profile--dashboards--manage_grafana)
 * [`manage_grafana_repo`](#-puppet_operational_dashboards--profile--dashboards--manage_grafana_repo)
 * [`influxdb_host`](#-puppet_operational_dashboards--profile--dashboards--influxdb_host)
@@ -289,6 +305,56 @@ Data type: `Integer`
 Port used by the Grafana service.  Defaults to 3000
 
 Default value: `3000`
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_use_ssl"></a>`grafana_use_ssl`
+
+Data type: `Boolean`
+
+Enable use of HTTPS/SSL for Grafana. Defaults to false.
+
+Default value: `false`
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--manage_grafana_ssl"></a>`manage_grafana_ssl`
+
+Data type: `Boolean`
+
+Whether to manage the SSL certificate files when using the grafana_use_ssl parameter.  Defaults to true
+
+Default value: `true`
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_cert_file"></a>`grafana_cert_file`
+
+Data type: `Stdlib::Absolutepath`
+
+SSL certificate file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.pem'.
+
+Default value: `'/etc/grafana/client.pem'`
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_key_file"></a>`grafana_key_file`
+
+Data type: `Stdlib::Absolutepath`
+
+SSL private key file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.key'.
+
+Default value: `'/etc/grafana/client.key'`
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_cert_file_source"></a>`grafana_cert_file_source`
+
+Data type: `Stdlib::Absolutepath`
+
+SSL certificate file to use as the source for the grafana_cert_file parameter.
+Defaults to using the Puppet issued certs on the agent node.
+
+Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
+
+##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_key_file_source"></a>`grafana_key_file_source`
+
+Data type: `Stdlib::Absolutepath`
+
+SSL certificate file to use as the source for the grafana_key_file parameter.
+Defaults to using the Puppet issued certs on the agent node.
+
+Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem"`
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_timeout"></a>`grafana_timeout`
 
@@ -344,6 +410,14 @@ Whether to use SSL when querying InfluxDB.  Defaults to true
 
 Default value: `$puppet_operational_dashboards::use_ssl`
 
+##### <a name="-puppet_operational_dashboards--profile--dashboards--use_system_store"></a>`use_system_store`
+
+Data type: `Boolean`
+
+Whether to use the system CA bundle.  Defaults to false
+
+Default value: `$puppet_operational_dashboards::use_system_store`
+
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--manage_grafana"></a>`manage_grafana`
 
 Data type: `Boolean`
@@ -397,7 +471,7 @@ Default value: `$puppet_operational_dashboards::telegraf_token_name`
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--influxdb_token_file"></a>`influxdb_token_file`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
 Location on disk of an InfluxDB admin token.
 This token is used in this class in a Deferred function call to retrieve a Telegraf token if $token is unset
@@ -406,7 +480,7 @@ Default value: `$puppet_operational_dashboards::influxdb_token_file`
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--provisioning_datasource_file"></a>`provisioning_datasource_file`
 
-Data type: `String`
+Data type: `Stdlib::Absolutepath`
 
 Location on disk to store datasource definition
 
@@ -488,6 +562,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`influxdb_org`](#-puppet_operational_dashboards--telegraf--agent--influxdb_org)
 * [`influxdb_bucket`](#-puppet_operational_dashboards--telegraf--agent--influxdb_bucket)
 * [`use_ssl`](#-puppet_operational_dashboards--telegraf--agent--use_ssl)
+* [`use_system_store`](#-puppet_operational_dashboards--telegraf--agent--use_system_store)
 * [`manage_ssl`](#-puppet_operational_dashboards--telegraf--agent--manage_ssl)
 * [`manage_repo`](#-puppet_operational_dashboards--telegraf--agent--manage_repo)
 * [`manage_archive`](#-puppet_operational_dashboards--telegraf--agent--manage_archive)
@@ -562,6 +637,14 @@ Data type: `Boolean`
 Whether to use SSL when querying InfluxDB.  Defaults to true
 
 Default value: `$puppet_operational_dashboards::use_ssl`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--use_system_store"></a>`use_system_store`
+
+Data type: `Boolean`
+
+Whether to use the system CA bundle.  Defaults to false
+
+Default value: `$puppet_operational_dashboards::use_system_store`
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_ssl"></a>`manage_ssl`
 
