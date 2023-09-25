@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v2.0.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.0.0) (2023-05-26)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.13.1...v2.0.0)
+
+### Added
+
+- Import sar data files [\#172](https://github.com/puppetlabs/puppet_operational_dashboards/pull/172) ([m0dular](https://github.com/m0dular))
+- \(SUP-4220\) Add panels for PDB pool usage [\#171](https://github.com/puppetlabs/puppet_operational_dashboards/pull/171) ([m0dular](https://github.com/m0dular))
+- \(SUP-4138\) Add compiler PCP metrics [\#168](https://github.com/puppetlabs/puppet_operational_dashboards/pull/168) ([m0dular](https://github.com/m0dular))
+- \(SUP-4138\) Add PCP connections [\#167](https://github.com/puppetlabs/puppet_operational_dashboards/pull/167) ([m0dular](https://github.com/m0dular))
+- Add dashboard and script for v2 system metrics [\#166](https://github.com/puppetlabs/puppet_operational_dashboards/pull/166) ([m0dular](https://github.com/m0dular))
+- Document parameters for internal repositories [\#165](https://github.com/puppetlabs/puppet_operational_dashboards/pull/165) ([m0dular](https://github.com/m0dular))
+
+### Fixed
+
+- Remove selection override from db sizes panel [\#173](https://github.com/puppetlabs/puppet_operational_dashboards/pull/173) ([m0dular](https://github.com/m0dular))
+
 ## [v1.13.1](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v1.13.1) (2023-04-27)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.13.0...v1.13.1)
