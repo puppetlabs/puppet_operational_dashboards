@@ -198,7 +198,7 @@ When first accessing Grafana, the default login and password are as follows:
 Username: Admin
 Password: Admin
 
-Upon first sign in, you will then be prompted to change your password. You have the optiont to change it here, or skip and proceed to the dashboard.
+Upon first sign in, you will then be prompted to change your password, skip this step and proceed to the dashboard.
 
 ### Evaluation order
 
