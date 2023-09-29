@@ -188,6 +188,18 @@ These parameters take precedence over the file on disk if both are specified.
 
 ## Usage
 
+## Accessing Grafana
+
+To access Grafana, use the following in your browser of choice: 
+```http://[AGENT IP ADDRESS]/3000```
+
+When first accessing Grafana, the default login and password are as follows:
+
+Username: Admin
+Password: Admin
+
+Upon first sign in, you will then be prompted to change your password. You have the optiont to change it here, or skip and proceed to the dashboard.
+
 ### Evaluation order
 
 When using the default configuration options and the deferred function to retreive the Telegraf token, note that it will not be available during the initial Puppet agent run that creates all of the resources.  A second run is required to retrieve the token and update the resources that use it.  If you are seeing authentication errors from Telegraf and Grafana, make sure the Puppet agent has been run twice and that the token has made its way to the Telegraf service config file:
