@@ -106,7 +106,7 @@ influxdb::profile::toml::install_options_agent:
 
 ### Archive sources
 
-To use archive sources, set the following parameters.
+To use archive sources, set the following parameters.  Note that support for Grafana archives has been deprecated and will need to be installed from a repository or package source.
 
 For InfluxDB, set:
 
@@ -115,12 +115,9 @@ For InfluxDB, set:
 
 For Grafana, set:
 
-* [puppet_operational_dashboards::profile::dashboards::grafana_install](https://forge.puppet.com/modules/puppetlabs/puppet_operational_dashboards/reference#grafana_install) to either `archive` or `package` depending on your preferred method.
+* [puppet_operational_dashboards::profile::dashboards::grafana_install](https://forge.puppet.com/modules/puppetlabs/puppet_operational_dashboards/reference#grafana_install) to `package`.
 
-Then, set either of the following depending on the installation method
-
-* [grafana::package_source](https://forge.puppet.com/modules/puppet/grafana/reference#package_source)
-* [grafana::archive_source](https://forge.puppet.com/modules/puppetlabs/influxdb/reference#archive_source)
+Then, set [grafana::package_source](https://forge.puppet.com/modules/puppet/grafana/reference#package_source) to an internal URL containing a package for Grafana for your distribution.
 
 For Telegraf, set:
 
