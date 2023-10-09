@@ -6,7 +6,7 @@
 # @example
 #   include puppet_operational_dashboards::enterprise_infrastructure
 # @param profiles
-#   Array of PE profiles on the node with this class applied. 
+#   Array of PE profiles on the node with this class applied.
 class puppet_operational_dashboards::enterprise_infrastructure (
   Array[String] $profiles = puppet_operational_dashboards::pe_profiles_on_host(),
 ) {

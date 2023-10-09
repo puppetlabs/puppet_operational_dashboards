@@ -7,30 +7,30 @@
 #     influxdb_host   => '<influxdb_fqdn>',
 #   }
 # @param manage_influxdb
-#   Whether to manage installation and configuration of InfluxDB.  Defaults to true
+#   Whether to manage installation and configuration of InfluxDB.
 # @param influxdb_host
-#   FQDN of the InfluxDB host.  Defaults to a the value of influxdb::host, or $facts['fqdn'] if unset
+#   FQDN of the InfluxDB host.
 # @param influxdb_port
-#   Port used by the InfluxDB service.  Defaults to the value of influxdb::port, or 8086 if unset
+#   Port used by the InfluxDB service.
 # @param initial_org
-#   Name of the InfluxDB organization to configure. Defaults to the value of influxdb::initial_org, or 'puppetlabs' if unset
+#   Name of the InfluxDB organization to configure.
 # @param initial_bucket
-#   Name of the InfluxDB bucket to configure and query. Defaults to the value of influxdb::initial_bucket, or 'puppet_data' if unset
+#   Name of the InfluxDB bucket to configure and query.
 # @param influxdb_bucket_retention_rules
 #   Value for the initial InfluxDB bucket retention rules, Values are the same as in the influx_bucket type of the InfluxDB module.
 # @param influxdb_token
-#   InfluxDB admin token in Sensitive format.  Defaults to the value of influxdb::token.
+#   InfluxDB admin token in Sensitive format.
 #   See the puppetlabs/influxdb documentation for more information about this token.
 # @param telegraf_token_name
 #   Name of the token to retrieve from InfluxDB if not given $telegraf_token.
 # @param manage_telegraf
-#   Whether to manage installation and configuration of Telegraf.  Defaults to true.
+#   Whether to manage installation and configuration of Telegraf.
 # @param manage_telegraf_token
-#   Whether to create and manage a Telegraf token with permissions to query buckets in the default organization.  Defaults to true.
+#   Whether to create and manage a Telegraf token with permissions to query buckets in the default organization.
 # @param use_ssl
-#   Whether to use SSL when querying InfluxDB.  Defaults to true
+#   Whether to use SSL when querying InfluxDB.
 # @param use_system_store
-#   Whether to use the system CA bundle.  Defaults to false
+#   Whether to use the system CA bundle.
 # @param influxdb_token_file
 #   Location on disk of an InfluxDB admin token.
 #   This file is written to by the influxdb class during installation and read by the type and providers,

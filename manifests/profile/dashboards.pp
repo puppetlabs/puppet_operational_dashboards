@@ -11,50 +11,45 @@
 # @param token
 #   Token in Sensitive format used to query InfluxDB. The token must grant priviledges to query the associated bucket in InfluxDB
 # @param grafana_host
-#   FQDN of the Grafana host.  Defaults to the FQDN of the agent receiving the catalog.
+#   FQDN of the Grafana host.
 # @param grafana_port
-#   Port used by the Grafana service.  Defaults to 3000
+#   Port used by the Grafana service.
 # @param grafana_use_ssl
-#   Enable use of HTTPS/SSL for Grafana. Defaults to false.
+#   Enable use of HTTPS/SSL for Grafana.
 # @param manage_grafana_ssl
-#   Whether to manage the SSL certificate files when using the grafana_use_ssl parameter.  Defaults to true
+#   Whether to manage the SSL certificate files when using the grafana_use_ssl parameter.
 # @param grafana_cert_file
-#   SSL certificate file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.pem'.
+#   SSL certificate file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.
 # @param grafana_key_file
-#   SSL private key file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.key'.
+#   SSL private key file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.
 # @param grafana_cert_file_source
 #   SSL certificate file to use as the source for the grafana_cert_file parameter.
-#   Defaults to using the Puppet issued certs on the agent node.
 # @param grafana_key_file_source
 #   SSL certificate file to use as the source for the grafana_key_file parameter.
-#   Defaults to using the Puppet issued certs on the agent node.
 # @param grafana_timeout
-#   How long to wait for the Grafana service to start.  Defaults to 10 seconds.
+#   How long to wait for the Grafana service to start.
 # @param grafana_password
-#   Grafana admin password in Sensitive format.  Defaults to 'admin'
+#   Grafana admin password in Sensitive format.
 # @param grafana_version
-#   Version of the Grafana package to install.  Defaults to '8.5.27'
+#   Version of the Grafana package to install.
 # @param grafana_datasource
-#   Name to use for the Grafana datasource.  Defaults to 'influxdb_puppet'
+#   Name to use for the Grafana datasource.
 # @param grafana_install
-#   Method to use for installing Grafana.  Defaults to using a repository on EL and Debian/Ubuntu, and package for other platforms
+#   Method to use for installing Grafana.
 # @param use_ssl
-#   Whether to use SSL when querying InfluxDB.  Defaults to true
+#   Whether to use SSL when querying InfluxDB.
 # @param use_system_store
-#   Whether to use the system CA bundle.  Defaults to false
+#   Whether to use the system CA bundle.
 # @param manage_grafana
-#   Whether to manage installation and configuration of Grafana.  Defaults to true
+#   Whether to manage installation and configuration of Grafana.
 # @param manage_grafana_repo
-#   Whether to manage the Grafana repository definition.  Defaults to true.
+#   Whether to manage the Grafana repository definition.
 # @param influxdb_host
-#   FQDN of the InfluxDB host.  Defaults to the value of the base class,
-#   which looks up the value of influxdb::host with a default of $facts['fqdn']
+#   FQDN of the InfluxDB host.
 # @param influxdb_port
-#   Port used by the InfluxDB service.  Defaults to the value of the base class,
-#   which looks up the value of influxdb::port with a default of 8086
+#   Port used by the InfluxDB service.
 # @param influxdb_bucket
-#   Name of the InfluxDB bucket to query. Defaults to the value of the base class,
-#   which looks up the value of influxdb::initial_bucket with a default of 'puppet_data'
+#   Name of the InfluxDB bucket to query.
 # @param telegraf_token_name
 #   Name of the token to retrieve from InfluxDB if not given $token
 # @param influxdb_token_file
