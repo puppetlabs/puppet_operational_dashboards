@@ -738,14 +738,14 @@ Default value: `true`
 
 Data type: `String`
 
-Version of the Telegraf package to install. Defaults to '1.25.3'.
+Version of the Telegraf package to install. Defaults to '1.28.2'.
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--archive_location"></a>`archive_location`
 
 Data type: `String`
 
 URL containing an archive source for the telegraf package.  Defaults to downloading $version from dl.influxdata.com
-Version of the Telegraf package to install. Defaults to '1.25.3'.
+Version of the Telegraf package to install. Defaults to '1.28.2'.
 
 Default value: `"https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz"`
 
