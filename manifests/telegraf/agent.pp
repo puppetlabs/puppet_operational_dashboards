@@ -44,10 +44,10 @@
 # @param insecure_skip_verify
 #   Skip verification of SSL certificate.  Defaults to true.
 # @param version
-#   Version of the Telegraf package to install. Defaults to '1.25.3'.
+#   Version of the Telegraf package to install. Defaults to '1.28.2'.
 # @param archive_location
 #   URL containing an archive source for the telegraf package.  Defaults to downloading $version from dl.influxdata.com
-#   Version of the Telegraf package to install. Defaults to '1.25.3'.
+#   Version of the Telegraf package to install. Defaults to '1.28.2'.
 # @param archive_install_dir
 #   Directory to install $archive_location to.  Defaults to /opt/telegraf.
 # @param collection_method
