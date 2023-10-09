@@ -70,7 +70,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 
 Data type: `Boolean`
 
-Whether to manage installation and configuration of InfluxDB.  Defaults to true
+Whether to manage installation and configuration of InfluxDB.
 
 Default value: `true`
 
@@ -78,7 +78,7 @@ Default value: `true`
 
 Data type: `String`
 
-FQDN of the InfluxDB host.  Defaults to a the value of influxdb::host, or $facts['fqdn'] if unset
+FQDN of the InfluxDB host.
 
 Default value: `lookup(influxdb::host, undef, undef, $facts['networking']['fqdn'])`
 
@@ -86,7 +86,7 @@ Default value: `lookup(influxdb::host, undef, undef, $facts['networking']['fqdn'
 
 Data type: `Integer`
 
-Port used by the InfluxDB service.  Defaults to the value of influxdb::port, or 8086 if unset
+Port used by the InfluxDB service.
 
 Default value: `lookup(influxdb::port, undef, undef, 8086)`
 
@@ -94,7 +94,7 @@ Default value: `lookup(influxdb::port, undef, undef, 8086)`
 
 Data type: `String`
 
-Name of the InfluxDB organization to configure. Defaults to the value of influxdb::initial_org, or 'puppetlabs' if unset
+Name of the InfluxDB organization to configure.
 
 Default value: `lookup(influxdb::initial_org, undef, undef, 'puppetlabs')`
 
@@ -102,7 +102,7 @@ Default value: `lookup(influxdb::initial_org, undef, undef, 'puppetlabs')`
 
 Data type: `String`
 
-Name of the InfluxDB bucket to configure and query. Defaults to the value of influxdb::initial_bucket, or 'puppet_data' if unset
+Name of the InfluxDB bucket to configure and query.
 
 Default value: `lookup(influxdb::initial_bucket, undef, undef, 'puppet_data')`
 
@@ -118,7 +118,7 @@ Default value: `[{ 'type' => 'expire', 'everySeconds' => 7776000, 'shardGroupDur
 
 Data type: `Optional[Sensitive[String]]`
 
-InfluxDB admin token in Sensitive format.  Defaults to the value of influxdb::token.
+InfluxDB admin token in Sensitive format.
 See the puppetlabs/influxdb documentation for more information about this token.
 
 Default value: `lookup(influxdb::token, undef, undef, undef)`
@@ -135,7 +135,7 @@ Default value: `'puppet telegraf token'`
 
 Data type: `Boolean`
 
-Whether to manage installation and configuration of Telegraf.  Defaults to true.
+Whether to manage installation and configuration of Telegraf.
 
 Default value: `true`
 
@@ -143,7 +143,7 @@ Default value: `true`
 
 Data type: `Boolean`
 
-Whether to create and manage a Telegraf token with permissions to query buckets in the default organization.  Defaults to true.
+Whether to create and manage a Telegraf token with permissions to query buckets in the default organization.
 
 Default value: `true`
 
@@ -151,7 +151,7 @@ Default value: `true`
 
 Data type: `Boolean`
 
-Whether to use SSL when querying InfluxDB.  Defaults to true
+Whether to use SSL when querying InfluxDB.
 
 Default value: `true`
 
@@ -159,7 +159,7 @@ Default value: `true`
 
 Data type: `Boolean`
 
-Whether to use the system CA bundle.  Defaults to false
+Whether to use the system CA bundle.
 
 Default value: `lookup(influxdb::use_system_store, undef, undef, false)`
 
@@ -294,7 +294,7 @@ Default value: `$puppet_operational_dashboards::telegraf_token`
 
 Data type: `String`
 
-FQDN of the Grafana host.  Defaults to the FQDN of the agent receiving the catalog.
+FQDN of the Grafana host.
 
 Default value: `$facts['networking']['fqdn']`
 
@@ -302,7 +302,7 @@ Default value: `$facts['networking']['fqdn']`
 
 Data type: `Integer`
 
-Port used by the Grafana service.  Defaults to 3000
+Port used by the Grafana service.
 
 Default value: `3000`
 
@@ -310,7 +310,7 @@ Default value: `3000`
 
 Data type: `Boolean`
 
-Enable use of HTTPS/SSL for Grafana. Defaults to false.
+Enable use of HTTPS/SSL for Grafana.
 
 Default value: `false`
 
@@ -318,7 +318,7 @@ Default value: `false`
 
 Data type: `Boolean`
 
-Whether to manage the SSL certificate files when using the grafana_use_ssl parameter.  Defaults to true
+Whether to manage the SSL certificate files when using the grafana_use_ssl parameter.
 
 Default value: `true`
 
@@ -326,7 +326,7 @@ Default value: `true`
 
 Data type: `Stdlib::Absolutepath`
 
-SSL certificate file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.pem'.
+SSL certificate file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.
 
 Default value: `'/etc/grafana/client.pem'`
 
@@ -334,7 +334,7 @@ Default value: `'/etc/grafana/client.pem'`
 
 Data type: `Stdlib::Absolutepath`
 
-SSL private key file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.  Defaults to '/etc/grafana/client.key'.
+SSL private key file to use when 'grafana_use_ssl' and 'manage_grafana' are enabled.
 
 Default value: `'/etc/grafana/client.key'`
 
@@ -343,7 +343,6 @@ Default value: `'/etc/grafana/client.key'`
 Data type: `Stdlib::Absolutepath`
 
 SSL certificate file to use as the source for the grafana_cert_file parameter.
-Defaults to using the Puppet issued certs on the agent node.
 
 Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
 
@@ -352,7 +351,6 @@ Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
 Data type: `Stdlib::Absolutepath`
 
 SSL certificate file to use as the source for the grafana_key_file parameter.
-Defaults to using the Puppet issued certs on the agent node.
 
 Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem"`
 
@@ -360,7 +358,7 @@ Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.
 
 Data type: `Integer`
 
-How long to wait for the Grafana service to start.  Defaults to 10 seconds.
+How long to wait for the Grafana service to start.
 
 Default value: `10`
 
@@ -368,7 +366,7 @@ Default value: `10`
 
 Data type: `Sensitive[String]`
 
-Grafana admin password in Sensitive format.  Defaults to 'admin'
+Grafana admin password in Sensitive format.
 
 Default value: `Sensitive('admin')`
 
@@ -376,7 +374,7 @@ Default value: `Sensitive('admin')`
 
 Data type: `String`
 
-Version of the Grafana package to install.  Defaults to '8.5.27'
+Version of the Grafana package to install.
 
 Default value: `'8.5.27'`
 
@@ -384,7 +382,7 @@ Default value: `'8.5.27'`
 
 Data type: `String`
 
-Name to use for the Grafana datasource.  Defaults to 'influxdb_puppet'
+Name to use for the Grafana datasource.
 
 Default value: `'influxdb_puppet'`
 
@@ -392,7 +390,7 @@ Default value: `'influxdb_puppet'`
 
 Data type: `String`
 
-Method to use for installing Grafana.  Defaults to using a repository on EL and Debian/Ubuntu, and package for other platforms
+Method to use for installing Grafana.
 
 Default value:
 
@@ -406,7 +404,7 @@ $facts['os']['family'] ? {
 
 Data type: `Boolean`
 
-Whether to use SSL when querying InfluxDB.  Defaults to true
+Whether to use SSL when querying InfluxDB.
 
 Default value: `$puppet_operational_dashboards::use_ssl`
 
@@ -414,7 +412,7 @@ Default value: `$puppet_operational_dashboards::use_ssl`
 
 Data type: `Boolean`
 
-Whether to use the system CA bundle.  Defaults to false
+Whether to use the system CA bundle.
 
 Default value: `$puppet_operational_dashboards::use_system_store`
 
@@ -422,7 +420,7 @@ Default value: `$puppet_operational_dashboards::use_system_store`
 
 Data type: `Boolean`
 
-Whether to manage installation and configuration of Grafana.  Defaults to true
+Whether to manage installation and configuration of Grafana.
 
 Default value: `true`
 
@@ -430,7 +428,7 @@ Default value: `true`
 
 Data type: `Boolean`
 
-Whether to manage the Grafana repository definition.  Defaults to true.
+Whether to manage the Grafana repository definition.
 
 Default value: `true`
 
@@ -438,8 +436,7 @@ Default value: `true`
 
 Data type: `String`
 
-FQDN of the InfluxDB host.  Defaults to the value of the base class,
-which looks up the value of influxdb::host with a default of $facts['fqdn']
+FQDN of the InfluxDB host.
 
 Default value: `$puppet_operational_dashboards::influxdb_host`
 
@@ -447,8 +444,7 @@ Default value: `$puppet_operational_dashboards::influxdb_host`
 
 Data type: `Integer`
 
-Port used by the InfluxDB service.  Defaults to the value of the base class,
-which looks up the value of influxdb::port with a default of 8086
+Port used by the InfluxDB service.
 
 Default value: `$puppet_operational_dashboards::influxdb_port`
 
@@ -456,8 +452,7 @@ Default value: `$puppet_operational_dashboards::influxdb_port`
 
 Data type: `String`
 
-Name of the InfluxDB bucket to query. Defaults to the value of the base class,
-which looks up the value of influxdb::initial_bucket with a default of 'puppet_data'
+Name of the InfluxDB bucket to query.
 
 Default value: `$puppet_operational_dashboards::initial_bucket`
 
@@ -602,7 +597,7 @@ Default value: `$puppet_operational_dashboards::telegraf_token`
 
 Data type: `String`
 
-FQDN of the InfluxDB host.  Defaults to $facts['fqdn']
+FQDN of the InfluxDB host.
 
 Default value: `$puppet_operational_dashboards::influxdb_host`
 
@@ -610,7 +605,7 @@ Default value: `$puppet_operational_dashboards::influxdb_host`
 
 Data type: `Integer`
 
-Port used by the InfluxDB service.  Defaults to 8086.
+Port used by the InfluxDB service.
 
 Default value: `$puppet_operational_dashboards::influxdb_port`
 
@@ -618,7 +613,7 @@ Default value: `$puppet_operational_dashboards::influxdb_port`
 
 Data type: `String`
 
-Name of the InfluxDB organization. Defaults to 'puppetlabs'.
+Name of the InfluxDB organization.
 
 Default value: `$puppet_operational_dashboards::initial_org`
 
@@ -626,7 +621,7 @@ Default value: `$puppet_operational_dashboards::initial_org`
 
 Data type: `String`
 
-Name of the InfluxDB bucket to query. Defaults to 'puppet_data'.
+Name of the InfluxDB bucket to query.
 
 Default value: `$puppet_operational_dashboards::initial_bucket`
 
@@ -634,7 +629,7 @@ Default value: `$puppet_operational_dashboards::initial_bucket`
 
 Data type: `Boolean`
 
-Whether to use SSL when querying InfluxDB.  Defaults to true
+Whether to use SSL when querying InfluxDB.
 
 Default value: `$puppet_operational_dashboards::use_ssl`
 
@@ -642,7 +637,7 @@ Default value: `$puppet_operational_dashboards::use_ssl`
 
 Data type: `Boolean`
 
-Whether to use the system CA bundle.  Defaults to false
+Whether to use the system CA bundle.
 
 Default value: `$puppet_operational_dashboards::use_system_store`
 
@@ -650,7 +645,7 @@ Default value: `$puppet_operational_dashboards::use_system_store`
 
 Data type: `Boolean`
 
-Whether to manage Telegraf ssl configuration.  Defaults to true.
+Whether to manage Telegraf ssl configuration.
 
 Default value: `true`
 
@@ -658,13 +653,13 @@ Default value: `true`
 
 Data type: `Boolean`
 
-Whether to install Telegraf from a repository.  Defaults to true on the RedHat family of platforms.
+Whether to install Telegraf from a repository.
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_archive"></a>`manage_archive`
 
 Data type: `Boolean`
 
-Whether to install Telegraf from an archive source.  Defaults to true on platforms other than RedHat.
+Whether to install Telegraf from an archive source.
 
 Default value: `!$manage_repo`
 
@@ -672,7 +667,7 @@ Default value: `!$manage_repo`
 
 Data type: `Boolean`
 
-Whether to manage the telegraf user when installing from archive.  Defaults to true.
+Whether to manage the telegraf user when installing from archive.
 
 Default value: `true`
 
@@ -680,7 +675,7 @@ Default value: `true`
 
 Data type: `Stdlib::Absolutepath`
 
-SSL certificate to be used by the telegraf service.  Defaults to the agent certificate issued by the Puppet CA for the local machine.
+SSL certificate to be used by the telegraf service.
 
 Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
 
@@ -689,7 +684,6 @@ Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
 Data type: `Stdlib::Absolutepath`
 
 Private key used in the CSR for the certificate specified by $ssl_cert_file.
-Defaults to the private key of the local machine for generating a CSR for the Puppet CA
 
 Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem"`
 
@@ -697,7 +691,7 @@ Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.
 
 Data type: `Stdlib::Absolutepath`
 
-CA certificate issued by the CA which signed the certificate specified by $ssl_cert_file.  Defaults to the Puppet CA.
+CA certificate issued by the CA which signed the certificate specified by $ssl_cert_file.
 
 Default value: `'/etc/puppetlabs/puppet/ssl/certs/ca.pem'`
 
@@ -705,7 +699,7 @@ Default value: `'/etc/puppetlabs/puppet/ssl/certs/ca.pem'`
 
 Data type: `Stdlib::Absolutepath`
 
-SSL certificate to be used by the telegraf inputs.  Defaults to the agent certificate issued by the Puppet CA for the local machine.
+SSL certificate to be used by the telegraf inputs.
 
 Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
 
@@ -714,7 +708,6 @@ Default value: `"/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem"`
 Data type: `Stdlib::Absolutepath`
 
 Private key used in the CSR for the certificate specified by $puppet_ssl_cert_file.
-Defaults to the private key of the local machine for generating a CSR for the Puppet CA
 
 Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem"`
 
@@ -722,7 +715,7 @@ Default value: `"/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.
 
 Data type: `Stdlib::Absolutepath`
 
-CA certificate issued by the CA which signed the certificate specified by $puppet_ssl_cert_file.  Defaults to the Puppet CA.
+CA certificate issued by the CA which signed the certificate specified by $puppet_ssl_cert_file.
 
 Default value: `'/etc/puppetlabs/puppet/ssl/certs/ca.pem'`
 
@@ -730,7 +723,7 @@ Default value: `'/etc/puppetlabs/puppet/ssl/certs/ca.pem'`
 
 Data type: `Boolean`
 
-Skip verification of SSL certificate.  Defaults to true.
+Skip verification of SSL certificate.
 
 Default value: `true`
 
@@ -738,14 +731,13 @@ Default value: `true`
 
 Data type: `String`
 
-Version of the Telegraf package to install. Defaults to '1.28.2'.
+Version of the Telegraf package to install.
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--archive_location"></a>`archive_location`
 
 Data type: `String`
 
 URL containing an archive source for the telegraf package.  Defaults to downloading $version from dl.influxdata.com
-Version of the Telegraf package to install. Defaults to '1.28.2'.
 
 Default value: `"https://dl.influxdata.com/telegraf/releases/telegraf-${version.split('-')[0]}_linux_amd64.tar.gz"`
 
@@ -753,7 +745,7 @@ Default value: `"https://dl.influxdata.com/telegraf/releases/telegraf-${version.
 
 Data type: `String`
 
-Directory to install $archive_location to.  Defaults to /opt/telegraf.
+Directory to install $archive_location to.
 
 Default value: `'/opt/telegraf'`
 
@@ -772,7 +764,7 @@ Default value: `'all'`
 
 Data type: `String`
 
-How frequently to collect metrics.  Defaults to '10m'.
+How frequently to collect metrics.
 
 Default value: `'10m'`
 
@@ -780,8 +772,7 @@ Default value: `'10m'`
 
 Data type: `Array`
 
-Array of Puppet server hosts to collect metrics from.  Defaults to all Puppet server hosts in a PE infrastructure.
-FOSS users need to supply a list of FQDNs
+Array of Puppet server hosts to collect metrics from. FOSS users need to supply a list of FQDNs.
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Master')`
 
@@ -789,8 +780,7 @@ Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterp
 
 Data type: `Array`
 
-Array of PuppetDB hosts to collect metrics from.  Defaults to all PuppetDB hosts in a PE infrastructure.
-FOSS users need to supply a list of FQDNs
+Array of PuppetDB hosts to collect metrics from. FOSS users need to supply a list of FQDNs.
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Puppetdb')`
 
@@ -798,8 +788,7 @@ Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterp
 
 Data type: `Array`
 
-Array of Postgres hosts to collect metrics from.  Defaults to all Postgres in a PE infrastructure.
-FOSS users need to supply a list of FQDNs.
+Array of Postgres hosts to collect metrics from. FOSS users need to supply a list of FQDNs.
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Database')`
 
@@ -807,8 +796,7 @@ Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterp
 
 Data type: `Array`
 
-Array of Orchestrator hosts to collect metrics from.  Defaults to all Orchestrator hosts in a PE infrastructure.
-FOSS users need to supply a list of FQDNs.
+Array of Orchestrator hosts to collect metrics from. FOSS users need to supply a list of FQDNs.
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterprise::Profile::Orchestrator')`
 
@@ -816,7 +804,7 @@ Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_enterp
 
 Data type: `Array[String]`
 
-Array of PE profiles on the node with this class applied.  Used when collection_method is set to 'local'.
+Array of PE profiles on the node with this class applied. Used when collection_method is set to 'local'.
 FOSS users can use the $local_services parameter.
 
 Default value: `puppet_operational_dashboards::pe_profiles_on_host()`
