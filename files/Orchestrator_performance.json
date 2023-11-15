@@ -1716,7 +1716,7 @@
               "condition": "AND",
               "key": "mbean",
               "operator": "=",
-              "value": "default:name=puppetlabs.pcp.connections"
+              "value": "puppetlabs.pcp.connections"
             }
           ]
         }
