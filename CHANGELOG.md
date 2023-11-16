@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [temp-tag](https://github.com/puppetlabs/puppet_operational_dashboards/tree/temp-tag) (2023-11-16)
+## [v2.2.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.2.0) (2023-11-16)
 
-[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.1.0...temp-tag)
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.1.0...v2.2.0)
 
 ### Added
 
