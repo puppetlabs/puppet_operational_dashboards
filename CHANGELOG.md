@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v2.2.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.2.0) (2023-11-16)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.1.0...v2.2.0)
+
+### Added
+
+- telegraf: Update Agent 1.27.0-\>1.28.2 [\#197](https://github.com/puppetlabs/puppet_operational_dashboards/pull/197) ([bastelfreak](https://github.com/bastelfreak))
+- Update grafana 8.5.26-\>8.5.27 [\#196](https://github.com/puppetlabs/puppet_operational_dashboards/pull/196) ([bastelfreak](https://github.com/bastelfreak))
+
+### Fixed
+
+- Bugfix for importing new file sync storage metrics [\#200](https://github.com/puppetlabs/puppet_operational_dashboards/pull/200) ([m0dular](https://github.com/m0dular))
+- \(SUP-4138\) Restore missing PCP Connections panel [\#199](https://github.com/puppetlabs/puppet_operational_dashboards/pull/199) ([m0dular](https://github.com/m0dular))
+- \(SUP-4225\) Deprecate Grafana archive installations [\#195](https://github.com/puppetlabs/puppet_operational_dashboards/pull/195) ([m0dular](https://github.com/m0dular))
+- \(SUP-4478\) Addition of access details for Grafana Dashboard [\#193](https://github.com/puppetlabs/puppet_operational_dashboards/pull/193) ([Aaronoftheages](https://github.com/Aaronoftheages))
+
+## [v2.1.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.1.0) (2023-09-25)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.0.0...v2.1.0)
+
+### Added
+
+- \(SUP-3616\) Support HTTPS Grafana connections [\#189](https://github.com/puppetlabs/puppet_operational_dashboards/pull/189) ([m0dular](https://github.com/m0dular))
+- README.md: Document more hiera examples [\#186](https://github.com/puppetlabs/puppet_operational_dashboards/pull/186) ([bastelfreak](https://github.com/bastelfreak))
+- Bump module dependencies [\#185](https://github.com/puppetlabs/puppet_operational_dashboards/pull/185) ([m0dular](https://github.com/m0dular))
+- \(SUP-4332\) Add lag\_bytes to postgres dashboard [\#184](https://github.com/puppetlabs/puppet_operational_dashboards/pull/184) ([m0dular](https://github.com/m0dular))
+- Grafana: Update 8.5.20-\>8.5.26 [\#183](https://github.com/puppetlabs/puppet_operational_dashboards/pull/183) ([bastelfreak](https://github.com/bastelfreak))
+- puppet/telegraf: Require 5.x; puppetlabs/stdib: Require 9.x  [\#181](https://github.com/puppetlabs/puppet_operational_dashboards/pull/181) ([bastelfreak](https://github.com/bastelfreak))
+- telegraf: Bump 1.25.3-1-\>1.27.0-1 [\#180](https://github.com/puppetlabs/puppet_operational_dashboards/pull/180) ([bastelfreak](https://github.com/bastelfreak))
+- Add state timelines for catalog and function perf [\#177](https://github.com/puppetlabs/puppet_operational_dashboards/pull/177) ([m0dular](https://github.com/m0dular))
+
+### Fixed
+
+- \(SUP-4436\) Grafana Module Version Change [\#190](https://github.com/puppetlabs/puppet_operational_dashboards/pull/190) ([Aaronoftheages](https://github.com/Aaronoftheages))
+- \(GH-187\) Update grafana\_wait.epp template to use grafana\_port value [\#188](https://github.com/puppetlabs/puppet_operational_dashboards/pull/188) ([rjd1](https://github.com/rjd1))
+- \(\#74\) collect local PCP metrics [\#179](https://github.com/puppetlabs/puppet_operational_dashboards/pull/179) ([bastelfreak](https://github.com/bastelfreak))
+- \(\#74\) Fix include\_pe\_metrics in telegraf class [\#178](https://github.com/puppetlabs/puppet_operational_dashboards/pull/178) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.0.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.0.0) (2023-05-26)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v1.13.1...v2.0.0)
