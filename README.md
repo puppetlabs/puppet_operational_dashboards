@@ -144,7 +144,7 @@ This will install the toml-rb gem on compiling nodes, and grant the appropriate 
 ```
 include puppet_operational_dashboards
 ```
-This will install and configure Telegraf, InfluxDB, and Grafana.
+This will install and configure Telegraf, InfluxDB, and Grafana.Please make sure to restart the puppet server after installing the gem.
 
 
 Please note database access will not be granted until the Puppet agent run on the postgres nodes AFTER the application of `puppet_operational_dashboards` on the designated dashboard node.
@@ -189,7 +189,7 @@ These parameters take precedence over the file on disk if both are specified.
 
 To access Grafana, use the following in your browser of choice: 
 ```http://[AGENT IP ADDRESS]/3000```
-
+Make sure to open the port 3000 as this is not opened by default.
 When first accessing Grafana, the default login and password are as follows:
 
 Username: Admin
