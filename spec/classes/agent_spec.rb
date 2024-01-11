@@ -49,8 +49,8 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
 
           ['/etc/telegraf/puppet_ca.pem', '/etc/telegraf/puppet_cert.pem', '/etc/telegraf/puppet_key.pem', '/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem',
            '/etc/telegraf/key.pem'].each do |cert_file|
-            is_expected.to contain_file(cert_file)
-          end
+             is_expected.to contain_file(cert_file)
+           end
 
           ['puppetdb', 'puppetdb_jvm', 'puppetserver'].each do |service|
             is_expected.to contain_puppet_operational_dashboards__telegraf__config(service)
@@ -78,6 +78,122 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         }
       end
 
+      context 'when using postgres password auth' do
+        let(:params) do
+          {
+            token: RSpec::Puppet::Sensitive.new(nil),
+            token_name: 'puppet telegraf token',
+            influxdb_token_file: '/root/.influxdb_token',
+            influxdb_host: 'localhost.foo.com',
+            influxdb_port: 8086,
+            influxdb_bucket: 'puppet_data',
+            influxdb_org: 'puppetlabs',
+            use_ssl: true,
+            use_system_store: false,
+            manage_ssl: true,
+            include_pe_metrics: true,
+            telegraf_postgres_password: RSpec::Puppet::Sensitive.new('foo'),
+            postgres_options: {
+              'sslmode': 'verify-full',
+              'sslkey': '/etc/telegraf/puppet_key.pem',
+              'sslcert': '/etc/telegraf/puppet_cert.pem',
+              'sslrootcert': '/etc/telegraf/puppet_ca.pem',
+            },
+            postgres_hosts: ['localhost.foo.com'],
+          }
+        end
+
+        it {
+          # rubocop:disable Layout/LineLength
+          options = [{
+            'address' => "postgres://telegraf:foo@localhost.foo.com:5432/pe-puppetdb?#{params[:postgres_options].map { |k, v| "#{k}=#{v}" }.join('&').chomp}",
+            'databases' => ['pe-puppetdb'],
+            'outputaddress' => 'localhost.foo.com',
+            'query' => [
+              { 'sqlquery' => 'SELECT * FROM pg_stat_database',
+               'version' => 901,
+               'withdbname' => false },
+              { 'tagvalue' => 'table_name',
+               'version' => 901,
+               'withdbname' => false,
+               'sqlquery' => "SELECT current_database() AS datname, total_bytes AS total , table_name , index_bytes AS index , toast_bytes AS toast , table_bytes AS table FROM ( SELECT *, total_bytes-index_bytes-coalesce(toast_bytes,0) AS table_bytes FROM ( SELECT c.oid,nspname AS table_schema, relname AS table_name , c.reltuples AS row_estimate , pg_total_relation_size(c.oid) AS total_bytes , pg_indexes_size(c.oid) AS index_bytes , pg_total_relation_size(reltoastrelid) AS toast_bytes FROM pg_class c LEFT JOIN pg_namespace n ON n.oid = c.relnamespace WHERE relkind = 'r' AND nspname NOT IN ('pg_catalog', 'information_schema')) a) a" },
+              { 'sqlquery' => 'SELECT current_database() AS datname, relname as table, autovacuum_count, vacuum_count, n_live_tup, n_dead_tup FROM pg_stat_user_tables',
+               'tagvalue' => 'table',
+               'version' => 901,
+               'withdbname' => false },
+              { 'sqlquery' => 'SELECT current_database() AS datname, a.indexrelname as index, pg_relation_size(a.indexrelid) as size_bytes, idx_scan, idx_tup_read, idx_tup_fetch, idx_blks_read, idx_blks_hit from pg_stat_user_indexes a join pg_statio_user_indexes b on a.indexrelid = b.indexrelid;',
+               'tagvalue' => 'index',
+               'version' => 901,
+               'withdbname' => false },
+              { 'sqlquery' => 'SELECT current_database() AS datname, relname as table, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables', 'tagvalue' => 'table',
+               'version' => 901,
+               'withdbname' => false },
+            ]
+          }]
+          # rubocop:enable Layout/LineLength
+
+          is_expected.to contain_telegraf__input('postgres_localhost.foo.com').with(
+            options: options,
+          )
+        }
+      end
+
+      context 'when customizing the postgres connection string' do
+        let(:params) do
+          {
+            token: RSpec::Puppet::Sensitive.new(nil),
+            token_name: 'puppet telegraf token',
+            influxdb_token_file: '/root/.influxdb_token',
+            influxdb_host: 'localhost.foo.com',
+            influxdb_port: 8086,
+            influxdb_bucket: 'puppet_data',
+            influxdb_org: 'puppetlabs',
+            use_ssl: true,
+            use_system_store: false,
+            manage_ssl: true,
+            include_pe_metrics: true,
+            postgres_options: {
+              'sslmode': 'verify-ca',
+              'sslrootcert': '/tmp/foo',
+            },
+            postgres_hosts: ['localhost.foo.com'],
+          }
+        end
+
+        it {
+          # rubocop:disable Layout/LineLength
+          options = [{
+            'address' => "postgres://telegraf@localhost.foo.com:5432/pe-puppetdb?#{params[:postgres_options].map { |k, v| "#{k}=#{v}" }.join('&').chomp}",
+            'databases' => ['pe-puppetdb'],
+            'outputaddress' => 'localhost.foo.com',
+            'query' => [
+              { 'sqlquery' => 'SELECT * FROM pg_stat_database',
+               'version' => 901,
+               'withdbname' => false },
+              { 'tagvalue' => 'table_name',
+               'version' => 901,
+               'withdbname' => false,
+               'sqlquery' => "SELECT current_database() AS datname, total_bytes AS total , table_name , index_bytes AS index , toast_bytes AS toast , table_bytes AS table FROM ( SELECT *, total_bytes-index_bytes-coalesce(toast_bytes,0) AS table_bytes FROM ( SELECT c.oid,nspname AS table_schema, relname AS table_name , c.reltuples AS row_estimate , pg_total_relation_size(c.oid) AS total_bytes , pg_indexes_size(c.oid) AS index_bytes , pg_total_relation_size(reltoastrelid) AS toast_bytes FROM pg_class c LEFT JOIN pg_namespace n ON n.oid = c.relnamespace WHERE relkind = 'r' AND nspname NOT IN ('pg_catalog', 'information_schema')) a) a" },
+              { 'sqlquery' => 'SELECT current_database() AS datname, relname as table, autovacuum_count, vacuum_count, n_live_tup, n_dead_tup FROM pg_stat_user_tables',
+               'tagvalue' => 'table',
+               'version' => 901,
+               'withdbname' => false },
+              { 'sqlquery' => 'SELECT current_database() AS datname, a.indexrelname as index, pg_relation_size(a.indexrelid) as size_bytes, idx_scan, idx_tup_read, idx_tup_fetch, idx_blks_read, idx_blks_hit from pg_stat_user_indexes a join pg_statio_user_indexes b on a.indexrelid = b.indexrelid;',
+               'tagvalue' => 'index',
+               'version' => 901,
+               'withdbname' => false },
+              { 'sqlquery' => 'SELECT current_database() AS datname, relname as table, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables', 'tagvalue' => 'table',
+               'version' => 901,
+               'withdbname' => false },
+            ]
+          }]
+          # rubocop:enable Layout/LineLength
+
+          is_expected.to contain_telegraf__input('postgres_localhost.foo.com').with(
+            options: options,
+          )
+        }
+      end
       context 'when installing from archive on EL' do
         let(:params) do
           {
@@ -133,8 +249,8 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
 
           ['/etc/telegraf/puppet_ca.pem', '/etc/telegraf/puppet_cert.pem', '/etc/telegraf/puppet_key.pem', '/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem',
            '/etc/telegraf/key.pem'].each do |cert_file|
-            is_expected.not_to contain_file(cert_file)
-          end
+             is_expected.not_to contain_file(cert_file)
+           end
 
           is_expected.to contain_file('/etc/telegraf/telegraf.d/puppetserver_metrics.conf').with_content(
             %r{urls = \["http://localhost.foo.com:8140/status/v1/services\?level=debug"},
@@ -183,8 +299,8 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
 
           ['/etc/telegraf/puppet_ca.pem', '/etc/telegraf/puppet_cert.pem', '/etc/telegraf/puppet_key.pem', '/etc/telegraf/ca.pem', '/etc/telegraf/cert.pem',
            '/etc/telegraf/key.pem'].each do |cert_file|
-            is_expected.not_to contain_file(cert_file)
-          end
+             is_expected.not_to contain_file(cert_file)
+           end
         }
       end
 

@@ -154,9 +154,11 @@ Please note database access will not be granted until the Puppet agent run on th
 
 The toml-rb gem needs to be installed in the Puppetserver gem space, which can be done with the [influxdb::profile::toml](https://github.com/puppetlabs/influxdb/blob/main/manifests/profile/toml.pp) class in the InfluxDB module.
 
-To collect PostgreSQL metrics, FOSS users will need to manually configure the PostgreSQL authentication settings.
+To collect PostgreSQL metrics, FOSS users can apply the `puppet_operational_dashboards::profile::foss_postgres_access` class to any postgres nodes to configure authentication and grants for a `telegraf` user to connect.  This class has a dependency on the `puppetlabs/puppetdb` and `puppetlabs/postgresql` modules, and you must use the `puppetlabs/puppetdb` module to configure SSL for postgres.  See the documentation [here](https://forge.puppet.com/modules/puppetlabs/puppetdb/readme#enable-ssl-connections).
 
-The easiest way to get started using this module is by including the `puppet_operational_dashboards` class to install and configure Telegraf, InfluxDB, and Grafana.  Note that you also need to install the toml-rb gem according to the.
+You may also configure the connection options used by the Telegraf client when querying postgres.  These options can be set using the `puppet_operational_dashboards::telegraf::agent::postgres_options` class parameter.
+
+The easiest way to get started using this module is by including the `puppet_operational_dashboards` class to install and configure Telegraf, InfluxDB, and Grafana.  Note that you also need to install the toml-rb gem according to the documentation.
 
 ```
 include puppet_operational_dashboards

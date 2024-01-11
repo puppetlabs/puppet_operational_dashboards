@@ -76,6 +76,14 @@
 #   Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
 # @param include_pe_metrics
 #   Whether to include Filesync and Orchestrator dashboards
+# @param telegraf_user
+#   Username for the Telegraf client to use in the postgres connection string
+# @param telegraf_postgres_password
+#   Optional Sensitive password for the Telegraf client to use in the postgres connection string
+# @param postgres_port
+#   Port for the Telegraf client to use in the postgres connection string
+# @param postgres_options
+#   Hash of options for the Telegraf client to use as connection parameters in the postgres connection string
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
   Boolean $manage_repo,
@@ -114,6 +122,16 @@ class puppet_operational_dashboards::telegraf::agent (
   Integer[1] $http_timeout_seconds = 5,
   # Check for PE by looking at the compiling server's module_groups setting
   Boolean $include_pe_metrics = $puppet_operational_dashboards::include_pe_metrics,
+  String $telegraf_user = 'telegraf',
+  Optional[Sensitive[String]] $telegraf_postgres_password = undef,
+
+  Integer $postgres_port = 5432,
+  Hash $postgres_options = {
+    'sslmode'     => 'verify-full',
+    'sslkey'      => '/etc/telegraf/puppet_key.pem',
+    'sslcert'     => '/etc/telegraf/puppet_cert.pem',
+    'sslrootcert' => '/etc/telegraf/puppet_ca.pem',
+  }
 ) {
   unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services].any |$service| { $service } {
     fail('No services detected on node.')
@@ -155,6 +173,13 @@ class puppet_operational_dashboards::telegraf::agent (
         }
       ],
     },
+  }
+
+  $database = if $include_pe_metrics {
+    'pe-puppetdb'
+  }
+  else {
+    'puppetdb'
   }
 
   Telegraf::Input {
@@ -299,9 +324,17 @@ class puppet_operational_dashboards::telegraf::agent (
 
     unless $postgres_hosts.empty() {
       $postgres_hosts.sort.each |$pg_host| {
+        $options = $postgres_options.map |$k, $v| { "${k}=${v}" }.join('&')
         $inputs = epp(
           'puppet_operational_dashboards/postgres.epp',
-          { certname => $pg_host }
+          {
+            certname          => $pg_host,
+            telegraf_user     => $telegraf_user,
+            password          => $telegraf_postgres_password,
+            database          => $database,
+            port              => $postgres_port,
+            connection_params => $options,
+          }
         ).influxdb::from_toml()
 
         telegraf::input { "postgres_${pg_host}":
@@ -374,9 +407,17 @@ class puppet_operational_dashboards::telegraf::agent (
     }
 
     if 'Puppet_enterprise::Profile::Database' in $profiles or 'postgres' in $local_services {
+      $options = $postgres_options.map |$k, $v| { "${k}=${v}" }.join('&')
       $inputs = epp(
         'puppet_operational_dashboards/postgres.epp',
-        { certname => $trusted['certname'] }
+        {
+          certname                   => $trusted['certname'],
+          telegraf_user              => $telegraf_user,
+          password                   => $telegraf_postgres_password,
+          database                   => $database,
+          port                       => $postgres_port,
+          connection_params          => $options,
+        }
       ).influxdb::from_toml()
 
       telegraf::input { "postgres_${trusted['certname']}":
