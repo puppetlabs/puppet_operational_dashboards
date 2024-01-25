@@ -43,10 +43,6 @@ spec/default_facts.yml:
       user: 'root'
     settings:
       module_groups: 'base+pe_only'
-    pe_postgresql_info:
-      installed_server_version: '14'
-    networking:
-      fqdn: 'foo.bar.com'
 .rubocop.yml:
   default_configs:
     "Layout/MultilineOperationIndentation":

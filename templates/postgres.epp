@@ -1,17 +1,5 @@
-<%- |
-  String $certname,
-  String $telegraf_user,
-  Optional[Sensitive] $password,
-  String $database,
-  Integer $port,
-  String $connection_params,
-| -%>
-<% if $password { -%>
-address = "postgres://<%=$telegraf_user%>:<%=$password.unwrap%>@<%=$certname%>:<%=$port%>/<%=$database%>?<%=$connection_params%>"
-<% } -%>
-<% else { -%>
-address = "postgres://<%=$telegraf_user%>@<%=$certname%>:<%=$port%>/<%=$database%>?<%=$connection_params%>"
-<% } -%>
+<%- | String $certname | -%>
+address = "postgres://telegraf@<%=$certname%>:5432/pe-puppetdb?sslmode=verify-full&sslkey=/etc/telegraf/puppet_key.pem&sslcert=/etc/telegraf/puppet_cert.pem&sslrootcert=/etc/telegraf/puppet_ca.pem"
 databases = ["pe-puppetdb"]
 outputaddress = "<%=$certname%>"
 [[query]]
