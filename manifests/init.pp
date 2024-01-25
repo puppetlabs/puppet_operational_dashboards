@@ -61,7 +61,11 @@ class puppet_operational_dashboards (
   Boolean $use_ssl = true,
   Boolean $use_system_store = lookup(influxdb::use_system_store, undef, undef, false),
   # Check for PE by looking at the compiling server's module_groups setting
-  Boolean $include_pe_metrics = $settings::module_groups =~ 'pe_only',
+  Boolean $include_pe_metrics = $settings::module_groups ? {
+    /pe_only/ => true,
+    default   => false,
+  },
+
   Boolean $manage_system_board = true,
 ) {
   unless $facts['os']['family'] in ['RedHat', 'Debian', 'Suse'] {
