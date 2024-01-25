@@ -7,6 +7,10 @@ fixtures:
     service: "puppetlabs/service"
     package: "puppetlabs/package"
     reboot: "puppetlabs/reboot"
+    puppetdb: "puppetlabs/puppetdb"
+    postgresql: "puppetlabs/postgresql"
+    firewall: "puppetlabs/firewall"
+    concat: "puppetlabs/concat"
   repositories:
     stdlib: 'https://github.com/puppetlabs/puppetlabs-stdlib'
     apt: 'https://github.com/puppetlabs/puppetlabs-apt'
