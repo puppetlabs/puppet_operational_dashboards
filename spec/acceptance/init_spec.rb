@@ -7,7 +7,7 @@ describe 'install dashboards and set up dependancies' do
       inf = <<-MANIFEST
         service { 'pe-puppetserver': }
 
-        package {'make':
+        package {['make', 'gcc']:
           ensure => 'installed',
         }
 
