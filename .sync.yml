@@ -33,6 +33,7 @@ spec/spec_helper.rb:
   mock_with: ":rspec"
   coverage_report: true
 Rakefile:
+  unmanaged: true
   changelog_user: "puppetlabs"
   extra_disabled_lint_checks:
     - 'lookup_in_parameter'
