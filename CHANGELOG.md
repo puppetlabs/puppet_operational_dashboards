@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v2.3.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.3.0) (2024-02-03)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.2.0...v2.3.0)
+
+### Added
+
+- Fix collection of postgres metrics on FOSS Puppet [\#206](https://github.com/puppetlabs/puppet_operational_dashboards/pull/206) ([m0dular](https://github.com/m0dular))
+- Fix logic to include pe metrics [\#204](https://github.com/puppetlabs/puppet_operational_dashboards/pull/204) ([m0dular](https://github.com/m0dular))
+
 ## [v2.2.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.2.0) (2023-11-16)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.1.0...v2.2.0)
