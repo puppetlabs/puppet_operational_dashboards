@@ -9,6 +9,7 @@
 * [`puppet_operational_dashboards`](#puppet_operational_dashboards): Installs Telegraf, InfluxDB, and Grafana to collect and display Puppet metrics
 * [`puppet_operational_dashboards::enterprise_infrastructure`](#puppet_operational_dashboards--enterprise_infrastructure): Installs dependancies for Operational dashboards on PE infrastructure components
 * [`puppet_operational_dashboards::profile::dashboards`](#puppet_operational_dashboards--profile--dashboards): Installs Grafana and several dashboards to display Puppet metrics.  Included via the base class.
+* [`puppet_operational_dashboards::profile::foss_postgres_access`](#puppet_operational_dashboards--profile--foss_postgres_access): Allows Telegraf to connect and collect metrics from postgres nodes
 * [`puppet_operational_dashboards::profile::postgres_access`](#puppet_operational_dashboards--profile--postgres_access): Allows Telegraf to connect and collect metrics from postgres nodes
 * [`puppet_operational_dashboards::telegraf::agent`](#puppet_operational_dashboards--telegraf--agent): Installs and configures Telegraf to query hosts in a Puppet infrastructure. Included by the base class
 
@@ -194,7 +195,13 @@ Data type: `Boolean`
 
 Whether to include Filesync and Orchestrator dashboards
 
-Default value: `$settings::module_groups =~ 'pe_only'`
+Default value:
+
+```puppet
+$settings::module_groups ? {
+    /pe_only/ => true,
+    default   => false
+```
 
 ##### <a name="-puppet_operational_dashboards--manage_system_board"></a>`manage_system_board`
 
@@ -505,6 +512,41 @@ Version of the system dashboard to manage. v2 is compatible with puppet_metrics_
 
 Default value: `'v2'`
 
+### <a name="puppet_operational_dashboards--profile--foss_postgres_access"></a>`puppet_operational_dashboards::profile::foss_postgres_access`
+
+Allows Telegraf to connect and collect metrics from postgres nodes
+
+#### Examples
+
+##### Basic usage
+
+```puppet
+include puppet_operational_dashboards::profile::foss_postgres_access
+```
+
+#### Parameters
+
+The following parameters are available in the `puppet_operational_dashboards::profile::foss_postgres_access` class:
+
+* [`telegraf_hosts`](#-puppet_operational_dashboards--profile--foss_postgres_access--telegraf_hosts)
+* [`telegraf_user`](#-puppet_operational_dashboards--profile--foss_postgres_access--telegraf_user)
+
+##### <a name="-puppet_operational_dashboards--profile--foss_postgres_access--telegraf_hosts"></a>`telegraf_hosts`
+
+Data type: `Array`
+
+A list of FQDNs running Telegraf to allow access to
+
+Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_operational_dashboards::Telegraf::Agent')`
+
+##### <a name="-puppet_operational_dashboards--profile--foss_postgres_access--telegraf_user"></a>`telegraf_user`
+
+Data type: `String`
+
+Username for the Telegraf client to use in the postgres connection string
+
+Default value: `'telegraf'`
+
 ### <a name="puppet_operational_dashboards--profile--postgres_access"></a>`puppet_operational_dashboards::profile::postgres_access`
 
 Allows Telegraf to connect and collect metrics from postgres nodes
@@ -584,6 +626,10 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`influxdb_token_file`](#-puppet_operational_dashboards--telegraf--agent--influxdb_token_file)
 * [`http_timeout_seconds`](#-puppet_operational_dashboards--telegraf--agent--http_timeout_seconds)
 * [`include_pe_metrics`](#-puppet_operational_dashboards--telegraf--agent--include_pe_metrics)
+* [`telegraf_user`](#-puppet_operational_dashboards--telegraf--agent--telegraf_user)
+* [`telegraf_postgres_password`](#-puppet_operational_dashboards--telegraf--agent--telegraf_postgres_password)
+* [`postgres_port`](#-puppet_operational_dashboards--telegraf--agent--postgres_port)
+* [`postgres_options`](#-puppet_operational_dashboards--telegraf--agent--postgres_options)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--token"></a>`token`
 
@@ -849,6 +895,47 @@ Data type: `Boolean`
 Whether to include Filesync and Orchestrator dashboards
 
 Default value: `$puppet_operational_dashboards::include_pe_metrics`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--telegraf_user"></a>`telegraf_user`
+
+Data type: `String`
+
+Username for the Telegraf client to use in the postgres connection string
+
+Default value: `'telegraf'`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--telegraf_postgres_password"></a>`telegraf_postgres_password`
+
+Data type: `Optional[Sensitive[String]]`
+
+Optional Sensitive password for the Telegraf client to use in the postgres connection string
+
+Default value: `undef`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--postgres_port"></a>`postgres_port`
+
+Data type: `Integer`
+
+Port for the Telegraf client to use in the postgres connection string
+
+Default value: `5432`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--postgres_options"></a>`postgres_options`
+
+Data type: `Hash`
+
+Hash of options for the Telegraf client to use as connection parameters in the postgres connection string
+
+Default value:
+
+```puppet
+{
+    'sslmode'     => 'verify-full',
+    'sslkey'      => '/etc/telegraf/puppet_key.pem',
+    'sslcert'     => '/etc/telegraf/puppet_cert.pem',
+    'sslrootcert' => '/etc/telegraf/puppet_ca.pem',
+  }
+```
 
 ## Defined types
 
