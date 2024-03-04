@@ -37,8 +37,8 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
 
         it {
           is_expected.to contain_class('telegraf').with(
-            ensure: '1.28.2-1',
-            archive_location: 'https://dl.influxdata.com/telegraf/releases/telegraf-1.28.2_linux_amd64.tar.gz',
+            ensure: '1.29.4-1',
+            archive_location: 'https://dl.influxdata.com/telegraf/releases/telegraf-1.29.4_linux_amd64.tar.gz',
             interval: '10m',
             manage_service: false,
             outputs: influxdb_v2,
