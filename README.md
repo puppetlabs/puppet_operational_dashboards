@@ -190,12 +190,12 @@ These parameters take precedence over the file on disk if both are specified.
 ## Accessing Grafana
 
 To access Grafana, use the following in your browser of choice: 
-```http://[AGENT IP ADDRESS]/3000```
+```http://[AGENT IP ADDRESS]:3000```
 
 When first accessing Grafana, the default login and password are as follows:
 
-Username: Admin
-Password: Admin
+Username: admin
+Password: admin
 
 Upon first sign in, you will then be prompted to change your password, skip this step and proceed to the dashboard.
 
