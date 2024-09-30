@@ -8,7 +8,7 @@ include PuppetLitmus
 RSpec.configure do |c|
   c.mock_with :rspec
   c.before :suite do
-    # Download the plugins and install required toml gem
+    # Download the plugins
     PuppetLitmus::PuppetHelpers.run_shell('/opt/puppetlabs/bin/puppet plugin download')
   end
 end

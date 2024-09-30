@@ -41,7 +41,7 @@ define puppet_operational_dashboards::telegraf::config (
     $inputs = epp(
       "puppet_operational_dashboards/${service}_metrics.epp",
       { urls => $urls, protocol => $protocol, http_timeout_seconds => $http_timeout_seconds }
-    ).influxdb::from_toml()
+    ).stdlib::from_toml()
 
     telegraf::input { "${service}_metrics":
       plugin_type => 'http',

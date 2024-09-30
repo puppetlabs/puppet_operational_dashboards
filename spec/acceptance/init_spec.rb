@@ -3,7 +3,7 @@ require 'spec_helper_acceptance'
 
 describe 'install dashboards and set up dependancies' do
   context 'apply enterprise_infrastructure  with default parameters' do
-    it 'installs tomlrb and dbaccess' do
+    it 'grants dbaccess' do
       inf = <<-MANIFEST
         service { 'pe-puppetserver': }
 
@@ -13,12 +13,6 @@ describe 'install dashboards and set up dependancies' do
 
         include puppet_operational_dashboards::enterprise_infrastructure
 
-
-        package { 'toml-rb puppet_gem':
-          name     => 'toml-rb',
-          ensure   => installed,
-          provider => 'puppet_gem',
-        }
       MANIFEST
       idempotent_apply(inf)
     end

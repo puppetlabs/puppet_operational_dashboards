@@ -335,7 +335,7 @@ class puppet_operational_dashboards::telegraf::agent (
             port              => $postgres_port,
             connection_params => $options,
           }
-        ).influxdb::from_toml()
+        ).stdlib::from_toml()
 
         telegraf::input { "postgres_${pg_host}":
           plugin_type => 'postgresql_extensible',
@@ -418,7 +418,7 @@ class puppet_operational_dashboards::telegraf::agent (
           port                       => $postgres_port,
           connection_params          => $options,
         }
-      ).influxdb::from_toml()
+      ).stdlib::from_toml()
 
       telegraf::input { "postgres_${trusted['certname']}":
         plugin_type => 'postgresql_extensible',

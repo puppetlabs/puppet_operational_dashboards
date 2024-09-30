@@ -92,18 +92,6 @@ puppet_operational_dashboards::telegraf::agent::manage_archive: false
 puppet_operational_dashboards::telegraf::agent::manage_repo: false
 ```
 
-influxdb needs to install the toml gem at the moment. If you're behind an http
-proxy you can configure that as well:
-
-```yaml
-influxdb::profile::toml::install_options_server:
-  - '-p'
-  - 'http://10.88.96.254.3128'
-influxdb::profile::toml::install_options_agent:
-  - '-p'
-  - 'http://10.88.96.254.3128'
-```
-
 ### Archive sources
 
 To use archive sources, set the following parameters.  Note that support for Grafana archives has been deprecated and will need to be installed from a repository or package source.
@@ -137,7 +125,7 @@ To Install on Puppet Enterprise:
 include puppet_operational_dashboards::enterprise_infrastructure
 ```
 
-This will install the toml-rb gem on compiling nodes, and grant the appropriate access to the databases, for the dashboard node on all database nodes.
+This will grant the appropriate access to the databases, for the dashboard node on all database nodes.
 
 2. Classify `puppet_operational_dashboards` to the Puppet agent node to be designated as the Operational Dashboard node.
 
@@ -152,13 +140,11 @@ Please note database access will not be granted until the Puppet agent run on th
 
 #### Installing on Puppet Open Source
 
-The toml-rb gem needs to be installed in the Puppetserver gem space, which can be done with the [influxdb::profile::toml](https://github.com/puppetlabs/influxdb/blob/main/manifests/profile/toml.pp) class in the InfluxDB module.
-
 To collect PostgreSQL metrics, FOSS users can apply the `puppet_operational_dashboards::profile::foss_postgres_access` class to any postgres nodes to configure authentication and grants for a `telegraf` user to connect.  This class has a dependency on the `puppetlabs/puppetdb` and `puppetlabs/postgresql` modules, and you must use the `puppetlabs/puppetdb` module to configure SSL for postgres.  See the documentation [here](https://forge.puppet.com/modules/puppetlabs/puppetdb/readme#enable-ssl-connections).
 
 You may also configure the connection options used by the Telegraf client when querying postgres.  These options can be set using the `puppet_operational_dashboards::telegraf::agent::postgres_options` class parameter.
 
-The easiest way to get started using this module is by including the `puppet_operational_dashboards` class to install and configure Telegraf, InfluxDB, and Grafana.  Note that you also need to install the toml-rb gem according to the documentation.
+The easiest way to get started using this module is by including the `puppet_operational_dashboards` class to install and configure Telegraf, InfluxDB, and Grafana.
 
 ```
 include puppet_operational_dashboards

@@ -213,7 +213,7 @@ Default value: `true`
 
 ### <a name="puppet_operational_dashboards--enterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
 
-When applied to an appropriate node group this class applies the toml gem and database access
+When applied to an appropriate node group this class applies database access
 On appropriate infrastructure nodes in PE
 
 #### Examples
