@@ -1,0 +1,48 @@
+<%- | Array[String] $urls, Enum['https', 'http'] $protocol, Integer[1] $http_timeout_seconds | -%>
+<% if $protocol == 'https' { -%>
+tls_cert: "/etc/telegraf/puppet_cert.pem"
+tls_key: "/etc/telegraf/puppet_key.pem"
+tls_ca: "/etc/telegraf/puppet_ca.pem"
+<% } -%>
+data_format: json_v2
+headers:
+  Content-type: application/json
+method: GET
+timeout: <%= $http_timeout_seconds %>s
+urls: <%= $urls %>
+json_v2:
+  - measurement_name: orchestrator
+    object:
+      - disable_prepend_keys: false
+        path: status-service.status.experimental.jvm-metrics
+      - disable_prepend_keys: false
+        path: broker-service.status.metrics
+      - disable_prepend_keys: true
+        path: orchestrator-service.status.metrics.routes.sorted-routes
+        tags:
+          - route-id
+      - disable_prepend_keys: true
+        path: orchestrator-service.status.metrics.app
+      - disable_prepend_keys: false
+        path: "@this"
+        included_keys:
+          - file-sync-client-service_status_experimental_metrics_average-begin-sync-callback-time
+          - file-sync-client-service_status_experimental_metrics_average-clone-time
+          - file-sync-client-service_status_experimental_metrics_average-live-dir-update-time
+          - file-sync-client-service_status_experimental_metrics_average-versioned-sync-prep-time
+          - file-sync-client-service_status_experimental_metrics_average-sync-clean-check-time
+          - file-sync-client-service_status_experimental_metrics_num-clones
+          - file-sync-client-service_status_experimental_metrics_average-versioned-sync-cleanup-time
+          - file-sync-client-service_status_experimental_metrics_average-client-status-update-time
+          - file-sync-client-service_status_experimental_metrics_average-fetch-time
+          - file-sync-client-service_status_experimental_metrics_average-end-sync-callback-time
+          - file-sync-client-service_status_experimental_metrics_average-sync-time
+          - file-sync-client-service_status_experimental_metrics_num-syncs
+          - file-sync-client-service_status_experimental_metrics_num-sync-clean-checks
+          - file-sync-client-service_status_experimental_metrics_num-fetches
+          - file-sync-storage-service_status_experimental_metrics_num-commits
+          - file-sync-storage-service_status_experimental_metrics_average-commit-time
+          - file-sync-storage-service_status_experimental_metrics_num-commit-add-rm-ops
+          - file-sync-storage-service_status_experimental_metrics_num-pre-commit-hook-ops
+          - file-sync-storage-service_status_experimental_metrics_average-commit-add-rm-time
+          - file-sync-storage-service_status_experimental_metrics_average-pre-commit-hook-time
