@@ -1194,4 +1194,3 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 Data type: `TargetSpec`
 
 The targets to run on.
-

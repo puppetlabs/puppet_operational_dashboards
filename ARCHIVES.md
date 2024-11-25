@@ -15,7 +15,7 @@ git clone https://github.com/puppetlabs/puppet_operational_dashboards.git
 cd puppet_operational_dashboards
 bolt module install
 ```
-* Install the toml-rb gem
+* Install the toml-rb gem (not required if using yaml template_format)
 ```
 /opt/puppetlabs/bolt/bin/gem install --user-install toml-rb
 ```

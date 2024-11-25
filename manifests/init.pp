@@ -41,6 +41,8 @@
 #   Whether to include Filesync and Orchestrator dashboards
 # @param manage_system_board
 #   Whether the System Performance dashboard should be added to grafana
+# @param template_format
+#   Template format to use for puppet template toml or yaml config
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
@@ -67,6 +69,7 @@ class puppet_operational_dashboards (
   },
 
   Boolean $manage_system_board = true,
+  Enum['yaml','toml'] $template_format = 'toml',
 ) {
   unless $facts['os']['family'] in ['RedHat', 'Debian', 'Suse'] {
     fail("Installation on ${facts['os']['family']} is not supported")
