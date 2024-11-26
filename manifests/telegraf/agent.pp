@@ -84,6 +84,8 @@
 #   Port for the Telegraf client to use in the postgres connection string
 # @param postgres_options
 #   Hash of options for the Telegraf client to use as connection parameters in the postgres connection string
+# @param template_format
+#   Template format to use for puppet template toml or yaml config
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
   Boolean $manage_repo,
@@ -131,7 +133,8 @@ class puppet_operational_dashboards::telegraf::agent (
     'sslkey'      => '/etc/telegraf/puppet_key.pem',
     'sslcert'     => '/etc/telegraf/puppet_cert.pem',
     'sslrootcert' => '/etc/telegraf/puppet_ca.pem',
-  }
+  },
+  Enum['yaml','toml'] $template_format = $puppet_operational_dashboards::template_format,
 ) {
   unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services].any |$service| { $service } {
     fail('No services detected on node.')
@@ -300,6 +303,7 @@ class puppet_operational_dashboards::telegraf::agent (
         hosts                => $puppetdb_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
+        template_format      => $template_format,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
@@ -309,6 +313,7 @@ class puppet_operational_dashboards::telegraf::agent (
         hosts                => $puppetserver_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
+        template_format      => $template_format,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
@@ -318,6 +323,7 @@ class puppet_operational_dashboards::telegraf::agent (
         hosts                => $orchestrator_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
+        template_format      => $template_format,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
@@ -326,7 +332,7 @@ class puppet_operational_dashboards::telegraf::agent (
       $postgres_hosts.sort.each |$pg_host| {
         $options = $postgres_options.map |$k, $v| { "${k}=${v}" }.join('&')
         $inputs = epp(
-          'puppet_operational_dashboards/postgres.epp',
+          "puppet_operational_dashboards/postgres.${template_format}.epp",
           {
             certname          => $pg_host,
             telegraf_user     => $telegraf_user,
@@ -335,11 +341,15 @@ class puppet_operational_dashboards::telegraf::agent (
             port              => $postgres_port,
             connection_params => $options,
           }
-        ).influxdb::from_toml()
+        )
+        $_inputs = $template_format ? {
+          'yaml'  => $inputs.parseyaml(),
+          default => $inputs.influxdb::from_toml(),
+        }
 
         telegraf::input { "postgres_${pg_host}":
           plugin_type => 'postgresql_extensible',
-          options     => [$inputs],
+          options     => [$_inputs],
         }
       }
     }
@@ -360,6 +370,7 @@ class puppet_operational_dashboards::telegraf::agent (
           hosts                => $pcp_hosts.sort,
           protocol             => $protocol,
           http_timeout_seconds => $http_timeout_seconds,
+          template_format      => $template_format,
           require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
         }
       }
@@ -376,6 +387,7 @@ class puppet_operational_dashboards::telegraf::agent (
         hosts                => [$trusted['certname']],
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
+        template_format      => $template_format,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
@@ -385,6 +397,7 @@ class puppet_operational_dashboards::telegraf::agent (
         hosts                => [$trusted['certname']],
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
+        template_format      => $template_format,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
       if $include_pe_metrics {
@@ -392,6 +405,7 @@ class puppet_operational_dashboards::telegraf::agent (
           hosts                => ["${trusted['certname']}:${pcp_port}"],
           protocol             => $protocol,
           http_timeout_seconds => $http_timeout_seconds,
+          template_format      => $template_format,
           require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
         }
       }
@@ -402,6 +416,7 @@ class puppet_operational_dashboards::telegraf::agent (
         hosts                => $orchestrator_hosts.sort,
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
+        template_format      => $template_format,
         require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
@@ -409,7 +424,7 @@ class puppet_operational_dashboards::telegraf::agent (
     if 'Puppet_enterprise::Profile::Database' in $profiles or 'postgres' in $local_services {
       $options = $postgres_options.map |$k, $v| { "${k}=${v}" }.join('&')
       $inputs = epp(
-        'puppet_operational_dashboards/postgres.epp',
+        "puppet_operational_dashboards/postgres.${template_format}.epp",
         {
           certname                   => $trusted['certname'],
           telegraf_user              => $telegraf_user,
@@ -418,11 +433,15 @@ class puppet_operational_dashboards::telegraf::agent (
           port                       => $postgres_port,
           connection_params          => $options,
         }
-      ).influxdb::from_toml()
+      )
+      $_inputs = $template_format ? {
+        'yaml' => $inputs.parseyaml(),
+        default => $inputs.influxdb::from_toml(),
+      }
 
       telegraf::input { "postgres_${trusted['certname']}":
         plugin_type => 'postgresql_extensible',
-        options     => [$inputs],
+        options     => [$_inputs],
       }
     }
   }

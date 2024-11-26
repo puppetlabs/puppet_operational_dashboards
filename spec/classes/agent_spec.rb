@@ -100,6 +100,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
               'sslrootcert': '/etc/telegraf/puppet_ca.pem',
             },
             postgres_hosts: ['localhost.foo.com'],
+            template_format: 'toml',
           }
         end
 
@@ -157,6 +158,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
               'sslrootcert': '/tmp/foo',
             },
             postgres_hosts: ['localhost.foo.com'],
+            template_format: 'toml',
           }
         end
 
@@ -209,6 +211,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             manage_repo: false,
             manage_archive: true,
             include_pe_metrics: true,
+            template_format: 'toml',
           }
         end
 
@@ -275,6 +278,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             use_system_store: false,
             manage_ssl: false,
             include_pe_metrics: true,
+            template_format: 'toml',
           }
         end
 
@@ -318,6 +322,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             use_system_store: false,
             collection_interval: '10s',
             include_pe_metrics: true,
+            template_format: 'toml',
           }
         end
 
@@ -348,6 +353,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             use_system_store: false,
             collection_method: 'local',
             include_pe_metrics: true,
+            template_format: 'toml',
           }
         end
 
@@ -370,6 +376,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             use_system_store: false,
             puppetserver_hosts: ['localhost.foo.com'],
             include_pe_metrics: false,
+            template_format: 'toml',
           }
         end
 
@@ -393,6 +400,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             collection_method: 'local',
             local_services: ['puppetserver'],
             include_pe_metrics: false,
+            template_format: 'toml',
           }
         end
 
@@ -419,6 +427,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             version: '1.26.0',
             include_pe_metrics: true,
             profiles: ['Puppet_enterprise::Profile::Master', 'Puppet_enterprise::Profile::Puppetdb', 'Puppet_enterprise::Profile::Orchestrator', 'Puppet_enterprise::Profile::Database'],
+            template_format: 'toml',
           }
         end
 

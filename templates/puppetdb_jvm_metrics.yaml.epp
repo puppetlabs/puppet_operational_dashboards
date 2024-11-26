@@ -1,0 +1,21 @@
+<%- | Array[String] $urls, Enum['https', 'http'] $protocol, Integer[1] $http_timeout_seconds | -%>
+<% if $protocol == 'https' { -%>
+tls_cert: /etc/telegraf/puppet_cert.pem
+tls_key: /etc/telegraf/puppet_key.pem
+tls_ca: /etc/telegraf/puppet_ca.pem
+<% } -%>
+data_format: json_v2
+headers:
+  Content-type: application/json
+method: GET
+timeout: <%= $http_timeout_seconds %>s
+urls: <%= $urls %>
+json_v2:
+  - measurement_name: puppetdb
+    object:
+      - path: status-service.status.experimental.jvm-metrics
+        disable_prepend_keys: false
+      - disable_prepend_keys: true
+        path: puppetdb-status.status
+        included_keys:
+          - queue_depth
