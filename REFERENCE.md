@@ -66,6 +66,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`telegraf_token`](#-puppet_operational_dashboards--telegraf_token)
 * [`include_pe_metrics`](#-puppet_operational_dashboards--include_pe_metrics)
 * [`manage_system_board`](#-puppet_operational_dashboards--manage_system_board)
+* [`template_format`](#-puppet_operational_dashboards--template_format)
 
 ##### <a name="-puppet_operational_dashboards--manage_influxdb"></a>`manage_influxdb`
 
@@ -211,6 +212,14 @@ Whether the System Performance dashboard should be added to grafana
 
 Default value: `true`
 
+##### <a name="-puppet_operational_dashboards--template_format"></a>`template_format`
+
+Data type: `Enum['yaml','toml']`
+
+Template format to use for puppet template toml or yaml config
+
+Default value: `'toml'`
+
 ### <a name="puppet_operational_dashboards--enterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
 
 When applied to an appropriate node group this class applies the toml gem and database access
@@ -229,6 +238,7 @@ include puppet_operational_dashboards::enterprise_infrastructure
 The following parameters are available in the `puppet_operational_dashboards::enterprise_infrastructure` class:
 
 * [`profiles`](#-puppet_operational_dashboards--enterprise_infrastructure--profiles)
+* [`template_format`](#-puppet_operational_dashboards--enterprise_infrastructure--template_format)
 
 ##### <a name="-puppet_operational_dashboards--enterprise_infrastructure--profiles"></a>`profiles`
 
@@ -237,6 +247,14 @@ Data type: `Array[String]`
 Array of PE profiles on the node with this class applied.
 
 Default value: `puppet_operational_dashboards::pe_profiles_on_host()`
+
+##### <a name="-puppet_operational_dashboards--enterprise_infrastructure--template_format"></a>`template_format`
+
+Data type: `Enum['yaml','toml']`
+
+Template format to use for puppet template toml or yaml config
+
+Default value: `'toml'`
 
 ### <a name="puppet_operational_dashboards--profile--dashboards"></a>`puppet_operational_dashboards::profile::dashboards`
 
@@ -630,6 +648,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`telegraf_postgres_password`](#-puppet_operational_dashboards--telegraf--agent--telegraf_postgres_password)
 * [`postgres_port`](#-puppet_operational_dashboards--telegraf--agent--postgres_port)
 * [`postgres_options`](#-puppet_operational_dashboards--telegraf--agent--postgres_options)
+* [`template_format`](#-puppet_operational_dashboards--telegraf--agent--template_format)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--token"></a>`token`
 
@@ -937,6 +956,14 @@ Default value:
   }
 ```
 
+##### <a name="-puppet_operational_dashboards--telegraf--agent--template_format"></a>`template_format`
+
+Data type: `Enum['yaml','toml']`
+
+Template format to use for puppet template toml or yaml config
+
+Default value: `$puppet_operational_dashboards::template_format`
+
 ## Defined types
 
 ### <a name="puppet_operational_dashboards--telegraf--config"></a>`puppet_operational_dashboards::telegraf::config`
@@ -952,6 +979,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`hosts`](#-puppet_operational_dashboards--telegraf--config--hosts)
 * [`ensure`](#-puppet_operational_dashboards--telegraf--config--ensure)
 * [`http_timeout_seconds`](#-puppet_operational_dashboards--telegraf--config--http_timeout_seconds)
+* [`template_format`](#-puppet_operational_dashboards--telegraf--config--template_format)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--config--service"></a>`service`
 
@@ -986,6 +1014,14 @@ Default value: `'present'`
 Data type: `Integer[1]`
 
 Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
+
+##### <a name="-puppet_operational_dashboards--telegraf--config--template_format"></a>`template_format`
+
+Data type: `Enum['yaml','toml']`
+
+Template format to use for puppet template toml or yaml config
+
+Default value: `'toml'`
 
 ## Functions
 
@@ -1194,3 +1230,4 @@ The following parameters are available in the `puppet_operational_dashboards::pr
 Data type: `TargetSpec`
 
 The targets to run on.
+
