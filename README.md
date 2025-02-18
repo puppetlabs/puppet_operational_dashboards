@@ -39,6 +39,38 @@ This module is a replacement for the [puppet_metrics_dashboard module](https://f
 
 ## Setup
 
+### Firewall Requirements for Puppet Operational Dashboards
+
+To ensure smooth communication between services in the Puppet Operational Dashboards module, the following firewall rules must be configured in addition to those required by Puppet Enterprise:
+
+| Application      | Port  | Protocol | Communication Flow              | Deployment Notes                                                   |
+|------------------|-------|----------|---------------------------------|--------------------------------------------------------------------|
+| **Telegraf**     | 8086  | TCP      | Outbound to InfluxDB           | Connects to InfluxDB for metric collection.                        |
+| **InfluxDB**     | 8086  | TCP      | Inbound from Telegraf,Grafana | Receives metrics from Telegraf and Grafana.                                    |
+| **Grafana**      | 3000  | TCP      | Inbound from users/browsers    | Used for accessing the dashboard interface.                        |
+| **PostgreSQL**   | 5432  | TCP      | Inbound from applications      | Required for metrics collection in both Puppet Enterprise and Open Source setups. |
+| **Puppetserver** | 8140  | TCP      | Inbound from inbound from telegraf     | Standard Puppetserver communication.                               |
+| **PuppetDB**     | 8081  | TCP      | Inbound from Telegraf      | Stores and serves reports, catalogs, and exported resources.       |
+| **Orchestrator** | 8143  | TCP      | Inbound from Telegraf      | Manages task execution and orchestrates Puppet runs.               |
+
+
+---
+
+#### Deployment Scenario: Puppet Enterprise with Firewalls Between Components
+
+In a Puppet Enterprise deployment with Puppet compilers and firewalls between the primary server, compilers, and infrastructure hosting the services deployed by this module, additional considerations must be addressed:
+
+1. **Primary Server to Infrastructure Services (Telegraf, InfluxDB, Grafana)**:
+   - Ports: `8086` (InfluxDB), `3000` (Grafana))
+   - Protocol: TCP
+   - Purpose: Allow the primary server to send metrics and manage dashboards via Grafana and InfluxDB.
+
+2. **Puppet Compilers to Infrastructure Services**:
+   - Ports: `8086` (InfluxDB), `5432` (PostgreSQL)
+   - Protocol: TCP
+   - Purpose: Enable Puppet compilers to report metrics collected by Telegraf.
+
+
 ### Prerequisites
 
 ### Note on air-gapped environments
