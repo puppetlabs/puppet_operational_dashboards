@@ -41,10 +41,10 @@ plan puppet_operational_dashboards::load_metrics (
   String $telegraf_token = 'puppet telegraf token',
   String $token_file = '/root/.influxdb_token',
   String $conf_dir = '/tmp/telegraf',
-  # 40 day default for bucket retention
+  # 90 day default for bucket retention
   Array[Hash] $retention_rules = [{
       'type' => 'expire',
-      'everySeconds' => 3456000,
+      'everySeconds' => 7776000,
       'shardGroupDurationSeconds' => 604800,
   }],
 #TODO
