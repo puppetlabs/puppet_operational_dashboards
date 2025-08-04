@@ -44,7 +44,7 @@ plan puppet_operational_dashboards::load_metrics (
   # 40 day default for bucket retention
   Array[Hash] $retention_rules = [{
       'type' => 'expire',
-      'everySeconds' => 3456000,
+      'everySeconds' => 7776000,
       'shardGroupDurationSeconds' => 604800,
   }],
 #TODO
