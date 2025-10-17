@@ -1,3 +1,5 @@
 ---
 puppet_operational_dashboards::telegraf::agent::manage_repo: false
+puppet_operational_dashboards::telegraf::agent::manage_class: true
+puppet_operational_dashboards::telegraf::agent::use_token_auth: true
 puppet_operational_dashboards::telegraf::agent::version: '1.29.4-1'

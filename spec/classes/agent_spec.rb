@@ -439,6 +439,92 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         it { is_expected.to contain_telegraf__input('pcp_metrics') }
         it { is_expected.to contain_telegraf__input('orchestrator_metrics') }
       end
+
+      context 'when not managing telegraf class' do
+        let(:params) do
+          {
+            token: RSpec::Puppet::Sensitive.new(nil),
+            token_name: 'puppet telegraf token',
+            influxdb_token_file: '/root/.influxdb_token',
+            influxdb_host: 'localhost.foo.com',
+            influxdb_port: 8086,
+            influxdb_bucket: 'puppet_data',
+            influxdb_org: 'puppetlabs',
+            use_ssl: true,
+            use_system_store: false,
+            collection_method: 'local',
+            local_services: ['puppetserver'],
+            include_pe_metrics: false,
+            template_format: 'toml',
+            manage_class: true,
+          }
+        end
+
+        it {
+          is_expected.to compile.with_all_deps
+        }
+      end
+
+      context 'when not managing outputs' do
+        let(:params) do
+          {
+            token: RSpec::Puppet::Sensitive.new(nil),
+            token_name: 'puppet telegraf token',
+            influxdb_token_file: '/root/.influxdb_token',
+            influxdb_host: 'localhost.foo.com',
+            influxdb_port: 8086,
+            influxdb_bucket: 'puppet_data',
+            influxdb_org: 'puppetlabs',
+            use_ssl: true,
+            use_system_store: false,
+            collection_method: 'local',
+            local_services: ['puppetserver'],
+            include_pe_metrics: false,
+            template_format: 'toml',
+            manage_class: true,
+            manage_outputs: false,
+          }
+        end
+
+        it {
+          is_expected.to compile.with_all_deps
+
+          # Default for telegraf::outputs is set in spec/data/rspec.yaml
+          # If we are not managing it, it should use the default
+          is_expected.to contain_class('telegraf').with(
+            outputs: {},
+          )
+        }
+      end
+
+
+      context 'when not using token auth' do
+        let(:params) do
+          {
+            token: RSpec::Puppet::Sensitive.new(nil),
+            token_name: 'puppet telegraf token',
+            influxdb_token_file: '/root/.influxdb_token',
+            influxdb_host: 'localhost.foo.com',
+            influxdb_port: 8086,
+            influxdb_bucket: 'puppet_data',
+            influxdb_org: 'puppetlabs',
+            use_ssl: true,
+            use_system_store: false,
+            collection_method: 'local',
+            local_services: ['puppetserver'],
+            include_pe_metrics: false,
+            template_format: 'toml',
+            use_token_auth: false,
+          }
+        end
+
+        it {
+          is_expected.to compile.with_all_deps
+
+          is_expected.to_not contain_file('/etc/systemd/system/telegraf.service.d')
+          is_expected.to_not contain_file('/etc/systemd/system/telegraf.service.d/override.conf')
+        }
+      end
     end
   end
 end

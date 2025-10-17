@@ -23,10 +23,16 @@
 #   Whether to manage Telegraf ssl configuration.
 # @param manage_repo
 #   Whether to install Telegraf from a repository.
+# @param manage_class
+#   Whether to manage the Telegraf class and related resources
+# @param use_token_auth
+#   Whether to set up and use token based auth to InfluxDB
 # @param manage_archive
 #   Whether to install Telegraf from an archive source.
 # @param manage_user
 #   Whether to manage the telegraf user when installing from archive.
+# @param manage_outputs
+#   Whether to manage the telegraf outputs
 # @param ssl_cert_file
 #   SSL certificate to be used by the telegraf service.
 # @param ssl_key_file
@@ -43,6 +49,8 @@
 #   Skip verification of SSL certificate.
 # @param version
 #   Version of the Telegraf package to install.
+# @param influxdb_version
+#   Which version of InfluxDB to use in the inputs.  Currently supports versions 1 and 2
 # @param archive_location
 #   URL containing an archive source for the telegraf package.  Defaults to downloading $version from dl.influxdata.com
 # @param archive_install_dir
@@ -88,7 +96,10 @@
 #   Template format to use for puppet template toml or yaml config
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
+  Enum['v1', 'v2'] $influxdb_version = 'v2',
   Boolean $manage_repo,
+  Boolean $manage_class,
+  Boolean $use_token_auth,
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
@@ -102,6 +113,7 @@ class puppet_operational_dashboards::telegraf::agent (
   Boolean $insecure_skip_verify = true,
   Boolean $manage_archive = !$manage_repo,
   Boolean $manage_user = true,
+  Boolean $manage_outputs = true,
   Stdlib::Absolutepath  $ssl_cert_file = "/etc/puppetlabs/puppet/ssl/certs/${trusted['certname']}.pem",
   Stdlib::Absolutepath  $ssl_key_file ="/etc/puppetlabs/puppet/ssl/private_keys/${trusted['certname']}.pem",
   Stdlib::Absolutepath  $ssl_ca_file ='/etc/puppetlabs/puppet/ssl/certs/ca.pem',
@@ -152,31 +164,6 @@ class puppet_operational_dashboards::telegraf::agent (
   }
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
-  $influxdb_v2 = $use_ssl ? {
-    true  => {
-      'influxdb_v2' => [
-        {
-          'tls_ca'               => '/etc/telegraf/ca.pem',
-          'tls_cert'             => '/etc/telegraf/cert.pem',
-          'insecure_skip_verify' => $insecure_skip_verify,
-          'bucket'               => $influxdb_bucket,
-          'organization'         => $influxdb_org,
-          'token'                => '$INFLUX_TOKEN',
-          'urls'                 => [$influxdb_uri],
-        }
-      ],
-    },
-    false => {
-      'influxdb_v2' => [
-        {
-          'bucket'               => $influxdb_bucket,
-          'organization'         => $influxdb_org,
-          'token'                => '$INFLUX_TOKEN',
-          'urls'                 => [$influxdb_uri],
-        }
-      ],
-    },
-  }
 
   $database = if $include_pe_metrics {
     'pe-puppetdb'
@@ -192,18 +179,61 @@ class puppet_operational_dashboards::telegraf::agent (
     notify => Service['telegraf'],
   }
 
-  class { 'telegraf':
-    ensure              => $version,
-    manage_repo         => $manage_repo,
-    manage_archive      => $manage_archive,
-    manage_user         => $manage_user,
-    archive_location    => $archive_location,
-    archive_install_dir => $archive_install_dir,
-    interval            => $collection_interval,
-    hostname            => '',
-    manage_service      => false,
-    outputs             => $influxdb_v2,
-    notify              => Service['telegraf'],
+  if $manage_class {
+    if $manage_outputs {
+      $influxdb_v2 = $use_ssl ? {
+        true  => {
+          'influxdb_v2' => [
+            {
+              'tls_ca'               => '/etc/telegraf/ca.pem',
+              'tls_cert'             => '/etc/telegraf/cert.pem',
+              'insecure_skip_verify' => $insecure_skip_verify,
+              'bucket'               => $influxdb_bucket,
+              'organization'         => $influxdb_org,
+              'token'                => '$INFLUX_TOKEN',
+              'urls'                 => [$influxdb_uri],
+            }
+          ],
+        },
+        false => {
+          'influxdb_v2' => [
+            {
+              'bucket'               => $influxdb_bucket,
+              'organization'         => $influxdb_org,
+              'token'                => '$INFLUX_TOKEN',
+              'urls'                 => [$influxdb_uri],
+            }
+          ],
+        },
+      }
+      class { 'telegraf':
+        ensure              => $version,
+        manage_repo         => $manage_repo,
+        manage_archive      => $manage_archive,
+        manage_user         => $manage_user,
+        archive_location    => $archive_location,
+        archive_install_dir => $archive_install_dir,
+        interval            => $collection_interval,
+        hostname            => '',
+        manage_service      => false,
+        outputs             => $influxdb_v2,
+        notify              => Service['telegraf'],
+      }
+    }
+    else {
+      class { 'telegraf':
+        ensure              => $version,
+        manage_repo         => $manage_repo,
+        manage_archive      => $manage_archive,
+        manage_user         => $manage_user,
+        archive_location    => $archive_location,
+        archive_install_dir => $archive_install_dir,
+        interval            => $collection_interval,
+        hostname            => '',
+        manage_service      => false,
+        notify              => Service['telegraf'],
+      }
+    }
   }
 
   if $use_ssl and $manage_ssl {
@@ -257,44 +287,53 @@ class puppet_operational_dashboards::telegraf::agent (
     }
   }
 
-  file { '/etc/systemd/system/telegraf.service.d':
-    ensure  => directory,
-    owner   => 'telegraf',
-    group   => 'telegraf',
-    mode    => '0700',
-    require => Class['telegraf::install'],
+  if $use_token_auth {
+    # Only require the override file containing the token if using token auth
+    Puppet_operational_dashboards::Telegraf::Config {
+      require => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+    }
+
+    file { '/etc/systemd/system/telegraf.service.d':
+      ensure  => directory,
+      owner   => 'telegraf',
+      group   => 'telegraf',
+      mode    => '0700',
+      require => Class['telegraf::install'],
+    }
+
+    if $token {
+      file { '/etc/systemd/system/telegraf.service.d/override.conf':
+        ensure  => file,
+        content => inline_epp(file('influxdb/telegraf_environment_file.epp'), { token => $token }),
+        notify  => [
+          Exec['puppet_telegraf_daemon_reload'],
+          Service['telegraf']
+        ],
+      }
+    }
+    else {
+      $token_vars = {
+        token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $token_name, $influxdb_token_file, $use_system_store])),
+      }
+      file { '/etc/systemd/system/telegraf.service.d/override.conf':
+        ensure  => file,
+        content => Deferred('inline_epp', [file('influxdb/telegraf_environment_file.epp'), $token_vars]),
+        notify  => [
+          Exec['puppet_telegraf_daemon_reload'],
+          Service['telegraf'],
+        ],
+      }
+    }
   }
 
-  if $token {
-    file { '/etc/systemd/system/telegraf.service.d/override.conf':
-      ensure  => file,
-      content => inline_epp(file('influxdb/telegraf_environment_file.epp'), { token => $token }),
-      notify  => [
+  if $manage_class {
+    service { 'telegraf':
+      ensure  => running,
+      require => [
+        Class['telegraf::install'],
         Exec['puppet_telegraf_daemon_reload'],
-        Service['telegraf']
       ],
     }
-  }
-  else {
-    $token_vars = {
-      token => Sensitive(Deferred('influxdb::retrieve_token', [$influxdb_uri, $token_name, $influxdb_token_file, $use_system_store])),
-    }
-    file { '/etc/systemd/system/telegraf.service.d/override.conf':
-      ensure  => file,
-      content => Deferred('inline_epp', [file('influxdb/telegraf_environment_file.epp'), $token_vars]),
-      notify  => [
-        Exec['puppet_telegraf_daemon_reload'],
-        Service['telegraf'],
-      ],
-    }
-  }
-
-  service { 'telegraf':
-    ensure  => running,
-    require => [
-      Class['telegraf::install'],
-      Exec['puppet_telegraf_daemon_reload'],
-    ],
   }
 
   if $collection_method == 'all' {
@@ -304,7 +343,6 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
-        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
@@ -314,7 +352,6 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
-        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
@@ -324,7 +361,6 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
-        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
@@ -371,7 +407,6 @@ class puppet_operational_dashboards::telegraf::agent (
           protocol             => $protocol,
           http_timeout_seconds => $http_timeout_seconds,
           template_format      => $template_format,
-          require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
         }
       }
     }
@@ -388,7 +423,6 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
-        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
@@ -398,7 +432,6 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
-        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
       if $include_pe_metrics {
         puppet_operational_dashboards::telegraf::config { 'pcp':
@@ -406,7 +439,6 @@ class puppet_operational_dashboards::telegraf::agent (
           protocol             => $protocol,
           http_timeout_seconds => $http_timeout_seconds,
           template_format      => $template_format,
-          require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
         }
       }
     }
@@ -417,7 +449,6 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
-        require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
       }
     }
 
