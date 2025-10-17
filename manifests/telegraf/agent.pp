@@ -164,7 +164,6 @@ class puppet_operational_dashboards::telegraf::agent (
   }
   $influxdb_uri = "${protocol}://${influxdb_host}:${influxdb_port}"
 
-
   $database = if $include_pe_metrics {
     'pe-puppetdb'
   }
@@ -181,9 +180,16 @@ class puppet_operational_dashboards::telegraf::agent (
 
   if $manage_class {
     if $manage_outputs {
-      $influxdb_v2 = $use_ssl ? {
+      $output_version = if $influxdb_version == 'v2' {
+        'influxdb_v2'
+      }
+      else {
+        'influxdb'
+      }
+
+      $influxdb_outputs = $use_ssl ? {
         true  => {
-          'influxdb_v2' => [
+          $output_version => [
             {
               'tls_ca'               => '/etc/telegraf/ca.pem',
               'tls_cert'             => '/etc/telegraf/cert.pem',
@@ -196,7 +202,7 @@ class puppet_operational_dashboards::telegraf::agent (
           ],
         },
         false => {
-          'influxdb_v2' => [
+          $output_version => [
             {
               'bucket'               => $influxdb_bucket,
               'organization'         => $influxdb_org,
@@ -216,7 +222,7 @@ class puppet_operational_dashboards::telegraf::agent (
         interval            => $collection_interval,
         hostname            => '',
         manage_service      => false,
-        outputs             => $influxdb_v2,
+        outputs             => $influxdb_outputs,
         notify              => Service['telegraf'],
       }
     }

@@ -78,6 +78,51 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         }
       end
 
+      context 'when using influxdb v1' do
+        let(:params) do
+          {
+            token: RSpec::Puppet::Sensitive.new(nil),
+            token_name: 'puppet telegraf token',
+            influxdb_token_file: '/root/.influxdb_token',
+            influxdb_host: 'localhost.foo.com',
+            influxdb_port: 8086,
+            influxdb_bucket: 'puppet_data',
+            influxdb_org: 'puppetlabs',
+            use_ssl: true,
+            use_system_store: false,
+            manage_ssl: true,
+            include_pe_metrics: true,
+            template_format: 'toml',
+            influxdb_version: 'v1'
+          }
+        end
+        let(:influxdb_v1) do
+          {
+            'influxdb' => [
+              {
+                'tls_ca'               => '/etc/telegraf/ca.pem',
+                'tls_cert'             => '/etc/telegraf/cert.pem',
+                'insecure_skip_verify' => true,
+                'bucket'               => 'puppet_data',
+                'organization'         => 'puppetlabs',
+                'token'                => '$INFLUX_TOKEN',
+                'urls'                 => ['https://localhost.foo.com:8086']
+              },
+            ],
+          }
+        end
+
+        it {
+          is_expected.to contain_class('telegraf').with(
+            ensure: '1.29.4-1',
+            archive_location: 'https://dl.influxdata.com/telegraf/releases/telegraf-1.29.4_linux_amd64.tar.gz',
+            interval: '10m',
+            manage_service: false,
+            outputs: influxdb_v1,
+          )
+        }
+      end
+
       context 'when using postgres password auth' do
         let(:params) do
           {
@@ -497,7 +542,6 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         }
       end
 
-
       context 'when not using token auth' do
         let(:params) do
           {
@@ -521,8 +565,8 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         it {
           is_expected.to compile.with_all_deps
 
-          is_expected.to_not contain_file('/etc/systemd/system/telegraf.service.d')
-          is_expected.to_not contain_file('/etc/systemd/system/telegraf.service.d/override.conf')
+          is_expected.not_to contain_file('/etc/systemd/system/telegraf.service.d')
+          is_expected.not_to contain_file('/etc/systemd/system/telegraf.service.d/override.conf')
         }
       end
     end
