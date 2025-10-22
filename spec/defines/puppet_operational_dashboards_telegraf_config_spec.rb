@@ -9,6 +9,7 @@ describe 'puppet_operational_dashboards::telegraf::config' do
       protocol: 'https',
       http_timeout_seconds: 5,
       hosts: ['localhost.foo.com'],
+      include_pe_metrics: true,
     }
   end
 
@@ -135,6 +136,7 @@ describe 'puppet_operational_dashboards::telegraf::config' do
         protocol: 'http',
         http_timeout_seconds: 5,
         hosts: ['localhost.foo.com'],
+        include_pe_metrics: true,
       }
     end
 

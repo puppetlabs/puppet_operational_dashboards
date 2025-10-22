@@ -349,6 +349,7 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
+        include_pe_metrics   => $include_pe_metrics,
       }
     }
 
@@ -358,6 +359,7 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
+        include_pe_metrics   => $include_pe_metrics,
       }
     }
 
@@ -367,6 +369,7 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
+        include_pe_metrics   => $include_pe_metrics,
       }
     }
 
@@ -413,6 +416,7 @@ class puppet_operational_dashboards::telegraf::agent (
           protocol             => $protocol,
           http_timeout_seconds => $http_timeout_seconds,
           template_format      => $template_format,
+          include_pe_metrics   => $include_pe_metrics,
         }
       }
     }
@@ -429,6 +433,7 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
+        include_pe_metrics   => $include_pe_metrics,
       }
     }
 
@@ -438,6 +443,7 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
+        include_pe_metrics   => $include_pe_metrics,
       }
       if $include_pe_metrics {
         puppet_operational_dashboards::telegraf::config { 'pcp':
@@ -445,6 +451,7 @@ class puppet_operational_dashboards::telegraf::agent (
           protocol             => $protocol,
           http_timeout_seconds => $http_timeout_seconds,
           template_format      => $template_format,
+          include_pe_metrics   => $include_pe_metrics,
         }
       }
     }
@@ -455,6 +462,7 @@ class puppet_operational_dashboards::telegraf::agent (
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
+        include_pe_metrics   => $include_pe_metrics,
       }
     }
 

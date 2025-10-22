@@ -11,6 +11,8 @@
 #   Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
 # @param template_format
 #   Template format to use for puppet template toml or yaml config
+# @param include_pe_metrics
+#   Whether to include Filesync metrics in Puppetserver
 define puppet_operational_dashboards::telegraf::config (
   Array[String[1]] $hosts,
   Enum['https', 'http'] $protocol,
@@ -18,6 +20,7 @@ define puppet_operational_dashboards::telegraf::config (
   String $service = $title,
   Enum['present', 'absent'] $ensure = 'present',
   Enum['yaml','toml'] $template_format = 'toml',
+  Boolean $include_pe_metrics,
 ) {
   unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm', 'orchestrator', 'pcp'] {
     fail("Unknown service type ${service}")
@@ -43,7 +46,7 @@ define puppet_operational_dashboards::telegraf::config (
 
     $inputs = epp(
       "puppet_operational_dashboards/${service}_metrics.${template_format}.epp",
-      { urls => $urls, protocol => $protocol, http_timeout_seconds => $http_timeout_seconds }
+      { urls => $urls, protocol => $protocol, http_timeout_seconds => $http_timeout_seconds, include_pe_metrics => $include_pe_metrics }
     )
 
     $_inputs = $template_format ? {
