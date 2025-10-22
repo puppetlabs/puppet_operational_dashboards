@@ -146,6 +146,7 @@ class puppet_operational_dashboards::telegraf::agent (
     'sslcert'     => '/etc/telegraf/puppet_cert.pem',
     'sslrootcert' => '/etc/telegraf/puppet_ca.pem',
   },
+  Optional[Hash] $extra_input_options = undef,
   Enum['yaml','toml'] $template_format = $puppet_operational_dashboards::template_format,
 ) {
   unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services].any |$service| { $service } {
@@ -350,6 +351,7 @@ class puppet_operational_dashboards::telegraf::agent (
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
         include_pe_metrics   => $include_pe_metrics,
+        extra_input_options  => $extra_input_options,
       }
     }
 
@@ -360,6 +362,7 @@ class puppet_operational_dashboards::telegraf::agent (
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
         include_pe_metrics   => $include_pe_metrics,
+        extra_input_options  => $extra_input_options,
       }
     }
 
@@ -370,6 +373,7 @@ class puppet_operational_dashboards::telegraf::agent (
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
         include_pe_metrics   => $include_pe_metrics,
+        extra_input_options  => $extra_input_options,
       }
     }
 
@@ -417,6 +421,7 @@ class puppet_operational_dashboards::telegraf::agent (
           http_timeout_seconds => $http_timeout_seconds,
           template_format      => $template_format,
           include_pe_metrics   => $include_pe_metrics,
+          extra_input_options  => $extra_input_options,
         }
       }
     }
@@ -434,6 +439,7 @@ class puppet_operational_dashboards::telegraf::agent (
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
         include_pe_metrics   => $include_pe_metrics,
+        extra_input_options  => $extra_input_options,
       }
     }
 
@@ -444,6 +450,7 @@ class puppet_operational_dashboards::telegraf::agent (
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
         include_pe_metrics   => $include_pe_metrics,
+        extra_input_options  => $extra_input_options,
       }
       if $include_pe_metrics {
         puppet_operational_dashboards::telegraf::config { 'pcp':
@@ -452,6 +459,7 @@ class puppet_operational_dashboards::telegraf::agent (
           http_timeout_seconds => $http_timeout_seconds,
           template_format      => $template_format,
           include_pe_metrics   => $include_pe_metrics,
+          extra_input_options  => $extra_input_options,
         }
       }
     }
@@ -463,6 +471,7 @@ class puppet_operational_dashboards::telegraf::agent (
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,
         include_pe_metrics   => $include_pe_metrics,
+        extra_input_options  => $extra_input_options,
       }
     }
 

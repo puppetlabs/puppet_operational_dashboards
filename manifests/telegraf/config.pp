@@ -21,6 +21,7 @@ define puppet_operational_dashboards::telegraf::config (
   Enum['present', 'absent'] $ensure = 'present',
   Enum['yaml','toml'] $template_format = 'toml',
   Boolean $include_pe_metrics,
+  Optional[Hash] $extra_input_options = undef,
 ) {
   unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm', 'orchestrator', 'pcp'] {
     fail("Unknown service type ${service}")
@@ -56,7 +57,12 @@ define puppet_operational_dashboards::telegraf::config (
 
     telegraf::input { "${service}_metrics":
       plugin_type => 'http',
-      options     => [$_inputs],
+      options     => if $extra_input_options {
+                       [$_inputs + $extra_input_options]
+                     }
+                     else {
+                       [$_inputs]
+                     },
     }
 
     # Create processors.strings.rename entries to rename full url to hostname
