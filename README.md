@@ -240,24 +240,24 @@ For the second case of remote collection, use `collection_method: 'all'` and set
 
 In either case, you can control whether this class will manage the Telegraf class and service with:
 
-```bash
+```yaml
 puppet_operational_dashboards::telegraf::agent::manage_class
 ```
 
 Whether to manage Telegraf outputs with:
 
-```bash
+```yaml
 puppet_operational_dashboards::telegraf::agent::manage_outputs
 ```
 
 And whether to configure token authentication in the inputs with:
-```bash
+```yaml
 puppet_operational_dashboards::telegraf::agent::use_token_auth
 ```
 
 You may also pass additional options to the Telegraf inputs, for example, if you need to add a tag.  The following hiera data will add an additional `[inputs.http.tags]` element with a key/value pair of `foo = bar`:
 
-```bash
+```yaml
 puppet_operational_dashboards::telegraf::agent::extra_input_options:
   tags:
     foo: 'bar'
@@ -265,7 +265,7 @@ puppet_operational_dashboards::telegraf::agent::extra_input_options:
 
 The following is a complete example to configure a Telegraf input for collecting Puppet server metrics locally with an additional tag:
 
-```bash
+```yaml
 puppet_operational_dashboards::telegraf::agent::local_services:
   - 'puppetserver'
 puppet_operational_dashboards::telegraf::agent::token_name: 'puppetlabs'
