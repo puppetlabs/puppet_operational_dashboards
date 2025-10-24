@@ -11,6 +11,7 @@
     - [Beginning with puppet_operational_dashboards](#beginning-with-puppet_operational_dashboards)
       - [Installing on Puppet Enterprise](#installing-on-puppet-enterprise)
       - [Installing on Puppet Open Source](#installing-on-puppet-open-source)
+      - [Advanced Telegraf Configuration](#advanced-telegraf-configuration)
       - [What puppet_operational_dashboards affects](#what-puppet_operational_dashboards-affects)
   - [Usage](#usage)
     - [Evaluation order](#evaluation-order)
@@ -219,6 +220,72 @@ The easiest way to get started using this module is by including the `puppet_ope
 
 ```
 include puppet_operational_dashboards
+```
+
+#### Advanced Telegraf Configuration
+
+If you already have an existing setup and defined configuration for Telegraf and InfluxDB, it is possible to only configure the Telegraf inputs needed for collection of Puppet metrics via the `puppet_operational_dashboards::telegraf::agent` class.  The main use case for this is if you already manage Telegraf and InfluxDB in Puppet code, and you only want to use this module to collect and ship Puppet metrics to your existing InfluxDB.  To do so, you may apply the `puppet_operational_dashboards::telegraf::agent` class to either:
+
+* Each Puppet infrastructure node to collect metrics locally
+* A single node to remotely collect metrics from all infrastructure nodes
+
+For the first case of local collection, set `collection_method: 'local'` and `local_services` to an array of Puppet services to collect from, for example `local_services: ['puppetserver', 'puppetdb']`.
+
+For the second case of remote collection, use `collection_method: 'all'` and set each of the following as needed:
+
+* puppetserver_hosts
+* orchestrator_hosts
+* puppetdb_hosts
+* postgres_hosts
+
+In either case, you can control whether this class will manage the Telegraf class and service with:
+
+```bash
+puppet_operational_dashboards::telegraf::agent::manage_class
+```
+
+Whether to manage Telegraf outputs with:
+
+```bash
+puppet_operational_dashboards::telegraf::agent::manage_outputs
+```
+
+And whether to configure token authentication in the inputs with:
+```bash
+puppet_operational_dashboards::telegraf::agent::use_token_auth
+```
+
+You may also pass additional options to the Telegraf inputs, for example, if you need to add a tag.  The following hiera data will add an additional `[inputs.http.tags]` element with a key/value pair of `foo = bar`:
+
+```bash
+puppet_operational_dashboards::telegraf::agent::extra_input_options:
+  tags:
+    foo: 'bar'
+```
+
+The following is a complete example to configure a Telegraf input for collecting Puppet server metrics locally with an additional tag:
+
+```bash
+puppet_operational_dashboards::telegraf::agent::local_services:
+  - 'puppetserver'
+puppet_operational_dashboards::telegraf::agent::token_name: 'puppetlabs'
+puppet_operational_dashboards::telegraf::agent::influxdb_token_file: '/root/.influxdb_token'
+puppet_operational_dashboards::telegraf::agent::influxdb_bucket: 'puppet_data'
+puppet_operational_dashboards::telegraf::agent::influxdb_org: 'puppetlabs'
+puppet_operational_dashboards::telegraf::agent::include_pe_metrics: false
+puppet_operational_dashboards::telegraf::agent::manage_repo: false
+puppet_operational_dashboards::telegraf::agent::manage_class: false
+puppet_operational_dashboards::telegraf::agent::influxdb_host: 'foo.bar.com'
+puppet_operational_dashboards::telegraf::agent::influxdb_port: 8086
+puppet_operational_dashboards::telegraf::agent::use_token_auth: false
+puppet_operational_dashboards::telegraf::agent::manage_outputs: false
+puppet_operational_dashboards::telegraf::agent::collection_method: 'local'
+puppet_operational_dashboards::telegraf::agent::use_ssl: true
+puppet_operational_dashboards::telegraf::agent::use_system_store: false
+puppet_operational_dashboards::telegraf::agent::template_format: 'yaml'
+puppet_operational_dashboards::telegraf::agent::extra_input_options:
+  tags:
+    foo: 'bar'
 ```
 
 #### What puppet_operational_dashboards affects

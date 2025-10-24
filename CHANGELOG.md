@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v2.4.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.3.0)
+
+[Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.3.0...v2.4.0)
+
+### Added
+
+- Add new management params
+- Add support for InfluxDB 1 in Telegraf outputs
+- Make file-sync metrics configurable
+- Add parameter for extra options to Telegraf inputs
+
 ## [v2.3.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.3.0) (2024-02-05)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.2.0...v2.3.0)

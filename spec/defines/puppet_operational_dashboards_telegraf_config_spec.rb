@@ -189,7 +189,6 @@ describe 'puppet_operational_dashboards::telegraf::config' do
           }
         }
       }
-
     end
 
     it {
@@ -198,7 +197,7 @@ describe 'puppet_operational_dashboards::telegraf::config' do
       # Testing that the Telegraf input contains identical Ruby objects was turning out to be difficult
       # It was returning an error but saying the diffs were identical, so instead we just check the file
       is_expected.to contain_file('/etc/telegraf/telegraf.d/puppetserver_metrics.conf').with_content(
-        %r{\[inputs\.http\.tags]\nfoo = \"bar\"}
+        %r{\[inputs\.http\.tags\]\nfoo = \"bar\"},
       )
     }
   end

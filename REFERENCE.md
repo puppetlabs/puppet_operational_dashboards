@@ -620,8 +620,11 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`use_system_store`](#-puppet_operational_dashboards--telegraf--agent--use_system_store)
 * [`manage_ssl`](#-puppet_operational_dashboards--telegraf--agent--manage_ssl)
 * [`manage_repo`](#-puppet_operational_dashboards--telegraf--agent--manage_repo)
+* [`manage_class`](#-puppet_operational_dashboards--telegraf--agent--manage_class)
+* [`use_token_auth`](#-puppet_operational_dashboards--telegraf--agent--use_token_auth)
 * [`manage_archive`](#-puppet_operational_dashboards--telegraf--agent--manage_archive)
 * [`manage_user`](#-puppet_operational_dashboards--telegraf--agent--manage_user)
+* [`manage_outputs`](#-puppet_operational_dashboards--telegraf--agent--manage_outputs)
 * [`ssl_cert_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_cert_file)
 * [`ssl_key_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_key_file)
 * [`ssl_ca_file`](#-puppet_operational_dashboards--telegraf--agent--ssl_ca_file)
@@ -630,6 +633,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`puppet_ssl_ca_file`](#-puppet_operational_dashboards--telegraf--agent--puppet_ssl_ca_file)
 * [`insecure_skip_verify`](#-puppet_operational_dashboards--telegraf--agent--insecure_skip_verify)
 * [`version`](#-puppet_operational_dashboards--telegraf--agent--version)
+* [`influxdb_version`](#-puppet_operational_dashboards--telegraf--agent--influxdb_version)
 * [`archive_location`](#-puppet_operational_dashboards--telegraf--agent--archive_location)
 * [`archive_install_dir`](#-puppet_operational_dashboards--telegraf--agent--archive_install_dir)
 * [`collection_method`](#-puppet_operational_dashboards--telegraf--agent--collection_method)
@@ -648,6 +652,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`telegraf_postgres_password`](#-puppet_operational_dashboards--telegraf--agent--telegraf_postgres_password)
 * [`postgres_port`](#-puppet_operational_dashboards--telegraf--agent--postgres_port)
 * [`postgres_options`](#-puppet_operational_dashboards--telegraf--agent--postgres_options)
+* [`extra_input_options`](#-puppet_operational_dashboards--telegraf--agent--extra_input_options)
 * [`template_format`](#-puppet_operational_dashboards--telegraf--agent--template_format)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--token"></a>`token`
@@ -720,6 +725,18 @@ Data type: `Boolean`
 
 Whether to install Telegraf from a repository.
 
+##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_class"></a>`manage_class`
+
+Data type: `Boolean`
+
+Whether to manage the Telegraf class and related resources
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--use_token_auth"></a>`use_token_auth`
+
+Data type: `Boolean`
+
+Whether to set up and use token based auth to InfluxDB
+
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_archive"></a>`manage_archive`
 
 Data type: `Boolean`
@@ -733,6 +750,14 @@ Default value: `!$manage_repo`
 Data type: `Boolean`
 
 Whether to manage the telegraf user when installing from archive.
+
+Default value: `true`
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--manage_outputs"></a>`manage_outputs`
+
+Data type: `Boolean`
+
+Whether to manage the telegraf outputs
 
 Default value: `true`
 
@@ -797,6 +822,14 @@ Default value: `true`
 Data type: `String`
 
 Version of the Telegraf package to install.
+
+##### <a name="-puppet_operational_dashboards--telegraf--agent--influxdb_version"></a>`influxdb_version`
+
+Data type: `Enum['v1', 'v2']`
+
+Which version of InfluxDB to use in the inputs.  Currently supports versions 1 and 2
+
+Default value: `'v2'`
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--archive_location"></a>`archive_location`
 
@@ -956,6 +989,14 @@ Default value:
   }
 ```
 
+##### <a name="-puppet_operational_dashboards--telegraf--agent--extra_input_options"></a>`extra_input_options`
+
+Data type: `Optional[Hash]`
+
+Optional hash of extra values to pass to each telegraf::input declared in this module
+
+Default value: `undef`
+
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--template_format"></a>`template_format`
 
 Data type: `Enum['yaml','toml']`
@@ -980,6 +1021,8 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`ensure`](#-puppet_operational_dashboards--telegraf--config--ensure)
 * [`http_timeout_seconds`](#-puppet_operational_dashboards--telegraf--config--http_timeout_seconds)
 * [`template_format`](#-puppet_operational_dashboards--telegraf--config--template_format)
+* [`include_pe_metrics`](#-puppet_operational_dashboards--telegraf--config--include_pe_metrics)
+* [`extra_input_options`](#-puppet_operational_dashboards--telegraf--config--extra_input_options)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--config--service"></a>`service`
 
@@ -1022,6 +1065,20 @@ Data type: `Enum['yaml','toml']`
 Template format to use for puppet template toml or yaml config
 
 Default value: `'toml'`
+
+##### <a name="-puppet_operational_dashboards--telegraf--config--include_pe_metrics"></a>`include_pe_metrics`
+
+Data type: `Boolean`
+
+Whether to include Filesync metrics in Puppetserver
+
+##### <a name="-puppet_operational_dashboards--telegraf--config--extra_input_options"></a>`extra_input_options`
+
+Data type: `Optional[Hash]`
+
+Optional hash of extra values to pass to each telegraf::input declared in this module
+
+Default value: `undef`
 
 ## Functions
 
@@ -1194,7 +1251,7 @@ Default value:
 ```puppet
 [{
       'type' => 'expire',
-      'everySeconds' => 3456000,
+      'everySeconds' => 7776000,
       'shardGroupDurationSeconds' => 604800,
   }]
 ```

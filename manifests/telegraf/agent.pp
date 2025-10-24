@@ -92,14 +92,16 @@
 #   Port for the Telegraf client to use in the postgres connection string
 # @param postgres_options
 #   Hash of options for the Telegraf client to use as connection parameters in the postgres connection string
+# @param extra_input_options
+#   Optional hash of extra values to pass to each telegraf::input declared in this module
 # @param template_format
 #   Template format to use for puppet template toml or yaml config
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
-  Enum['v1', 'v2'] $influxdb_version = 'v2',
   Boolean $manage_repo,
   Boolean $manage_class,
   Boolean $use_token_auth,
+  Enum['v1', 'v2'] $influxdb_version = 'v2',
   Optional[Sensitive[String]] $token = $puppet_operational_dashboards::telegraf_token,
   String $token_name = $puppet_operational_dashboards::telegraf_token_name,
   String $influxdb_token_file = $puppet_operational_dashboards::influxdb_token_file,
