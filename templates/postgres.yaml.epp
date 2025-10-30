@@ -15,14 +15,12 @@ address: >-
   postgres://<%=$telegraf_user%>@<%=$certname%>:<%=$port%>/<%=$database%>?<%=$connection_params%>
 <% } -%>
 databases:
-  - pe-puppetdb
+  - <%=$database%>
 outputaddress: <%=$certname%>
 query:
   - sqlquery: SELECT * FROM pg_stat_database
-    version: 901
     withdbname: false
   - tagvalue: table_name
-    version: 901
     withdbname: false
     sqlquery: >-
       SELECT current_database() AS datname, total_bytes AS total , table_name ,
@@ -38,7 +36,6 @@ query:
       SELECT current_database() AS datname, relname as table, autovacuum_count,
       vacuum_count, n_live_tup, n_dead_tup FROM pg_stat_user_tables
     tagvalue: table
-    version: 901
     withdbname: false
   - sqlquery: >-
       SELECT current_database() AS datname, a.indexrelname as index,
@@ -46,12 +43,10 @@ query:
       idx_tup_fetch, idx_blks_read, idx_blks_hit from pg_stat_user_indexes a
       join pg_statio_user_indexes b on a.indexrelid = b.indexrelid;
     tagvalue: index
-    version: 901
     withdbname: false
   - sqlquery: >-
       SELECT current_database() AS datname, relname as table, heap_blks_read,
       heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read,
       toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables
     tagvalue: table
-    version: 901
     withdbname: false
