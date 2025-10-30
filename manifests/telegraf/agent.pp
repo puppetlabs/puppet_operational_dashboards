@@ -487,7 +487,7 @@ class puppet_operational_dashboards::telegraf::agent (
       $inputs = epp(
         "puppet_operational_dashboards/postgres.${template_format}.epp",
         {
-          certname                   => $trusted['certname'],
+          certname                   => 'localhost',
           telegraf_user              => $telegraf_user,
           password                   => $telegraf_postgres_password,
           database                   => $database,

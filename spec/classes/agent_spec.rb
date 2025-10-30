@@ -157,22 +157,17 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             'outputaddress' => 'localhost.foo.com',
             'query' => [
               { 'sqlquery' => 'SELECT * FROM pg_stat_database',
-               'version' => 901,
                'withdbname' => false },
               { 'tagvalue' => 'table_name',
-               'version' => 901,
                'withdbname' => false,
                'sqlquery' => "SELECT current_database() AS datname, total_bytes AS total , table_name , index_bytes AS index , toast_bytes AS toast , table_bytes AS table FROM ( SELECT *, total_bytes-index_bytes-coalesce(toast_bytes,0) AS table_bytes FROM ( SELECT c.oid,nspname AS table_schema, relname AS table_name , c.reltuples AS row_estimate , pg_total_relation_size(c.oid) AS total_bytes , pg_indexes_size(c.oid) AS index_bytes , pg_total_relation_size(reltoastrelid) AS toast_bytes FROM pg_class c LEFT JOIN pg_namespace n ON n.oid = c.relnamespace WHERE relkind = 'r' AND nspname NOT IN ('pg_catalog', 'information_schema')) a) a" },
               { 'sqlquery' => 'SELECT current_database() AS datname, relname as table, autovacuum_count, vacuum_count, n_live_tup, n_dead_tup FROM pg_stat_user_tables',
                'tagvalue' => 'table',
-               'version' => 901,
                'withdbname' => false },
               { 'sqlquery' => 'SELECT current_database() AS datname, a.indexrelname as index, pg_relation_size(a.indexrelid) as size_bytes, idx_scan, idx_tup_read, idx_tup_fetch, idx_blks_read, idx_blks_hit from pg_stat_user_indexes a join pg_statio_user_indexes b on a.indexrelid = b.indexrelid;',
                'tagvalue' => 'index',
-               'version' => 901,
                'withdbname' => false },
               { 'sqlquery' => 'SELECT current_database() AS datname, relname as table, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables', 'tagvalue' => 'table',
-               'version' => 901,
                'withdbname' => false },
             ]
           }]
@@ -204,33 +199,29 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             },
             postgres_hosts: ['localhost.foo.com'],
             template_format: 'toml',
+            include_pe_metrics: false,
           }
         end
 
         it {
           # rubocop:disable Layout/LineLength
           options = [{
-            'address' => "postgres://telegraf@localhost.foo.com:5432/pe-puppetdb?#{params[:postgres_options].map { |k, v| "#{k}=#{v}" }.join('&').chomp}",
-            'databases' => ['pe-puppetdb'],
+            'address' => "postgres://telegraf@localhost.foo.com:5432/puppetdb?#{params[:postgres_options].map { |k, v| "#{k}=#{v}" }.join('&').chomp}",
+            'databases' => ['puppetdb'],
             'outputaddress' => 'localhost.foo.com',
             'query' => [
               { 'sqlquery' => 'SELECT * FROM pg_stat_database',
-               'version' => 901,
                'withdbname' => false },
               { 'tagvalue' => 'table_name',
-               'version' => 901,
                'withdbname' => false,
                'sqlquery' => "SELECT current_database() AS datname, total_bytes AS total , table_name , index_bytes AS index , toast_bytes AS toast , table_bytes AS table FROM ( SELECT *, total_bytes-index_bytes-coalesce(toast_bytes,0) AS table_bytes FROM ( SELECT c.oid,nspname AS table_schema, relname AS table_name , c.reltuples AS row_estimate , pg_total_relation_size(c.oid) AS total_bytes , pg_indexes_size(c.oid) AS index_bytes , pg_total_relation_size(reltoastrelid) AS toast_bytes FROM pg_class c LEFT JOIN pg_namespace n ON n.oid = c.relnamespace WHERE relkind = 'r' AND nspname NOT IN ('pg_catalog', 'information_schema')) a) a" },
               { 'sqlquery' => 'SELECT current_database() AS datname, relname as table, autovacuum_count, vacuum_count, n_live_tup, n_dead_tup FROM pg_stat_user_tables',
                'tagvalue' => 'table',
-               'version' => 901,
                'withdbname' => false },
               { 'sqlquery' => 'SELECT current_database() AS datname, a.indexrelname as index, pg_relation_size(a.indexrelid) as size_bytes, idx_scan, idx_tup_read, idx_tup_fetch, idx_blks_read, idx_blks_hit from pg_stat_user_indexes a join pg_statio_user_indexes b on a.indexrelid = b.indexrelid;',
                'tagvalue' => 'index',
-               'version' => 901,
                'withdbname' => false },
               { 'sqlquery' => 'SELECT current_database() AS datname, relname as table, heap_blks_read, heap_blks_hit, idx_blks_read, idx_blks_hit, toast_blks_read, toast_blks_hit, tidx_blks_read, tidx_blks_hit FROM pg_statio_user_tables', 'tagvalue' => 'table',
-               'version' => 901,
                'withdbname' => false },
             ]
           }]
