@@ -569,6 +569,49 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
           is_expected.not_to contain_file('/etc/systemd/system/telegraf.service.d/override.conf')
         }
       end
+
+      context 'when passing extra input options' do
+        let(:params) do
+          {
+            token: RSpec::Puppet::Sensitive.new(nil),
+            token_name: 'puppet telegraf token',
+            influxdb_token_file: '/root/.influxdb_token',
+            influxdb_host: 'localhost.foo.com',
+            influxdb_port: 8086,
+            influxdb_bucket: 'puppet_data',
+            influxdb_org: 'puppetlabs',
+            use_ssl: true,
+            use_system_store: false,
+            collection_method: 'local',
+            local_services: ['puppetserver', 'postgres'],
+            include_pe_metrics: false,
+            template_format: 'toml',
+            use_token_auth: false,
+            postgres_options: {
+              'sslmode': 'verify-full',
+              'sslkey': '/etc/telegraf/puppet_key.pem',
+              'sslcert': '/etc/telegraf/puppet_cert.pem',
+              'sslrootcert': '/etc/telegraf/puppet_ca.pem',
+            },
+            postgres_hosts: ['localhost.foo.com'],
+            extra_input_options: {
+              tags: {
+                'foo' => 'bar',
+              },
+            },
+          }
+        end
+
+        it {
+          is_expected.to compile
+
+          # Testing that the Telegraf input contains identical Ruby objects was turning out to be difficult
+          # It was returning an error but saying the diffs were identical, so instead we just check the file
+          is_expected.to contain_file('/etc/telegraf/telegraf.d/postgres_localhost.foo.com.conf').with_content(
+            %r{\[inputs\.postgresql_extensible\.tags\]\nfoo = \"bar\"},
+          )
+        }
+      end
     end
   end
 end

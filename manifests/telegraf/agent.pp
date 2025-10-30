@@ -400,7 +400,12 @@ class puppet_operational_dashboards::telegraf::agent (
 
         telegraf::input { "postgres_${pg_host}":
           plugin_type => 'postgresql_extensible',
-          options     => [$_inputs],
+          options     => if $extra_input_options {
+            [$_inputs + $extra_input_options]
+          }
+          else {
+            [$_inputs]
+          },
         }
       }
     }
@@ -497,7 +502,12 @@ class puppet_operational_dashboards::telegraf::agent (
 
       telegraf::input { "postgres_${trusted['certname']}":
         plugin_type => 'postgresql_extensible',
-        options     => [$_inputs],
+        options     => if $extra_input_options {
+          [$_inputs + $extra_input_options]
+        }
+        else {
+          [$_inputs]
+        },
       }
     }
   }
