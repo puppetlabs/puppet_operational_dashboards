@@ -401,7 +401,7 @@ Data type: `String`
 
 Version of the Grafana package to install.
 
-Default value: `'8.5.27'`
+Default value: `'9.5.21'`
 
 ##### <a name="-puppet_operational_dashboards--profile--dashboards--grafana_datasource"></a>`grafana_datasource`
 
