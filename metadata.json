@@ -14,7 +14,7 @@
     },
     {
       "name": "puppet-telegraf",
-      "version_requirement": ">= 5.0.0 < 7.0.0"
+      "version_requirement": ">= 5.0.0 < 8.0.0"
     },
     {
       "name": "puppetlabs-apt",
@@ -64,7 +64,7 @@
       "operatingsystemrelease": [
         "20.04",
         "22.04",
-	"24.04"
+        "24.04"
       ]
     },
     {
@@ -77,14 +77,14 @@
       "operatingsystem": "AlmaLinux",
       "operatingsystemrelease": [
         "8",
-	"9"
+        "9"
       ]
     },
     {
       "operatingsystem": "RockyLinux",
       "operatingsystemrelease": [
         "8",
-	"9"
+      	"9"
 	
       ]
     }
