@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'json'
+require 'pry'
 
 describe 'puppet_operational_dashboards::telegraf::config' do
   let(:facts) { { os: { family: 'RedHat' } } }
@@ -9,6 +10,7 @@ describe 'puppet_operational_dashboards::telegraf::config' do
       protocol: 'https',
       http_timeout_seconds: 5,
       hosts: ['localhost.foo.com'],
+      include_pe_metrics: true,
     }
   end
 
@@ -135,6 +137,7 @@ describe 'puppet_operational_dashboards::telegraf::config' do
         protocol: 'http',
         http_timeout_seconds: 5,
         hosts: ['localhost.foo.com'],
+        include_pe_metrics: true,
       }
     end
 
@@ -164,6 +167,37 @@ describe 'puppet_operational_dashboards::telegraf::config' do
             'new' => 'localhost.foo.com'
           }],
         ],
+      )
+    }
+  end
+
+  context 'when passing extra input options' do
+    let(:title) { 'puppetserver' }
+    let(:puppetserver_epp) do
+      JSON.parse(File.read('./spec/fixtures/defines/puppetserver_metrics.json'))
+    end
+    let(:params) do
+      {
+        ensure: 'present',
+        protocol: 'https',
+        http_timeout_seconds: 5,
+        hosts: ['localhost.foo.com'],
+        include_pe_metrics: true,
+        extra_input_options: {
+          tags: {
+            'foo' => 'bar',
+          }
+        }
+      }
+    end
+
+    it {
+      is_expected.to compile
+
+      # Testing that the Telegraf input contains identical Ruby objects was turning out to be difficult
+      # It was returning an error but saying the diffs were identical, so instead we just check the file
+      is_expected.to contain_file('/etc/telegraf/telegraf.d/puppetserver_metrics.conf').with_content(
+        %r{\[inputs\.http\.tags\]\nfoo = \"bar\"},
       )
     }
   end

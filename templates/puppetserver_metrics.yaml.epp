@@ -1,4 +1,9 @@
-<%- | Array[String] $urls, Enum['https', 'http'] $protocol, Integer[1] $http_timeout_seconds | -%>
+<%- |
+  Array[String] $urls,
+  Enum['https', 'http'] $protocol,
+  Integer[1] $http_timeout_seconds,
+  Boolean $include_pe_metrics,
+  | -%>
 <% if $protocol == 'https' { -%>
 tls_cert: /etc/telegraf/puppet_cert.pem
 tls_key: /etc/telegraf/puppet_key.pem
@@ -41,6 +46,7 @@ json_v2:
           - metric
       - path: jruby-metrics.status.experimental.metrics
         disable_prepend_keys: false
+<% if $include_pe_metrics { -%>
       - path: '@this'
         disable_prepend_keys: false
         included_keys:
@@ -158,3 +164,4 @@ json_v2:
           - broker-service_status_metrics_puppetlabs.pcp.on-send_percentiles_1.0
           - broker-service_status_metrics_puppetlabs.pcp.on-send_largest
           - broker-service_status_metrics_puppetlabs.pcp.on-send_smallest
+<% } -%>
