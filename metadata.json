@@ -14,11 +14,11 @@
     },
     {
       "name": "puppet-telegraf",
-      "version_requirement": ">= 5.0.0 < 6.0.0"
+      "version_requirement": ">= 5.0.0 < 8.0.0"
     },
     {
       "name": "puppetlabs-apt",
-      "version_requirement": ">= 4.3.0 < 10.0.0"
+      "version_requirement": ">= 4.3.0 < 12.0.0"
     },
     {
       "name": "puppetlabs-inifile",
@@ -26,7 +26,7 @@
     },
     {
       "name": "puppetlabs-influxdb",
-      "version_requirement": ">= 2.3.0 < 3.0.0"
+      "version_requirement": ">= 2.3.0 < 4.0.0"
     },
     {
       "name": "puppetlabs-stdlib",
@@ -37,7 +37,7 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "7",
+        "9",
         "8"
       ]
     },
@@ -62,35 +62,37 @@
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "18.04",
         "20.04",
-        "22.04"
+        "22.04",
+        "24.04"
       ]
     },
     {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
-        "12",
         "15"
       ]
     },
     {
       "operatingsystem": "AlmaLinux",
       "operatingsystemrelease": [
-        "8"
+        "8",
+        "9"
       ]
     },
     {
       "operatingsystem": "RockyLinux",
       "operatingsystemrelease": [
-        "8"
+        "8",
+      	"9"
+	
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 7.0.0 < 9.0.0"
+      "version_requirement": ">= 8.0.0 < 9.0.0"
     }
   ],
   "pdk-version": "3.0.1",
