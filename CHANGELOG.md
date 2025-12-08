@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+
+## [v3.0.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v3.0.0) (2025-12-08)
+
+## Added
+- Change to datasource to allow editable so buckets can be deleted by @CosmicJules in https://github.com/puppetlabs/puppet_operational_dashboards/pull/228
+- `metadata.json`: add support for Ubuntu 22.04 by @kenyon in https://github.com/puppetlabs/puppet_operational_dashboards/pull/229
+- Update to include firewall data by @MartyEwings in https://github.com/puppetlabs/puppet_operational_dashboards/pull/227
+
+### Changed
+- (SUP-6707): Remove Puppet 7 As Supported release by @MartyEwings in https://github.com/puppetlabs/puppet_operational_dashboards/pull/235
+- (SUP-6706): Update Grafana to 11.8.6 by @MartyEwings in https://github.com/puppetlabs/puppet_operational_dashboards/pull/237
+- (SUP-6200) update plans ingest limit to 90 days by @MartyEwings in https://github.com/puppetlabs/puppet_operational_dashboards/pull/230
+
+### Fixed
+- (SUP-6704): Resolve Ubuntu Hiera Yaml formatting problem by @MartyEwings in https://github.com/puppetlabs/puppet_operational_dashboards/pull/236
+
+**Full Changelog**: https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.4.0...v3.0.0
+
 ## [v2.3.0](https://github.com/puppetlabs/puppet_operational_dashboards/tree/v2.3.0) (2024-02-05)
 
 [Full Changelog](https://github.com/puppetlabs/puppet_operational_dashboards/compare/v2.2.0...v2.3.0)
