@@ -177,7 +177,7 @@ class puppet_operational_dashboards::telegraf::agent (
     fail('No services detected on node.')
   }
 
-  if !$pe_instances.empty() and !$pe_instance {
+  if !$pe_instances.empty() and !$pe_instance and $collection_method != 'none' {
     $warning_message = [
       'puppet_operational_dashboards::telegraf::agent: pe_instances is set but pe_instance is not.',
       'Metrics collected from this node\'s own installation will not carry a pe_instance tag and will',
