@@ -2,11 +2,17 @@
 # @example Basic usage
 #   include puppet_operational_dashboards::profile::foss_postgres_access
 # @param telegraf_hosts
-#   A list of FQDNs running Telegraf to allow access to
+#   A list of FQDNs running Telegraf to allow access to.  Defaults to hosts in this installation's
+#   PuppetDB with the telegraf agent class.  Setting this replaces the discovered list.
+# @param additional_telegraf_hosts
+#   A list of certnames to allow access to in addition to the discovered (or given) telegraf_hosts.
+#   Use this for scrapers outside this installation, such as a dashboard node collecting several PE
+#   installations, whose certnames cannot be discovered from this installation's PuppetDB.
 # @param telegraf_user
 #   Username for the Telegraf client to use in the postgres connection string
 class puppet_operational_dashboards::profile::foss_postgres_access (
   Array $telegraf_hosts = puppet_operational_dashboards::hosts_with_profile('Puppet_operational_dashboards::Telegraf::Agent'),
+  Array[String[1]] $additional_telegraf_hosts = [],
   String $telegraf_user = 'telegraf',
 ) {
   postgresql::server::role { $telegraf_user:
@@ -46,7 +52,7 @@ class puppet_operational_dashboards::profile::foss_postgres_access (
     order       => 0,
     auth_option => 'map=puppetdb-telegraf-map clientcert=1',
   }
-  $telegraf_hosts.each |$host| {
+  ($telegraf_hosts + $additional_telegraf_hosts).unique.each |$host| {
     postgresql::server::pg_ident_rule { "Map the SSL certificate of ${host} as a puppetdb user":
       map_name          => 'puppetdb-telegraf-map',
       system_username   => $host,

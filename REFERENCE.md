@@ -24,6 +24,12 @@
 
 ### Plans
 
+* [`puppet_operational_dashboards::add_instance`](#puppet_operational_dashboards--add_instance): Onboard another PE installation into an existing operational dashboards node.
+
+Generates a certificate for the dashboard node on the new installation's CA, distributes it to the
+dashboard node under the file names the pe_instances parameter expects, and prints the Hiera entries
+to add on each side.  Note that the private key passes through the Bolt controller while being copied
+between the two installations.
 * [`puppet_operational_dashboards::load_metrics`](#puppet_operational_dashboards--load_metrics): A plan created with bolt plan new.
 * [`puppet_operational_dashboards::provision_dashboard`](#puppet_operational_dashboards--provision_dashboard): A plan to provision a non-SSL operational dashboards node
 
@@ -569,15 +575,27 @@ include puppet_operational_dashboards::profile::foss_postgres_access
 The following parameters are available in the `puppet_operational_dashboards::profile::foss_postgres_access` class:
 
 * [`telegraf_hosts`](#-puppet_operational_dashboards--profile--foss_postgres_access--telegraf_hosts)
+* [`additional_telegraf_hosts`](#-puppet_operational_dashboards--profile--foss_postgres_access--additional_telegraf_hosts)
 * [`telegraf_user`](#-puppet_operational_dashboards--profile--foss_postgres_access--telegraf_user)
 
 ##### <a name="-puppet_operational_dashboards--profile--foss_postgres_access--telegraf_hosts"></a>`telegraf_hosts`
 
 Data type: `Array`
 
-A list of FQDNs running Telegraf to allow access to
+A list of FQDNs running Telegraf to allow access to.  Defaults to hosts in this installation's
+PuppetDB with the telegraf agent class.  Setting this replaces the discovered list.
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_operational_dashboards::Telegraf::Agent')`
+
+##### <a name="-puppet_operational_dashboards--profile--foss_postgres_access--additional_telegraf_hosts"></a>`additional_telegraf_hosts`
+
+Data type: `Array[String[1]]`
+
+A list of certnames to allow access to in addition to the discovered (or given) telegraf_hosts.
+Use this for scrapers outside this installation, such as a dashboard node collecting several PE
+installations, whose certnames cannot be discovered from this installation's PuppetDB.
+
+Default value: `[]`
 
 ##### <a name="-puppet_operational_dashboards--profile--foss_postgres_access--telegraf_user"></a>`telegraf_user`
 
@@ -604,14 +622,26 @@ include puppet_operational_dashboards::profile::postgres_access
 The following parameters are available in the `puppet_operational_dashboards::profile::postgres_access` class:
 
 * [`telegraf_hosts`](#-puppet_operational_dashboards--profile--postgres_access--telegraf_hosts)
+* [`additional_telegraf_hosts`](#-puppet_operational_dashboards--profile--postgres_access--additional_telegraf_hosts)
 
 ##### <a name="-puppet_operational_dashboards--profile--postgres_access--telegraf_hosts"></a>`telegraf_hosts`
 
 Data type: `Array`
 
-A list of FQDNs running Telegraf to allow access to
+A list of FQDNs running Telegraf to allow access to.  Defaults to hosts in this installation's
+PuppetDB with the telegraf agent class.  Setting this replaces the discovered list.
 
 Default value: `puppet_operational_dashboards::hosts_with_profile('Puppet_operational_dashboards::Telegraf::Agent')`
+
+##### <a name="-puppet_operational_dashboards--profile--postgres_access--additional_telegraf_hosts"></a>`additional_telegraf_hosts`
+
+Data type: `Array[String[1]]`
+
+A list of certnames to allow access to in addition to the discovered (or given) telegraf_hosts.
+Use this for scrapers outside this installation, such as a dashboard node collecting several PE
+installations, whose certnames cannot be discovered from this installation's PuppetDB.
+
+Default value: `[]`
 
 ### <a name="puppet_operational_dashboards--telegraf--agent"></a>`puppet_operational_dashboards::telegraf::agent`
 
@@ -1012,6 +1042,9 @@ Hash[String[1], Struct[{
         Optional[ssl_cert_file]       => Stdlib::Absolutepath,
         Optional[ssl_key_file]        => Stdlib::Absolutepath,
         Optional[ssl_ca_file]         => Stdlib::Absolutepath,
+        Optional[ssl_cert_content]    => String[1],
+        Optional[ssl_key_content]     => Variant[Sensitive[String[1]], String[1]],
+        Optional[ssl_ca_content]      => String[1],
         Optional[include_pe_metrics]  => Boolean,
         Optional[telegraf_user]       => String[1],
         Optional[postgres_password]   => Variant[Sensitive[String[1]], String[1]],
@@ -1034,8 +1067,11 @@ Host lists cannot be discovered across installations and must be given explicitl
       orchestrator_hosts: ['primary.dr.example.com']
       postgres_hosts: ['primary.dr.example.com']
 
-Optional per-installation keys: protocol, ssl_cert_file, ssl_key_file, ssl_ca_file, include_pe_metrics,
-telegraf_user, postgres_password, postgres_port, postgres_options.
+Optional per-installation keys: protocol, ssl_cert_file, ssl_key_file, ssl_ca_file, ssl_cert_content,
+ssl_key_content, ssl_ca_content, include_pe_metrics, telegraf_user, postgres_password, postgres_port,
+postgres_options.  When the ssl_*_content keys are given, e.g. from eyaml-encrypted Hiera data, the
+certificate files are managed by this class and do not need to be placed manually.  The
+puppet_operational_dashboards::add_instance plan automates generating and distributing the files.
 
 Default value: `getvar('puppet_operational_dashboards::pe_instances', {})`
 
@@ -1173,6 +1209,53 @@ Used by this module to identify Puppet Enterprise API endpoints on the node.
 Returns: `Array[String]` An array of PE profiles representing the Puppet server, PDB, and postgres services
 
 ## Plans
+
+### <a name="puppet_operational_dashboards--add_instance"></a>`puppet_operational_dashboards::add_instance`
+
+Onboard another PE installation into an existing operational dashboards node.
+
+Generates a certificate for the dashboard node on the new installation's CA, distributes it to the
+dashboard node under the file names the pe_instances parameter expects, and prints the Hiera entries
+to add on each side.  Note that the private key passes through the Bolt controller while being copied
+between the two installations.
+
+#### Parameters
+
+The following parameters are available in the `puppet_operational_dashboards::add_instance` plan:
+
+* [`primary`](#-puppet_operational_dashboards--add_instance--primary)
+* [`dashboard`](#-puppet_operational_dashboards--add_instance--dashboard)
+* [`instance_name`](#-puppet_operational_dashboards--add_instance--instance_name)
+* [`scrape_certname`](#-puppet_operational_dashboards--add_instance--scrape_certname)
+
+##### <a name="-puppet_operational_dashboards--add_instance--primary"></a>`primary`
+
+Data type: `TargetSpec`
+
+The new installation's primary server, where the CA runs.  Must accept root SSH or an equivalent
+privileged transport.
+
+##### <a name="-puppet_operational_dashboards--add_instance--dashboard"></a>`dashboard`
+
+Data type: `TargetSpec`
+
+The dashboard node running Telegraf, InfluxDB, and Grafana.
+
+##### <a name="-puppet_operational_dashboards--add_instance--instance_name"></a>`instance_name`
+
+Data type: `String[1]`
+
+Name for the new installation, used as the pe_instances key, the pe_instance tag value, and the
+certificate file prefix on the dashboard node.
+
+##### <a name="-puppet_operational_dashboards--add_instance--scrape_certname"></a>`scrape_certname`
+
+Data type: `Optional[String[1]]`
+
+Certname to generate for the dashboard node's scrape certificate.  Defaults to
+'dashboard-telegraf-<instance_name>' in lower case.
+
+Default value: `undef`
 
 ### <a name="puppet_operational_dashboards--load_metrics"></a>`puppet_operational_dashboards::load_metrics`
 

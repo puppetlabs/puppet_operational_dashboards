@@ -105,8 +105,11 @@
 #         orchestrator_hosts: ['primary.dr.example.com']
 #         postgres_hosts: ['primary.dr.example.com']
 #
-#   Optional per-installation keys: protocol, ssl_cert_file, ssl_key_file, ssl_ca_file, include_pe_metrics,
-#   telegraf_user, postgres_password, postgres_port, postgres_options.
+#   Optional per-installation keys: protocol, ssl_cert_file, ssl_key_file, ssl_ca_file, ssl_cert_content,
+#   ssl_key_content, ssl_ca_content, include_pe_metrics, telegraf_user, postgres_password, postgres_port,
+#   postgres_options.  When the ssl_*_content keys are given, e.g. from eyaml-encrypted Hiera data, the
+#   certificate files are managed by this class and do not need to be placed manually.  The
+#   puppet_operational_dashboards::add_instance plan automates generating and distributing the files.
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
   Boolean $manage_repo,
@@ -166,6 +169,9 @@ class puppet_operational_dashboards::telegraf::agent (
         Optional[ssl_cert_file]       => Stdlib::Absolutepath,
         Optional[ssl_key_file]        => Stdlib::Absolutepath,
         Optional[ssl_ca_file]         => Stdlib::Absolutepath,
+        Optional[ssl_cert_content]    => String[1],
+        Optional[ssl_key_content]     => Variant[Sensitive[String[1]], String[1]],
+        Optional[ssl_ca_content]      => String[1],
         Optional[include_pe_metrics]  => Boolean,
         Optional[telegraf_user]       => String[1],
         Optional[postgres_password]   => Variant[Sensitive[String[1]], String[1]],
@@ -505,6 +511,42 @@ class puppet_operational_dashboards::telegraf::agent (
     $instance_tls_cert = $instance.get('ssl_cert_file', "/etc/telegraf/${instance_name}_cert.pem")
     $instance_tls_key  = $instance.get('ssl_key_file', "/etc/telegraf/${instance_name}_key.pem")
     $instance_tls_ca   = $instance.get('ssl_ca_file', "/etc/telegraf/${instance_name}_ca.pem")
+
+    # When certificate contents are given, e.g. from eyaml, manage the files themselves
+    if $instance['ssl_cert_content'] {
+      file { $instance_tls_cert:
+        ensure  => file,
+        content => $instance['ssl_cert_content'],
+        mode    => '0400',
+        owner   => 'telegraf',
+        require => Class['telegraf::install'],
+        notify  => Service['telegraf'],
+      }
+    }
+    if $instance['ssl_key_content'] {
+      $instance_key_content = $instance['ssl_key_content'] ? {
+        Sensitive => $instance['ssl_key_content'],
+        default   => Sensitive($instance['ssl_key_content']),
+      }
+      file { $instance_tls_key:
+        ensure  => file,
+        content => $instance_key_content,
+        mode    => '0400',
+        owner   => 'telegraf',
+        require => Class['telegraf::install'],
+        notify  => Service['telegraf'],
+      }
+    }
+    if $instance['ssl_ca_content'] {
+      file { $instance_tls_ca:
+        ensure  => file,
+        content => $instance['ssl_ca_content'],
+        mode    => '0400',
+        owner   => 'telegraf',
+        require => Class['telegraf::install'],
+        notify  => Service['telegraf'],
+      }
+    }
 
     $instance_defaults = {
       protocol             => $instance_protocol,

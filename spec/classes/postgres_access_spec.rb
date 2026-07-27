@@ -69,6 +69,22 @@ describe 'puppet_operational_dashboards::profile::postgres_access' do
       PRE_COND
     end
 
+    context 'when adding hosts from another installation' do
+      let(:params) do
+        { telegraf_hosts: ['foo.bar.com'], additional_telegraf_hosts: ['dashboard-telegraf.lab', 'foo.bar.com'] }
+      end
+
+      it {
+        # Additional hosts are appended to the discovered list rather than replacing it, and de-duplicated
+        is_expected.to contain_puppet_enterprise__pg__cert_allowlist_entry('telegraf_foo.bar.com')
+        is_expected.to contain_puppet_enterprise__pg__cert_allowlist_entry('telegraf_dashboard-telegraf.lab').with(
+          user: 'telegraf',
+          database: 'pe-puppetdb',
+          allowed_client_certname: 'dashboard-telegraf.lab',
+        )
+      }
+    end
+
     context 'when using default parameters' do
       let(:params) do
         { telegraf_hosts: ['foo.bar.com'] }

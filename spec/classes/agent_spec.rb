@@ -164,6 +164,40 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         }
       end
 
+      context 'when managing pe_instances certificates from content' do
+        let(:pre_condition) do
+          <<-PRE_COND
+            function puppet_operational_dashboards::hosts_with_profile($profile) { return ['localhost.foo.com'] }
+            class{ 'puppet_operational_dashboards':
+              influxdb_host => 'localhost.foo.com',
+              include_pe_metrics => true,
+              pe_instance => 'prod',
+              pe_instances => {
+                'dr' => {
+                  'puppetserver_hosts' => ['primary.dr.foo.com'],
+                  'ssl_cert_content'   => 'CERT PEM',
+                  'ssl_key_content'    => Sensitive('KEY PEM'),
+                  'ssl_ca_content'     => 'CA PEM',
+                },
+              },
+            }
+          PRE_COND
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_file('/etc/telegraf/dr_cert.pem').with(
+            content: 'CERT PEM',
+            owner: 'telegraf',
+            mode: '0400',
+          )
+          is_expected.to contain_file('/etc/telegraf/dr_key.pem').with(owner: 'telegraf', mode: '0400')
+          is_expected.to contain_file('/etc/telegraf/dr_ca.pem').with(content: 'CA PEM', owner: 'telegraf', mode: '0400')
+          is_expected.to contain_file('/etc/telegraf/dr_key.pem').that_notifies('Service[telegraf]')
+        }
+      end
+
       context 'when using postgres password auth' do
         let(:params) do
           {
