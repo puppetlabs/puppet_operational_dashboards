@@ -26,10 +26,13 @@
 
 * [`puppet_operational_dashboards::add_instance`](#puppet_operational_dashboards--add_instance): Onboard another PE installation into an existing operational dashboards node.
 
-Generates a certificate for the dashboard node on the new installation's CA, distributes it to the
-dashboard node under the file names the pe_instances parameter expects, and prints the Hiera entries
-to add on each side.  Note that the private key passes through the Bolt controller while being copied
-between the two installations.
+Generates a private key on the dashboard node, has the new installation's CA sign a certificate
+request for it, places the certificate files under the names the pe_instances parameter expects,
+and prints the Hiera entries to add on each side.  The private key is created where it is used
+and never leaves the dashboard node.
+
+Runs under the PE orchestrator ('puppet plan run') as well as standalone Bolt; only run_command,
+apply, and out::message are used.
 * [`puppet_operational_dashboards::load_metrics`](#puppet_operational_dashboards--load_metrics): A plan created with bolt plan new.
 * [`puppet_operational_dashboards::provision_dashboard`](#puppet_operational_dashboards--provision_dashboard): A plan to provision a non-SSL operational dashboards node
 
@@ -1214,10 +1217,13 @@ Returns: `Array[String]` An array of PE profiles representing the Puppet server,
 
 Onboard another PE installation into an existing operational dashboards node.
 
-Generates a certificate for the dashboard node on the new installation's CA, distributes it to the
-dashboard node under the file names the pe_instances parameter expects, and prints the Hiera entries
-to add on each side.  Note that the private key passes through the Bolt controller while being copied
-between the two installations.
+Generates a private key on the dashboard node, has the new installation's CA sign a certificate
+request for it, places the certificate files under the names the pe_instances parameter expects,
+and prints the Hiera entries to add on each side.  The private key is created where it is used
+and never leaves the dashboard node.
+
+Runs under the PE orchestrator ('puppet plan run') as well as standalone Bolt; only run_command,
+apply, and out::message are used.
 
 #### Parameters
 
@@ -1232,8 +1238,7 @@ The following parameters are available in the `puppet_operational_dashboards::ad
 
 Data type: `TargetSpec`
 
-The new installation's primary server, where the CA runs.  Must accept root SSH or an equivalent
-privileged transport.
+The new installation's primary server, where the CA runs.
 
 ##### <a name="-puppet_operational_dashboards--add_instance--dashboard"></a>`dashboard`
 
@@ -1252,7 +1257,7 @@ certificate file prefix on the dashboard node.
 
 Data type: `Optional[String[1]]`
 
-Certname to generate for the dashboard node's scrape certificate.  Defaults to
+Certname to sign for the dashboard node's scrape certificate.  Defaults to
 'dashboard-telegraf-<instance_name>' in lower case.
 
 Default value: `undef`

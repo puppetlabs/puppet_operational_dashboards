@@ -296,14 +296,16 @@ Prerequisites:
 |------|----|-------|
 | Dashboard node | The new installation's Puppet server, PuppetDB, orchestrator, and PostgreSQL hosts | 8140, 8081, 8143, 5432 |
 
-Each PE installation has its own certificate authority, so scraping it requires a certificate issued by that installation. The `add_instance` plan generates and distributes it in one step:
+Each PE installation has its own certificate authority, so scraping it requires a certificate issued by that installation. The `add_instance` plan generates and distributes it in one step. Under the PE orchestrator:
 
 ```bash
-bolt plan run puppet_operational_dashboards::add_instance \
+puppet plan run puppet_operational_dashboards::add_instance \
   primary=primary.dr.example.com dashboard=dashboard.example.com instance_name=dr
 ```
 
-The plan creates a `dashboard-telegraf-dr` certificate on the new installation's CA, places the certificate, key, and CA files on the dashboard node as `/etc/telegraf/dr_{cert,key,ca}.pem` with the right ownership and permissions, and prints the exact Hiera entries for the remaining steps. Note the private key passes through the Bolt controller in transit.
+or with standalone Bolt, `bolt plan run` with the same parameters.
+
+The plan generates a private key on the dashboard node (it never leaves that node), has the new installation's CA sign a `dashboard-telegraf-dr` certificate for it, places the certificate, key, and CA files as `/etc/telegraf/dr_{cert,key,ca}.pem` with the right ownership and permissions, and prints the exact Hiera entries for the remaining steps.
 
 To do the same by hand instead:
 

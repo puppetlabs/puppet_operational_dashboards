@@ -1,20 +1,22 @@
 # @summary Onboard another PE installation into an existing operational dashboards node.
 #
-#   Generates a certificate for the dashboard node on the new installation's CA, distributes it to the
-#   dashboard node under the file names the pe_instances parameter expects, and prints the Hiera entries
-#   to add on each side.  Note that the private key passes through the Bolt controller while being copied
-#   between the two installations.
+#   Generates a private key on the dashboard node, has the new installation's CA sign a certificate
+#   request for it, places the certificate files under the names the pe_instances parameter expects,
+#   and prints the Hiera entries to add on each side.  The private key is created where it is used
+#   and never leaves the dashboard node.
+#
+#   Runs under the PE orchestrator ('puppet plan run') as well as standalone Bolt; only run_command,
+#   apply, and out::message are used.
 #
 # @param primary
-#   The new installation's primary server, where the CA runs.  Must accept root SSH or an equivalent
-#   privileged transport.
+#   The new installation's primary server, where the CA runs.
 # @param dashboard
 #   The dashboard node running Telegraf, InfluxDB, and Grafana.
 # @param instance_name
 #   Name for the new installation, used as the pe_instances key, the pe_instance tag value, and the
 #   certificate file prefix on the dashboard node.
 # @param scrape_certname
-#   Certname to generate for the dashboard node's scrape certificate.  Defaults to
+#   Certname to sign for the dashboard node's scrape certificate.  Defaults to
 #   'dashboard-telegraf-<instance_name>' in lower case.
 plan puppet_operational_dashboards::add_instance (
   TargetSpec $primary,
@@ -31,34 +33,94 @@ plan puppet_operational_dashboards::add_instance (
   $dashboard_target = $dashboard_targets[0]
 
   $certname = pick($scrape_certname, "dashboard-telegraf-${instance_name.downcase()}")
+  $cert_file = "/etc/telegraf/${instance_name}_cert.pem"
+  $key_file = "/etc/telegraf/${instance_name}_key.pem"
+  $ca_file = "/etc/telegraf/${instance_name}_ca.pem"
+  $csr_path = "/tmp/${certname}.csr"
 
-  $ssl_dir = '/etc/puppetlabs/puppet/ssl'
-  $sources = {
-    'cert' => "${ssl_dir}/certs/${certname}.pem",
-    'key'  => "${ssl_dir}/private_keys/${certname}.pem",
-    'ca'   => "${ssl_dir}/certs/ca.pem",
-  }
+  apply_prep([$primary_target, $dashboard_target])
 
-  # Generate the certificate on the new installation's CA unless it already exists, e.g. on a re-run
-  run_command(
-    "test -f ${sources['cert']} || /opt/puppetlabs/bin/puppetserver ca generate --certname ${certname}",
-    $primary_target,
-    "Generate ${certname} on the installation's CA",
-  )
-
-  $sources.each |$kind, $source| {
-    $destination = "/etc/telegraf/${instance_name}_${kind}.pem"
-    $download = download_file($source, "add_instance/${instance_name}/${kind}", $primary_target)
-    upload_file($download.first['path'], $destination, $dashboard_target)
-  }
-
-  run_command(
-    "chown telegraf:telegraf /etc/telegraf/${instance_name}_*.pem && chmod 0400 /etc/telegraf/${instance_name}_*.pem",
+  $cert_present = run_command(
+    "test -f ${cert_file} && echo yes || echo no",
     $dashboard_target,
-    'Set certificate file ownership and permissions',
-  )
+    'Check whether the certificate already exists',
+  ).first.value['stdout'].chomp
 
-  $primary_certname = run_command('/opt/puppetlabs/bin/puppet config print certname', $primary_target).first.value['stdout'].chomp
+  if $cert_present == 'no' {
+    # Generate the private key and CSR on the dashboard node; only the CSR (public) travels
+    run_command(
+      "test -f ${key_file} || { umask 077 && openssl req -new -newkey rsa:4096 -nodes -keyout ${key_file} -subj '/CN=${certname}' -out ${csr_path}; }", # lint:ignore:140chars
+      $dashboard_target,
+      'Generate private key and certificate request',
+    )
+    $csr = run_command("cat ${csr_path}", $dashboard_target, 'Read certificate request').first.value['stdout']
+
+    # Submit the CSR to the new installation's CA and sign it
+    $cadir = run_command(
+      '/opt/puppetlabs/bin/puppet config print cadir',
+      $primary_target,
+      'Locate the CA directory',
+    ).first.value['stdout'].chomp
+
+    apply($primary_target) {
+      file { "${cadir}/requests/${certname}.pem":
+        ensure  => file,
+        content => $csr,
+        owner   => 'pe-puppet',
+        mode    => '0640',
+      }
+    }
+    run_command(
+      "/opt/puppetlabs/bin/puppetserver ca sign --certname ${certname}",
+      $primary_target,
+      'Sign the certificate request',
+    )
+    $signed_cert = run_command(
+      "cat ${cadir}/signed/${certname}.pem",
+      $primary_target,
+      'Read the signed certificate',
+    ).first.value['stdout']
+
+    apply($dashboard_target) {
+      file { $cert_file:
+        ensure  => file,
+        content => $signed_cert,
+        owner   => 'telegraf',
+        mode    => '0400',
+      }
+    }
+    run_command("rm -f ${csr_path}", $dashboard_target, 'Remove the certificate request')
+  }
+  else {
+    out::message("Certificate ${cert_file} already present; skipping generation.")
+  }
+
+  # The CA certificate is public and is ensured on every run
+  $ca_pem = run_command(
+    'cat /etc/puppetlabs/puppet/ssl/certs/ca.pem',
+    $primary_target,
+    "Read the installation's CA certificate",
+  ).first.value['stdout']
+
+  apply($dashboard_target) {
+    file { $ca_file:
+      ensure  => file,
+      content => $ca_pem,
+      owner   => 'telegraf',
+      mode    => '0400',
+    }
+    file { $key_file:
+      ensure => file,
+      owner  => 'telegraf',
+      mode   => '0400',
+    }
+  }
+
+  $primary_certname = run_command(
+    '/opt/puppetlabs/bin/puppet config print certname',
+    $primary_target,
+    "Read the primary's certname",
+  ).first.value['stdout'].chomp
 
   out::message("Certificate files for '${instance_name}' are in place on ${dashboard_target.name}.")
   # lint:ignore:strict_indent heredoc content is display formatting, not code
