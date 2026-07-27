@@ -185,6 +185,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -238,6 +244,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -297,6 +309,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -433,6 +451,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -488,6 +512,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -624,6 +654,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -679,6 +715,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -814,6 +856,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -869,6 +917,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -924,6 +978,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -979,6 +1039,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1117,6 +1183,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1176,6 +1248,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1235,6 +1313,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1294,6 +1378,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1412,7 +1502,7 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"orchestrator\" WHERE (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
+          "query": "SELECT distinct(\"mean\") FROM \"orchestrator\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
           "rawQuery": true,
           "refId": "H",
           "resultFormat": "time_series",
@@ -1435,6 +1525,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1553,7 +1649,7 @@
           "measurement": "orchestrator",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_difference(distinct(\"count\")) FROM \"orchestrator\" WHERE (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
+          "query": "SELECT non_negative_difference(distinct(\"count\")) FROM \"orchestrator\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
           "rawQuery": true,
           "refId": "H",
           "resultFormat": "time_series",
@@ -1580,6 +1676,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1717,6 +1819,12 @@
               "key": "mbean",
               "operator": "=",
               "value": "puppetlabs.pcp.connections"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1853,6 +1961,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1908,6 +2022,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1963,6 +2083,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2018,6 +2144,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2073,6 +2205,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2128,6 +2266,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2183,6 +2327,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2238,6 +2388,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2374,6 +2530,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2429,6 +2591,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2484,6 +2652,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2539,6 +2713,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2594,6 +2774,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2649,6 +2835,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2704,6 +2896,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2759,6 +2957,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2795,6 +2999,38 @@
         "type": "datasource"
       },
       {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "$datasource"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": true,
+        "label": "PE Instance",
+        "multi": true,
+        "name": "pe_instance",
+        "options": [],
+        "query": "SHOW TAG VALUES WITH KEY = \"pe_instance\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
         "current": {
           "selected": true,
           "text": [
@@ -2815,7 +3051,7 @@
         "multi": true,
         "name": "url",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"url\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"url\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "/^(?!http).*/",
         "skipUrlSync": false,

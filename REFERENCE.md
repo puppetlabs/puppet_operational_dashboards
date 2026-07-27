@@ -67,6 +67,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`include_pe_metrics`](#-puppet_operational_dashboards--include_pe_metrics)
 * [`manage_system_board`](#-puppet_operational_dashboards--manage_system_board)
 * [`template_format`](#-puppet_operational_dashboards--template_format)
+* [`pe_instance`](#-puppet_operational_dashboards--pe_instance)
 
 ##### <a name="-puppet_operational_dashboards--manage_influxdb"></a>`manage_influxdb`
 
@@ -219,6 +220,16 @@ Data type: `Enum['yaml','toml']`
 Template format to use for puppet template toml or yaml config
 
 Default value: `'toml'`
+
+##### <a name="-puppet_operational_dashboards--pe_instance"></a>`pe_instance`
+
+Data type: `Optional[String[1]]`
+
+Name identifying this PE installation, e.g. 'prod'.  When set, Telegraf adds it to all metrics as the
+'pe_instance' global tag, allowing multiple PE installations to share one InfluxDB and be filtered
+in the dashboards.  Leave unset (default) for single-PE installations.
+
+Default value: `undef`
 
 ### <a name="puppet_operational_dashboards--enterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
 
@@ -649,6 +660,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`postgres_port`](#-puppet_operational_dashboards--telegraf--agent--postgres_port)
 * [`postgres_options`](#-puppet_operational_dashboards--telegraf--agent--postgres_options)
 * [`template_format`](#-puppet_operational_dashboards--telegraf--agent--template_format)
+* [`pe_instance`](#-puppet_operational_dashboards--telegraf--agent--pe_instance)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--token"></a>`token`
 
@@ -964,6 +976,16 @@ Template format to use for puppet template toml or yaml config
 
 Default value: `$puppet_operational_dashboards::template_format`
 
+##### <a name="-puppet_operational_dashboards--telegraf--agent--pe_instance"></a>`pe_instance`
+
+Data type: `Optional[String[1]]`
+
+Name identifying the PE installation this node belongs to, e.g. 'prod'.  When set, it is added to all
+metrics as the 'pe_instance' global tag, allowing multiple PE installations to share one InfluxDB and
+be filtered in the dashboards.  Leave unset (default) for single-PE installations.
+
+Default value: `getvar('puppet_operational_dashboards::pe_instance')`
+
 ## Defined types
 
 ### <a name="puppet_operational_dashboards--telegraf--config"></a>`puppet_operational_dashboards::telegraf::config`
@@ -1194,7 +1216,7 @@ Default value:
 ```puppet
 [{
       'type' => 'expire',
-      'everySeconds' => 3456000,
+      'everySeconds' => 7776000,
       'shardGroupDurationSeconds' => 604800,
   }]
 ```

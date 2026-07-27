@@ -43,6 +43,10 @@
 #   Whether the System Performance dashboard should be added to grafana
 # @param template_format
 #   Template format to use for puppet template toml or yaml config
+# @param pe_instance
+#   Name identifying this PE installation, e.g. 'prod'.  When set, Telegraf adds it to all metrics as the
+#   'pe_instance' global tag, allowing multiple PE installations to share one InfluxDB and be filtered
+#   in the dashboards.  Leave unset (default) for single-PE installations.
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
@@ -70,6 +74,7 @@ class puppet_operational_dashboards (
 
   Boolean $manage_system_board = true,
   Enum['yaml','toml'] $template_format = 'toml',
+  Optional[String[1]] $pe_instance = undef,
 ) {
   unless $facts['os']['family'] in ['RedHat', 'Debian', 'Suse'] {
     fail("Installation on ${facts['os']['family']} is not supported")

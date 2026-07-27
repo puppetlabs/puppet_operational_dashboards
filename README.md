@@ -15,6 +15,7 @@
   - [Usage](#usage)
     - [Evaluation order](#evaluation-order)
     - [Determining where Telegraf runs](#determining-where-telegraf-runs)
+    - [Collecting metrics from multiple PE installations](#collecting-metrics-from-multiple-pe-installations)
     - [Importing archive metrics](#importing-archive-metrics)
   - [Default Dashboards Available](#default-dashboards-available)
       - [Puppetserver Performance](#puppetserver-performance)
@@ -274,6 +275,29 @@ class {'puppet_operational_dashboards::telegraf::agent':
   token => <my_sensitive_token>,
 }
 ```
+
+### Collecting metrics from multiple PE installations
+
+By default, the module assumes a single PE installation: the dashboard node discovers infrastructure hosts via its own PuppetDB. To display metrics from several PE installations in one set of dashboards, run Telegraf locally on each installation's infrastructure and point it at a shared InfluxDB, using the `pe_instance` parameter to identify each installation:
+
+1. On the central dashboard node (an agent of one of your PE installations), apply the `puppet_operational_dashboards` class as usual, setting `pe_instance` to a name for that installation, e.g. `prod`.
+
+2. On each other PE installation, apply `puppet_operational_dashboards::enterprise_infrastructure` to its infrastructure nodes as usual, and apply the `puppet_operational_dashboards::telegraf::agent` class with `collection_method => 'local'`, the central InfluxDB host, the Telegraf token from the central installation, and that installation's own `pe_instance` name:
+
+```puppet
+class { 'puppet_operational_dashboards::telegraf::agent':
+  collection_method => 'local',
+  influxdb_host     => 'dashboard.example.com',
+  token             => Sensitive('<telegraf token from the central node>'),
+  pe_instance       => 'dr',
+}
+```
+
+The token is created on the central dashboard node (see `puppet_operational_dashboards::telegraf_token_name`) and must be supplied explicitly on the other installations, as they cannot read the central node's token file. The recommended approach is to encrypt it with [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) in each installation's Hiera data.
+
+When `pe_instance` is set, Telegraf adds it to all metrics as the `pe_instance` global tag, and the bundled dashboards provide a "PE Instance" variable to filter by installation. When it is unset (the default), no tag is added and the dashboards' "All" selection displays the data as before, so existing single-installation setups are unaffected. Note that certnames must be unique across installations to avoid metrics being merged in per-server panels.
+
+Telegraf on the other installations connects to InfluxDB with TLS certificates issued by its own Puppet CA, which the central InfluxDB does not trust. The `insecure_skip_verify` parameter defaults to `true`, which allows this to work; to verify properly, distribute a CA bundle and set `use_system_store`.
 
 ### Importing archive metrics
 

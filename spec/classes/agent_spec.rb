@@ -42,6 +42,7 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             interval: '10m',
             manage_service: false,
             outputs: influxdb_v2,
+            global_tags: {},
           )
 
           is_expected.to contain_service('telegraf').with(ensure: 'running')
@@ -75,6 +76,25 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
             %r{tls_cert = "/etc/telegraf/puppet_cert\.pem"},
           )
           is_expected.to contain_file('/etc/systemd/system/telegraf.service.d/override.conf').that_notifies(['Exec[puppet_telegraf_daemon_reload]', 'Service[telegraf]'])
+        }
+      end
+
+      context 'when setting pe_instance' do
+        let(:pre_condition) do
+          <<-PRE_COND
+            function puppet_operational_dashboards::hosts_with_profile($profile) { return ['localhost.foo.com'] }
+            class{ 'puppet_operational_dashboards':
+              influxdb_host => 'localhost.foo.com',
+              include_pe_metrics => true,
+              pe_instance => 'prod',
+            }
+          PRE_COND
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          is_expected.to contain_class('telegraf').with(global_tags: { 'pe_instance' => 'prod' })
         }
       end
 

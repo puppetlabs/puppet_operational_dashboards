@@ -174,6 +174,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -228,6 +234,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -341,7 +353,7 @@
           "measurement": "/^$service$/",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"file-sync-client-service_status_experimental_metrics_average-clone-time\") FROM /^$service$/ WHERE (\"url\" =~ /$url/) AND $timeFilter GROUP BY time($__interval), \"url\" fill(null)",
+          "query": "SELECT distinct(\"file-sync-client-service_status_experimental_metrics_average-clone-time\") FROM /^$service$/ WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /$url/) AND $timeFilter GROUP BY time($__interval), \"url\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -364,6 +376,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -418,6 +436,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -472,6 +496,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -526,6 +556,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -581,6 +617,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -636,6 +678,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -691,6 +739,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -746,6 +800,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -888,6 +948,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -946,6 +1012,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1004,6 +1076,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1062,6 +1140,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1199,6 +1283,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1253,6 +1343,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1307,6 +1403,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1448,6 +1550,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1507,6 +1615,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1566,6 +1680,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/$url/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1602,6 +1722,38 @@
         "type": "datasource"
       },
       {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "$datasource"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": true,
+        "label": "PE Instance",
+        "multi": true,
+        "name": "pe_instance",
+        "options": [],
+        "query": "SHOW TAG VALUES WITH KEY = \"pe_instance\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
         "current": {
           "selected": true,
           "text": [
@@ -1622,7 +1774,7 @@
         "multi": true,
         "name": "url",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"url\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"url\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "/^(?!http).*/",
         "skipUrlSync": false,

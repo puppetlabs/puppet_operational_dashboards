@@ -183,7 +183,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"average-free-jrubies\") FROM \"jruby-metrics.average-free-jrubies\" WHERE (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
+          "query": "SELECT distinct(\"average-free-jrubies\") FROM \"jruby-metrics.average-free-jrubies\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /^$server$/) AND $timeFilter GROUP BY time(10s), \"server\" fill(null)",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -206,6 +206,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -260,6 +266,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -314,6 +326,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -368,6 +386,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -522,6 +546,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -575,6 +605,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -634,6 +670,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -772,6 +814,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -910,6 +958,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1048,6 +1102,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1103,6 +1163,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1241,6 +1307,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1296,6 +1368,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1432,6 +1510,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1486,6 +1570,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1540,6 +1630,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1594,6 +1690,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1733,6 +1835,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1791,6 +1899,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1849,6 +1963,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -1907,6 +2027,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2021,7 +2147,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"metric-name\" != null) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"metric-name\" fill(none)",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/ AND \"metric-name\" != null) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"metric-name\" fill(none)",
           "rawQuery": true,
           "refId": "E",
           "resultFormat": "time_series",
@@ -2050,6 +2176,12 @@
               "key": "metric-name",
               "operator": "=~",
               "value": "/store_report/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2186,6 +2318,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2324,6 +2462,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2379,6 +2523,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2517,6 +2667,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2652,6 +2808,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2705,6 +2867,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2758,6 +2926,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2811,6 +2985,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2864,6 +3044,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2917,6 +3103,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -2970,6 +3162,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -3084,7 +3282,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"borrow-timers_puppet-v3-catalog_rate\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
+          "query": "SELECT distinct(\"borrow-timers_puppet-v3-catalog_rate\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3107,6 +3305,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -3139,7 +3343,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"borrow-timers_puppet-v3-facts_rate\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
+          "query": "SELECT distinct(\"borrow-timers_puppet-v3-facts_rate\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -3162,6 +3366,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -3194,7 +3404,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"borrow-timers_puppet-v3-node_rate\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
+          "query": "SELECT distinct(\"borrow-timers_puppet-v3-node_rate\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
           "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series",
@@ -3217,6 +3427,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -3249,7 +3465,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"borrow-timers_puppet-v3-file_content_rate\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
+          "query": "SELECT distinct(\"borrow-timers_puppet-v3-file_content_rate\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
           "rawQuery": true,
           "refId": "D",
           "resultFormat": "time_series",
@@ -3272,6 +3488,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -3304,7 +3526,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"borrow-timers_puppet-v3-file_metadatas_rate\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
+          "query": "SELECT distinct(\"borrow-timers_puppet-v3-file_metadatas_rate\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
           "rawQuery": true,
           "refId": "E",
           "resultFormat": "time_series",
@@ -3327,6 +3549,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -3359,7 +3587,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"borrow-timers_puppet-v3-report_rate\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
+          "query": "SELECT distinct(\"borrow-timers_puppet-v3-report_rate\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
           "rawQuery": true,
           "refId": "F",
           "resultFormat": "time_series",
@@ -3382,6 +3610,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -3414,7 +3648,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"borrow-timers_puppet-v3-tasks_rate\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
+          "query": "SELECT distinct(\"borrow-timers_puppet-v3-tasks_rate\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\" fill(null)",
           "rawQuery": true,
           "refId": "G",
           "resultFormat": "time_series",
@@ -3437,6 +3671,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -3573,6 +3813,12 @@
               "key": "function",
               "operator": "=~",
               "value": "/^$function$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -3687,7 +3933,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
+          "query": "SELECT distinct(\"mean\") FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
           "rawQuery": true,
           "refId": "H",
           "resultFormat": "time_series",
@@ -3710,6 +3956,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -3823,7 +4075,7 @@
           "measurement": "puppetserver",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_difference(distinct(\"count\")) FROM \"puppetserver\" WHERE (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
+          "query": "SELECT non_negative_difference(distinct(\"count\")) FROM \"puppetserver\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"url\" =~ /^$url$/ AND \"route-id\" != null AND \"route-id\" !~ /total$/) AND $timeFilter GROUP BY time($Group_by_time), \"url\", \"route-id\" fill(null)",
           "rawQuery": true,
           "refId": "H",
           "resultFormat": "time_series",
@@ -3846,6 +4098,12 @@
               "key": "url",
               "operator": "=~",
               "value": "/^$url$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -3882,6 +4140,38 @@
         "type": "datasource"
       },
       {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "$datasource"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": true,
+        "label": "PE Instance",
+        "multi": true,
+        "name": "pe_instance",
+        "options": [],
+        "query": "SHOW TAG VALUES WITH KEY = \"pe_instance\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
         "current": {
           "selected": true,
           "text": [
@@ -3902,7 +4192,7 @@
         "multi": true,
         "name": "url",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"url\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"url\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "/^(?!http).*/",
         "skipUrlSync": false,
@@ -4000,13 +4290,13 @@
           "type": "influxdb",
           "uid": "${datasource}"
         },
-        "definition": "SHOW TAG VALUES WITH KEY = \"metric\"",
+        "definition": "SHOW TAG VALUES WITH KEY = \"metric\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "compile_op",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"metric\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"metric\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -4027,14 +4317,14 @@
           "type": "influxdb",
           "uid": "${datasource}"
         },
-        "definition": "SHOW TAG VALUES WITH KEY = \"function\"",
+        "definition": "SHOW TAG VALUES WITH KEY = \"function\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "hide": 0,
         "includeAll": true,
         "label": "Puppet Functions",
         "multi": true,
         "name": "function",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"function\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"function\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

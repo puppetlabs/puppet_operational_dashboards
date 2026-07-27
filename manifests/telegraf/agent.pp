@@ -86,6 +86,10 @@
 #   Hash of options for the Telegraf client to use as connection parameters in the postgres connection string
 # @param template_format
 #   Template format to use for puppet template toml or yaml config
+# @param pe_instance
+#   Name identifying the PE installation this node belongs to, e.g. 'prod'.  When set, it is added to all
+#   metrics as the 'pe_instance' global tag, allowing multiple PE installations to share one InfluxDB and
+#   be filtered in the dashboards.  Leave unset (default) for single-PE installations.
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
   Boolean $manage_repo,
@@ -135,6 +139,7 @@ class puppet_operational_dashboards::telegraf::agent (
     'sslrootcert' => '/etc/telegraf/puppet_ca.pem',
   },
   Enum['yaml','toml'] $template_format = $puppet_operational_dashboards::template_format,
+  Optional[String[1]] $pe_instance = getvar('puppet_operational_dashboards::pe_instance'),
 ) {
   unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services].any |$service| { $service } {
     fail('No services detected on node.')
@@ -192,9 +197,15 @@ class puppet_operational_dashboards::telegraf::agent (
     notify => Service['telegraf'],
   }
 
+  $global_tags = $pe_instance ? {
+    undef   => {},
+    default => { 'pe_instance' => $pe_instance },
+  }
+
   class { 'telegraf':
     ensure              => $version,
     manage_repo         => $manage_repo,
+    global_tags         => $global_tags,
     manage_archive      => $manage_archive,
     manage_user         => $manage_user,
     archive_location    => $archive_location,

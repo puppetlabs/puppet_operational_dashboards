@@ -179,6 +179,12 @@
               "key": "service",
               "operator": "=~",
               "value": "/^$service$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -244,6 +250,12 @@
               "key": "service",
               "operator": "=~",
               "value": "/^$service$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         },
@@ -309,6 +321,12 @@
               "key": "service",
               "operator": "=~",
               "value": "/^$service$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -456,6 +474,12 @@
               "key": "name",
               "operator": "=~",
               "value": "/^kb/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -603,6 +627,12 @@
               "key": "name",
               "operator": "=~",
               "value": "/^\\%/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -726,7 +756,7 @@
           "measurement": "sar",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE (\"server\" =~ /^$server$/ AND \"device\" =~ /$device/ AND \"name\" =~ /wkB\\/s|rwkB\\/s|dkB\\/s/) AND $timeFilter GROUP BY time($__interval), \"name\", \"server\", \"device\" fill(null)",
+          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /^$server$/ AND \"device\" =~ /$device/ AND \"name\" =~ /wkB\\/s|rwkB\\/s|dkB\\/s/) AND $timeFilter GROUP BY time($__interval), \"name\", \"server\", \"device\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -755,6 +785,12 @@
               "key": "device",
               "operator": "=~",
               "value": "null"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -859,7 +895,7 @@
           "measurement": "sar",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE (\"server\" =~ /^$server$/ AND \"device\" =~ /$device/ AND \"name\" =~ /tps|areq-sz|aqu-sz|await/) AND $timeFilter GROUP BY time($Group_by_time),  \"server\", \"name\", \"device\" fill(null)",
+          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /^$server$/ AND \"device\" =~ /$device/ AND \"name\" =~ /tps|areq-sz|aqu-sz|await/) AND $timeFilter GROUP BY time($Group_by_time),  \"server\", \"name\", \"device\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -888,6 +924,12 @@
               "key": "name",
               "operator": "=~",
               "value": "/tps/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1011,7 +1053,7 @@
           "measurement": "sar",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE (\"server\" =~ /^$server$/ AND \"name\" =~ /rxkB\\/s|txkB\\/s/) AND $timeFilter GROUP BY time($__interval), \"name\", \"server\", \"device\" fill(null)",
+          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /^$server$/ AND \"name\" =~ /rxkB\\/s|txkB\\/s/) AND $timeFilter GROUP BY time($__interval), \"name\", \"server\", \"device\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1034,6 +1076,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/^$server$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1157,7 +1205,7 @@
           "measurement": "sar",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE (\"server\" =~ /^$server$/ AND \"name\" =~ /rxpck\\/s|txpck\\/s|rxcmp\\/s|txcmp\\/s|rxmcst\\/s|rxerr\\/s|txerr\\/s|coll\\/s|rxdrop\\/s|txdrop\\/s|txcarr\\/s|rxfram\\/s|rxfifo\\/s|txfifo\\/s/) AND $timeFilter GROUP BY time($__interval), \"name\", \"server\", \"device\" fill(null)",
+          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /^$server$/ AND \"name\" =~ /rxpck\\/s|txpck\\/s|rxcmp\\/s|txcmp\\/s|rxmcst\\/s|rxerr\\/s|txerr\\/s|coll\\/s|rxdrop\\/s|txdrop\\/s|txcarr\\/s|rxfram\\/s|rxfifo\\/s|txfifo\\/s/) AND $timeFilter GROUP BY time($__interval), \"name\", \"server\", \"device\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1180,6 +1228,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/^$server$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1306,7 +1360,7 @@
           "measurement": "sar",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE (\"server\" =~ /^$server$/ AND \"name\" =~ /pswpin\\/s|pswpout\\/s|proc\\/s|cswch\\/s|pgpgin\\/s|pgpgout\\/s|fault\\/s|majflt\\/s|pgfree\\/spgscank\\/s|pgscand\\/s|pgsteal\\/s/) AND $timeFilter GROUP BY time($Group_by_time), \"server\", \"name\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"value\") FROM \"sar\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /^$server$/ AND \"name\" =~ /pswpin\\/s|pswpout\\/s|proc\\/s|cswch\\/s|pgpgin\\/s|pgpgout\\/s|fault\\/s|majflt\\/s|pgfree\\/spgscank\\/s|pgscand\\/s|pgsteal\\/s/) AND $timeFilter GROUP BY time($Group_by_time), \"server\", \"name\", \"server\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1335,6 +1389,12 @@
               "key": "name",
               "operator": "=~",
               "value": "/\\/s$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1481,6 +1541,12 @@
               "key": "service",
               "operator": "=~",
               "value": "/^$service$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1627,6 +1693,12 @@
               "key": "service",
               "operator": "=~",
               "value": "/^$service$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1773,6 +1845,12 @@
               "key": "service",
               "operator": "=~",
               "value": "/^$service$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1919,6 +1997,12 @@
               "key": "service",
               "operator": "=~",
               "value": "/^$service$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2069,6 +2153,12 @@
               "key": "service",
               "operator": "=~",
               "value": "/^$service$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2103,6 +2193,38 @@
         "type": "datasource"
       },
       {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "$datasource"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": true,
+        "label": "PE Instance",
+        "multi": true,
+        "name": "pe_instance",
+        "options": [],
+        "query": "SHOW TAG VALUES WITH KEY = \"pe_instance\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
         "current": {
           "selected": true,
           "text": [
@@ -2123,7 +2245,7 @@
         "multi": true,
         "name": "server",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"server\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"server\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -2154,7 +2276,7 @@
         "multi": true,
         "name": "service",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"service\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"service\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -2253,14 +2375,14 @@
           "type": "influxdb",
           "uid": "$datasource"
         },
-        "definition": "SHOW TAG VALUES WITH KEY = \"device\"",
+        "definition": "SHOW TAG VALUES WITH KEY = \"device\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "hide": 0,
         "includeAll": true,
         "label": "device",
         "multi": true,
         "name": "device",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"device\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"device\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
