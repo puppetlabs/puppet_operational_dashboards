@@ -1,6 +1,7 @@
 # @summary Defined type to create Telegraf configurations for a given service
 # @param service
-#   Name of the service to query.  Is the title of the resource.
+#   Name of the service to query.  Defaults to the title of the resource, which allows several
+#   configurations for the same service, e.g. one per PE installation, by using distinct titles.
 # @param protocol
 #   Protocol to use in requests, either https or http
 # @param hosts
@@ -11,6 +12,15 @@
 #   Timeout for HTTP Telegraf inputs. Might be usefull in huge environments with slower API responses
 # @param template_format
 #   Template format to use for puppet template toml or yaml config
+# @param pe_instance
+#   Optional name of the PE installation the hosts belong to.  When set, it is added to metrics from
+#   this input as the 'pe_instance' tag, which takes precedence over any global pe_instance tag.
+# @param tls_cert_file
+#   TLS client certificate used when querying the hosts over https
+# @param tls_key_file
+#   TLS private key used when querying the hosts over https
+# @param tls_ca_file
+#   CA certificate used to verify the hosts when querying over https
 define puppet_operational_dashboards::telegraf::config (
   Array[String[1]] $hosts,
   Enum['https', 'http'] $protocol,
@@ -18,6 +28,10 @@ define puppet_operational_dashboards::telegraf::config (
   String $service = $title,
   Enum['present', 'absent'] $ensure = 'present',
   Enum['yaml','toml'] $template_format = 'toml',
+  Optional[String[1]] $pe_instance = undef,
+  Stdlib::Absolutepath $tls_cert_file = '/etc/telegraf/puppet_cert.pem',
+  Stdlib::Absolutepath $tls_key_file = '/etc/telegraf/puppet_key.pem',
+  Stdlib::Absolutepath $tls_ca_file = '/etc/telegraf/puppet_ca.pem',
 ) {
   unless $service in ['puppetserver', 'puppetdb', 'puppetdb_jvm', 'orchestrator', 'pcp'] {
     fail("Unknown service type ${service}")
@@ -43,15 +57,28 @@ define puppet_operational_dashboards::telegraf::config (
 
     $inputs = epp(
       "puppet_operational_dashboards/${service}_metrics.${template_format}.epp",
-      { urls => $urls, protocol => $protocol, http_timeout_seconds => $http_timeout_seconds }
+      {
+        urls                 => $urls,
+        protocol             => $protocol,
+        http_timeout_seconds => $http_timeout_seconds,
+        tls_cert_file        => $tls_cert_file,
+        tls_key_file         => $tls_key_file,
+        tls_ca_file          => $tls_ca_file,
+      }
     )
 
-    $_inputs = $template_format ? {
+    $parsed_inputs = $template_format ? {
       'yaml'  => $inputs.parseyaml(),
       default => $inputs.influxdb::from_toml(),
     }
 
-    telegraf::input { "${service}_metrics":
+    # Input-level tags take precedence over any [global_tags] entry with the same key
+    $_inputs = $pe_instance ? {
+      undef   => $parsed_inputs,
+      default => $parsed_inputs + { 'tags' => { 'pe_instance' => $pe_instance } },
+    }
+
+    telegraf::input { "${title}_metrics":
       plugin_type => 'http',
       options     => [$_inputs],
     }
@@ -80,7 +107,7 @@ define puppet_operational_dashboards::telegraf::config (
       }
     }
 
-    telegraf::processor { "${service}_renames":
+    telegraf::processor { "${title}_renames":
       plugin_type => 'strings',
       options     => [$renames],
     }
@@ -96,19 +123,25 @@ define puppet_operational_dashboards::telegraf::config (
         }],
       }
 
-      telegraf::processor { 'puppetdb_mbean_renames':
+      telegraf::processor { "${title}_mbean_renames":
         plugin_type => 'regex',
         options     => [$regexes],
       }
     }
   }
   else {
-    telegraf::processor { "${service}_renames":
+    telegraf::processor { "${title}_renames":
       ensure => absent,
     }
 
-    telegraf::input { "${service}_metrics":
+    telegraf::input { "${title}_metrics":
       ensure => absent,
+    }
+
+    if $service == 'puppetdb' {
+      telegraf::processor { "${title}_mbean_renames":
+        ensure => absent,
+      }
     }
   }
 }

@@ -47,6 +47,10 @@
 #   Name identifying this PE installation, e.g. 'prod'.  When set, Telegraf adds it to all metrics as the
 #   'pe_instance' global tag, allowing multiple PE installations to share one InfluxDB and be filtered
 #   in the dashboards.  Leave unset (default) for single-PE installations.
+# @param pe_instances
+#   Hash of additional PE installations to collect metrics from, keyed by installation name.  See the
+#   documentation of the same parameter on puppet_operational_dashboards::telegraf::agent for the
+#   structure and certificate requirements.
 class puppet_operational_dashboards (
   Boolean $manage_influxdb = true,
   String $influxdb_host = lookup(influxdb::host, undef, undef, $facts['networking']['fqdn']),
@@ -75,6 +79,7 @@ class puppet_operational_dashboards (
   Boolean $manage_system_board = true,
   Enum['yaml','toml'] $template_format = 'toml',
   Optional[String[1]] $pe_instance = undef,
+  Hash[String[1], Hash] $pe_instances = {},
 ) {
   unless $facts['os']['family'] in ['RedHat', 'Debian', 'Suse'] {
     fail("Installation on ${facts['os']['family']} is not supported")

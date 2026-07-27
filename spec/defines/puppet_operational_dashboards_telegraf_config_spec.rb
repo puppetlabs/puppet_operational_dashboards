@@ -127,6 +127,68 @@ describe 'puppet_operational_dashboards::telegraf::config' do
     }
   end
 
+  context 'when titled per PE installation' do
+    let(:title) { 'dr_puppetserver' }
+    let(:params) do
+      {
+        ensure: 'present',
+        protocol: 'https',
+        http_timeout_seconds: 5,
+        hosts: ['primary.dr.foo.com'],
+        service: 'puppetserver',
+        pe_instance: 'dr',
+        tls_cert_file: '/etc/telegraf/dr_cert.pem',
+        tls_key_file: '/etc/telegraf/dr_key.pem',
+        tls_ca_file: '/etc/telegraf/dr_ca.pem',
+      }
+    end
+
+    let(:puppetserver_epp) do
+      JSON.parse(File.read('./spec/fixtures/defines/puppetserver_metrics.json'))
+    end
+
+    it {
+      is_expected.to compile
+
+      # Resources are named after the title, so several installations can collect the same service
+      is_expected.to contain_telegraf__input('dr_puppetserver_metrics').with(plugin_type: 'http')
+      is_expected.to contain_telegraf__processor('dr_puppetserver_renames').with(plugin_type: 'strings')
+
+      # Options are the standard template output plus per-instance TLS paths and the pe_instance tag
+      expected = puppetserver_epp.map do |opts|
+        opts.merge(
+          'tls_cert' => '/etc/telegraf/dr_cert.pem',
+          'tls_key' => '/etc/telegraf/dr_key.pem',
+          'tls_ca' => '/etc/telegraf/dr_ca.pem',
+          'tags' => { 'pe_instance' => 'dr' },
+          'urls' => ['https://primary.dr.foo.com:8140/status/v1/services?level=debug'],
+        )
+      end
+      is_expected.to contain_telegraf__input('dr_puppetserver_metrics').with(options: expected)
+    }
+  end
+
+  context 'when removing a per-installation puppetdb config' do
+    let(:title) { 'dr_puppetdb' }
+    let(:params) do
+      {
+        ensure: 'absent',
+        protocol: 'https',
+        http_timeout_seconds: 5,
+        hosts: ['primary.dr.foo.com'],
+        service: 'puppetdb',
+      }
+    end
+
+    it {
+      is_expected.to compile
+
+      is_expected.to contain_telegraf__input('dr_puppetdb_metrics').with(ensure: 'absent')
+      is_expected.to contain_telegraf__processor('dr_puppetdb_renames').with(ensure: 'absent')
+      is_expected.to contain_telegraf__processor('dr_puppetdb_mbean_renames').with(ensure: 'absent')
+    }
+  end
+
   context 'when not using ssl' do
     let(:title) { 'puppetserver' }
     let(:params) do

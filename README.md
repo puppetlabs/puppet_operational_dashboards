@@ -278,26 +278,39 @@ class {'puppet_operational_dashboards::telegraf::agent':
 
 ### Collecting metrics from multiple PE installations
 
-By default, the module assumes a single PE installation: the dashboard node discovers infrastructure hosts via its own PuppetDB. To display metrics from several PE installations in one set of dashboards, run Telegraf locally on each installation's infrastructure and point it at a shared InfluxDB, using the `pe_instance` parameter to identify each installation:
+By default, the module assumes a single PE installation: the dashboard node discovers infrastructure hosts via its own PuppetDB. To display metrics from several PE installations in one set of dashboards, name each installation with the `pe_instance` parameter and configure the central Telegraf to scrape the others via `pe_instances`. Telegraf adds the name to metrics as the `pe_instance` tag, and each bundled dashboard provides a "PE Instance" variable to filter by installation. When neither parameter is set (the default), no tag is added and the dashboards' "All" selection displays data as before, so existing single-installation setups are unaffected.
 
-1. On the central dashboard node (an agent of one of your PE installations), apply the `puppet_operational_dashboards` class as usual, setting `pe_instance` to a name for that installation, e.g. `prod`.
+On the dashboard node, name the local installation and describe the others. Host lists cannot be discovered across installations, so they are given explicitly:
 
-2. On each other PE installation, apply `puppet_operational_dashboards::enterprise_infrastructure` to its infrastructure nodes as usual, and apply the `puppet_operational_dashboards::telegraf::agent` class with `collection_method => 'local'`, the central InfluxDB host, the Telegraf token from the central installation, and that installation's own `pe_instance` name:
-
-```puppet
-class { 'puppet_operational_dashboards::telegraf::agent':
-  collection_method => 'local',
-  influxdb_host     => 'dashboard.example.com',
-  token             => Sensitive('<telegraf token from the central node>'),
-  pe_instance       => 'dr',
-}
+```yaml
+puppet_operational_dashboards::pe_instance: 'prod'
+puppet_operational_dashboards::pe_instances:
+  dr:
+    puppetserver_hosts: ['primary.dr.example.com']
+    puppetdb_hosts: ['primary.dr.example.com']
+    orchestrator_hosts: ['primary.dr.example.com']
+    postgres_hosts: ['primary.dr.example.com']
 ```
 
-The token is created on the central dashboard node (see `puppet_operational_dashboards::telegraf_token_name`) and must be supplied explicitly on the other installations, as they cannot read the central node's token file. The recommended approach is to encrypt it with [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) in each installation's Hiera data.
+Because each PE installation has its own certificate authority, querying it requires a certificate issued by that installation. On each remote installation's primary server, generate one for the dashboard node:
 
-When `pe_instance` is set, Telegraf adds it to all metrics as the `pe_instance` global tag, and the bundled dashboards provide a "PE Instance" variable to filter by installation. When it is unset (the default), no tag is added and the dashboards' "All" selection displays the data as before, so existing single-installation setups are unaffected. Note that certnames must be unique across installations to avoid metrics being merged in per-server panels.
+```bash
+puppetserver ca generate --certname dashboard-telegraf.dr
+```
 
-Telegraf on the other installations connects to InfluxDB with TLS certificates issued by its own Puppet CA, which the central InfluxDB does not trust. The `insecure_skip_verify` parameter defaults to `true`, which allows this to work; to verify properly, distribute a CA bundle and set `use_system_store`.
+and copy the certificate, private key, and the installation's CA certificate to the dashboard node as `/etc/telegraf/<name>_cert.pem`, `/etc/telegraf/<name>_key.pem`, and `/etc/telegraf/<name>_ca.pem` (`dr_cert.pem` and so on for the example above), owned by the `telegraf` user with mode `0400`. The paths can be overridden with the `ssl_cert_file`, `ssl_key_file`, and `ssl_ca_file` keys.
+
+Each remote installation must also grant that certificate access to its services. Apply `puppet_operational_dashboards::enterprise_infrastructure` to the remote installation's infrastructure nodes as usual, and pass the generated certname explicitly to the database access class on its PostgreSQL nodes, since the dashboard node is not present in the remote installation's PuppetDB:
+
+```yaml
+puppet_operational_dashboards::profile::postgres_access::telegraf_hosts: ['dashboard-telegraf.dr']
+```
+
+Firewall-wise, the dashboard node needs access to each remote installation on ports 8140 (Puppet server), 8081 (PuppetDB), 8143 (orchestrator), and 5432 (PostgreSQL).
+
+Where network policy rules out scraping across installations, the same data model works federated instead: apply `puppet_operational_dashboards::telegraf::agent` on a node in the remote installation with `collection_method => 'local'` (or a collector node with the default `all`), `influxdb_host` pointing at the central node, that installation's `pe_instance` name, and the central Telegraf token supplied via `token`, encrypted with [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) in that installation's Hiera data. In this arrangement only port 8086 needs to be open from each installation to the central InfluxDB.
+
+Note that certnames must be unique across installations to avoid metrics being merged in per-server panels.
 
 ### Importing archive metrics
 

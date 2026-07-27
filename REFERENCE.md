@@ -68,6 +68,7 @@ The following parameters are available in the `puppet_operational_dashboards` cl
 * [`manage_system_board`](#-puppet_operational_dashboards--manage_system_board)
 * [`template_format`](#-puppet_operational_dashboards--template_format)
 * [`pe_instance`](#-puppet_operational_dashboards--pe_instance)
+* [`pe_instances`](#-puppet_operational_dashboards--pe_instances)
 
 ##### <a name="-puppet_operational_dashboards--manage_influxdb"></a>`manage_influxdb`
 
@@ -230,6 +231,16 @@ Name identifying this PE installation, e.g. 'prod'.  When set, Telegraf adds it 
 in the dashboards.  Leave unset (default) for single-PE installations.
 
 Default value: `undef`
+
+##### <a name="-puppet_operational_dashboards--pe_instances"></a>`pe_instances`
+
+Data type: `Hash[String[1], Hash]`
+
+Hash of additional PE installations to collect metrics from, keyed by installation name.  See the
+documentation of the same parameter on puppet_operational_dashboards::telegraf::agent for the
+structure and certificate requirements.
+
+Default value: `{}`
 
 ### <a name="puppet_operational_dashboards--enterprise_infrastructure"></a>`puppet_operational_dashboards::enterprise_infrastructure`
 
@@ -661,6 +672,7 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`postgres_options`](#-puppet_operational_dashboards--telegraf--agent--postgres_options)
 * [`template_format`](#-puppet_operational_dashboards--telegraf--agent--template_format)
 * [`pe_instance`](#-puppet_operational_dashboards--telegraf--agent--pe_instance)
+* [`pe_instances`](#-puppet_operational_dashboards--telegraf--agent--pe_instances)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--agent--token"></a>`token`
 
@@ -986,6 +998,47 @@ be filtered in the dashboards.  Leave unset (default) for single-PE installation
 
 Default value: `getvar('puppet_operational_dashboards::pe_instance')`
 
+##### <a name="-puppet_operational_dashboards--telegraf--agent--pe_instances"></a>`pe_instances`
+
+Data type:
+
+```puppet
+Hash[String[1], Struct[{
+        Optional[puppetserver_hosts]  => Array[String[1]],
+        Optional[puppetdb_hosts]      => Array[String[1]],
+        Optional[orchestrator_hosts]  => Array[String[1]],
+        Optional[postgres_hosts]      => Array[String[1]],
+        Optional[protocol]            => Enum['https', 'http'],
+        Optional[ssl_cert_file]       => Stdlib::Absolutepath,
+        Optional[ssl_key_file]        => Stdlib::Absolutepath,
+        Optional[ssl_ca_file]         => Stdlib::Absolutepath,
+        Optional[include_pe_metrics]  => Boolean,
+        Optional[telegraf_user]       => String[1],
+        Optional[postgres_password]   => Variant[Sensitive[String[1]], String[1]],
+        Optional[postgres_port]       => Integer,
+        Optional[postgres_options]    => Hash[String[1], String[1]],
+  }]]
+```
+
+Hash of additional PE installations for this node to collect metrics from, keyed by installation name.
+Metrics from each installation are tagged with its name as the 'pe_instance' tag.  Because each PE
+installation has its own CA, querying it requires a certificate issued by that CA; generate one with
+'puppetserver ca generate' on the installation and place the files on this node, by default at
+/etc/telegraf/<name>_cert.pem, /etc/telegraf/<name>_key.pem and /etc/telegraf/<name>_ca.pem.
+Host lists cannot be discovered across installations and must be given explicitly.  For example:
+
+  puppet_operational_dashboards::telegraf::agent::pe_instances:
+    dr:
+      puppetserver_hosts: ['primary.dr.example.com']
+      puppetdb_hosts: ['primary.dr.example.com']
+      orchestrator_hosts: ['primary.dr.example.com']
+      postgres_hosts: ['primary.dr.example.com']
+
+Optional per-installation keys: protocol, ssl_cert_file, ssl_key_file, ssl_ca_file, include_pe_metrics,
+telegraf_user, postgres_password, postgres_port, postgres_options.
+
+Default value: `getvar('puppet_operational_dashboards::pe_instances', {})`
+
 ## Defined types
 
 ### <a name="puppet_operational_dashboards--telegraf--config"></a>`puppet_operational_dashboards::telegraf::config`
@@ -1002,12 +1055,17 @@ The following parameters are available in the `puppet_operational_dashboards::te
 * [`ensure`](#-puppet_operational_dashboards--telegraf--config--ensure)
 * [`http_timeout_seconds`](#-puppet_operational_dashboards--telegraf--config--http_timeout_seconds)
 * [`template_format`](#-puppet_operational_dashboards--telegraf--config--template_format)
+* [`pe_instance`](#-puppet_operational_dashboards--telegraf--config--pe_instance)
+* [`tls_cert_file`](#-puppet_operational_dashboards--telegraf--config--tls_cert_file)
+* [`tls_key_file`](#-puppet_operational_dashboards--telegraf--config--tls_key_file)
+* [`tls_ca_file`](#-puppet_operational_dashboards--telegraf--config--tls_ca_file)
 
 ##### <a name="-puppet_operational_dashboards--telegraf--config--service"></a>`service`
 
 Data type: `String`
 
-Name of the service to query.  Is the title of the resource.
+Name of the service to query.  Defaults to the title of the resource, which allows several
+configurations for the same service, e.g. one per PE installation, by using distinct titles.
 
 Default value: `$title`
 
@@ -1044,6 +1102,39 @@ Data type: `Enum['yaml','toml']`
 Template format to use for puppet template toml or yaml config
 
 Default value: `'toml'`
+
+##### <a name="-puppet_operational_dashboards--telegraf--config--pe_instance"></a>`pe_instance`
+
+Data type: `Optional[String[1]]`
+
+Optional name of the PE installation the hosts belong to.  When set, it is added to metrics from
+this input as the 'pe_instance' tag, which takes precedence over any global pe_instance tag.
+
+Default value: `undef`
+
+##### <a name="-puppet_operational_dashboards--telegraf--config--tls_cert_file"></a>`tls_cert_file`
+
+Data type: `Stdlib::Absolutepath`
+
+TLS client certificate used when querying the hosts over https
+
+Default value: `'/etc/telegraf/puppet_cert.pem'`
+
+##### <a name="-puppet_operational_dashboards--telegraf--config--tls_key_file"></a>`tls_key_file`
+
+Data type: `Stdlib::Absolutepath`
+
+TLS private key used when querying the hosts over https
+
+Default value: `'/etc/telegraf/puppet_key.pem'`
+
+##### <a name="-puppet_operational_dashboards--telegraf--config--tls_ca_file"></a>`tls_ca_file`
+
+Data type: `Stdlib::Absolutepath`
+
+CA certificate used to verify the hosts when querying over https
+
+Default value: `'/etc/telegraf/puppet_ca.pem'`
 
 ## Functions
 

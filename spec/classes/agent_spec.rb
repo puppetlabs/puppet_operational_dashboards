@@ -98,6 +98,72 @@ describe 'puppet_operational_dashboards::telegraf::agent' do
         }
       end
 
+      context 'when scraping additional PE installations via pe_instances' do
+        let(:pre_condition) do
+          <<-PRE_COND
+            function puppet_operational_dashboards::hosts_with_profile($profile) { return ['localhost.foo.com'] }
+            class{ 'puppet_operational_dashboards':
+              influxdb_host => 'localhost.foo.com',
+              include_pe_metrics => true,
+              pe_instance => 'prod',
+              pe_instances => {
+                'dr' => {
+                  'puppetserver_hosts' => ['primary.dr.foo.com'],
+                  'puppetdb_hosts'     => ['primary.dr.foo.com'],
+                  'orchestrator_hosts' => ['primary.dr.foo.com'],
+                  'postgres_hosts'     => ['primary.dr.foo.com'],
+                },
+              },
+            }
+          PRE_COND
+        end
+
+        it { is_expected.to compile.with_all_deps }
+
+        it {
+          ['dr_puppetserver', 'dr_puppetdb', 'dr_puppetdb_jvm', 'dr_orchestrator'].each do |config|
+            is_expected.to contain_puppet_operational_dashboards__telegraf__config(config).with(
+              hosts: ['primary.dr.foo.com'],
+              pe_instance: 'dr',
+              tls_cert_file: '/etc/telegraf/dr_cert.pem',
+              tls_key_file: '/etc/telegraf/dr_key.pem',
+              tls_ca_file: '/etc/telegraf/dr_ca.pem',
+            )
+          end
+
+          # The host is an orchestrator, so PCP metrics are collected on port 8143
+          is_expected.to contain_puppet_operational_dashboards__telegraf__config('dr_pcp').with(
+            hosts: ['primary.dr.foo.com:8143'],
+            pe_instance: 'dr',
+          )
+
+          # Instance-titled inputs must not collide with the local installation's inputs
+          is_expected.to contain_telegraf__input('dr_puppetserver_metrics')
+          is_expected.to contain_telegraf__input('puppetserver_metrics')
+
+          is_expected.to contain_file('/etc/telegraf/telegraf.d/dr_puppetserver_metrics.conf').with_content(
+            %r{tls_cert = "/etc/telegraf/dr_cert\.pem"},
+          )
+          is_expected.to contain_file('/etc/telegraf/telegraf.d/dr_puppetserver_metrics.conf').with_content(
+            %r{\[inputs\.http\.tags\]},
+          )
+          is_expected.to contain_file('/etc/telegraf/telegraf.d/dr_puppetserver_metrics.conf').with_content(
+            %r{pe_instance = "dr"},
+          )
+
+          is_expected.to contain_telegraf__input('dr_postgres_primary.dr.foo.com')
+          is_expected.to contain_file('/etc/telegraf/telegraf.d/dr_postgres_primary.dr.foo.com.conf').with_content(
+            %r{pe_instance = "dr"},
+          )
+          is_expected.to contain_file('/etc/telegraf/telegraf.d/dr_postgres_primary.dr.foo.com.conf').with_content(
+            %r{sslrootcert=/etc/telegraf/dr_ca\.pem},
+          )
+
+          # The local installation keeps its global tag
+          is_expected.to contain_class('telegraf').with(global_tags: { 'pe_instance' => 'prod' })
+        }
+      end
+
       context 'when using postgres password auth' do
         let(:params) do
           {

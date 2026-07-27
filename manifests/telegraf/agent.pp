@@ -90,6 +90,23 @@
 #   Name identifying the PE installation this node belongs to, e.g. 'prod'.  When set, it is added to all
 #   metrics as the 'pe_instance' global tag, allowing multiple PE installations to share one InfluxDB and
 #   be filtered in the dashboards.  Leave unset (default) for single-PE installations.
+# @param pe_instances
+#   Hash of additional PE installations for this node to collect metrics from, keyed by installation name.
+#   Metrics from each installation are tagged with its name as the 'pe_instance' tag.  Because each PE
+#   installation has its own CA, querying it requires a certificate issued by that CA; generate one with
+#   'puppetserver ca generate' on the installation and place the files on this node, by default at
+#   /etc/telegraf/<name>_cert.pem, /etc/telegraf/<name>_key.pem and /etc/telegraf/<name>_ca.pem.
+#   Host lists cannot be discovered across installations and must be given explicitly.  For example:
+#
+#     puppet_operational_dashboards::telegraf::agent::pe_instances:
+#       dr:
+#         puppetserver_hosts: ['primary.dr.example.com']
+#         puppetdb_hosts: ['primary.dr.example.com']
+#         orchestrator_hosts: ['primary.dr.example.com']
+#         postgres_hosts: ['primary.dr.example.com']
+#
+#   Optional per-installation keys: protocol, ssl_cert_file, ssl_key_file, ssl_ca_file, include_pe_metrics,
+#   telegraf_user, postgres_password, postgres_port, postgres_options.
 class puppet_operational_dashboards::telegraf::agent (
   String $version,
   Boolean $manage_repo,
@@ -140,9 +157,33 @@ class puppet_operational_dashboards::telegraf::agent (
   },
   Enum['yaml','toml'] $template_format = $puppet_operational_dashboards::template_format,
   Optional[String[1]] $pe_instance = getvar('puppet_operational_dashboards::pe_instance'),
+  Hash[String[1], Struct[{
+        Optional[puppetserver_hosts]  => Array[String[1]],
+        Optional[puppetdb_hosts]      => Array[String[1]],
+        Optional[orchestrator_hosts]  => Array[String[1]],
+        Optional[postgres_hosts]      => Array[String[1]],
+        Optional[protocol]            => Enum['https', 'http'],
+        Optional[ssl_cert_file]       => Stdlib::Absolutepath,
+        Optional[ssl_key_file]        => Stdlib::Absolutepath,
+        Optional[ssl_ca_file]         => Stdlib::Absolutepath,
+        Optional[include_pe_metrics]  => Boolean,
+        Optional[telegraf_user]       => String[1],
+        Optional[postgres_password]   => Variant[Sensitive[String[1]], String[1]],
+        Optional[postgres_port]       => Integer,
+        Optional[postgres_options]    => Hash[String[1], String[1]],
+  }]] $pe_instances = getvar('puppet_operational_dashboards::pe_instances', {}),
 ) {
-  unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services].any |$service| { $service } {
+  unless [$puppetserver_hosts, $puppetdb_hosts, $postgres_hosts, $profiles, $local_services, $pe_instances].any |$service| { $service } {
     fail('No services detected on node.')
+  }
+
+  if !$pe_instances.empty() and !$pe_instance {
+    $warning_message = [
+      'puppet_operational_dashboards::telegraf::agent: pe_instances is set but pe_instance is not.',
+      'Metrics collected from this node\'s own installation will not carry a pe_instance tag and will',
+      'only be visible under \'All\' in the dashboards. Set pe_instance to name this installation.',
+    ].join(' ')
+    warning($warning_message)
   }
 
   exec { 'puppet_telegraf_daemon_reload':
@@ -453,6 +494,121 @@ class puppet_operational_dashboards::telegraf::agent (
       telegraf::input { "postgres_${trusted['certname']}":
         plugin_type => 'postgresql_extensible',
         options     => [$_inputs],
+      }
+    }
+  }
+
+  # Additional PE installations scraped from this node.  Each installation has its own CA, so each uses
+  # its own set of TLS files, and metrics are tagged with the installation name at the input level.
+  $pe_instances.each |$instance_name, $instance| {
+    $instance_protocol = $instance.get('protocol', 'https')
+    $instance_tls_cert = $instance.get('ssl_cert_file', "/etc/telegraf/${instance_name}_cert.pem")
+    $instance_tls_key  = $instance.get('ssl_key_file', "/etc/telegraf/${instance_name}_key.pem")
+    $instance_tls_ca   = $instance.get('ssl_ca_file', "/etc/telegraf/${instance_name}_ca.pem")
+
+    $instance_defaults = {
+      protocol             => $instance_protocol,
+      http_timeout_seconds => $http_timeout_seconds,
+      template_format      => $template_format,
+      pe_instance          => $instance_name,
+      tls_cert_file        => $instance_tls_cert,
+      tls_key_file         => $instance_tls_key,
+      tls_ca_file          => $instance_tls_ca,
+      require              => File['/etc/systemd/system/telegraf.service.d/override.conf'],
+    }
+
+    $instance_puppetdb_hosts = $instance.get('puppetdb_hosts', [])
+    unless $instance_puppetdb_hosts.empty() {
+      puppet_operational_dashboards::telegraf::config { "${instance_name}_puppetdb":
+        service => 'puppetdb',
+        hosts   => $instance_puppetdb_hosts.sort,
+        *       => $instance_defaults,
+      }
+      puppet_operational_dashboards::telegraf::config { "${instance_name}_puppetdb_jvm":
+        service => 'puppetdb_jvm',
+        hosts   => $instance_puppetdb_hosts.sort,
+        *       => $instance_defaults,
+      }
+    }
+
+    $instance_puppetserver_hosts = $instance.get('puppetserver_hosts', [])
+    unless $instance_puppetserver_hosts.empty() {
+      puppet_operational_dashboards::telegraf::config { "${instance_name}_puppetserver":
+        service => 'puppetserver',
+        hosts   => $instance_puppetserver_hosts.sort,
+        *       => $instance_defaults,
+      }
+    }
+
+    $instance_orchestrator_hosts = $instance.get('orchestrator_hosts', [])
+    unless $instance_orchestrator_hosts.empty() {
+      puppet_operational_dashboards::telegraf::config { "${instance_name}_orchestrator":
+        service => 'orchestrator',
+        hosts   => $instance_orchestrator_hosts.sort,
+        *       => $instance_defaults,
+      }
+    }
+
+    # The port to use for this mbean is 8143 for Orchestrator and 8140 for Puppet server
+    if $instance.get('include_pe_metrics', true) {
+      $instance_pcp_hosts = $instance_puppetserver_hosts.map |$host| {
+        if $host in $instance_orchestrator_hosts {
+          "${host}:8143"
+        }
+        else {
+          "${host}:8140"
+        }
+      }
+
+      unless $instance_pcp_hosts.empty() {
+        puppet_operational_dashboards::telegraf::config { "${instance_name}_pcp":
+          service => 'pcp',
+          hosts   => $instance_pcp_hosts.sort,
+          *       => $instance_defaults,
+        }
+      }
+    }
+
+    $instance_postgres_hosts = $instance.get('postgres_hosts', [])
+    unless $instance_postgres_hosts.empty() {
+      $instance_postgres_options = $instance.get('postgres_options', {
+          'sslmode'     => 'verify-full',
+          'sslkey'      => $instance_tls_key,
+          'sslcert'     => $instance_tls_cert,
+          'sslrootcert' => $instance_tls_ca,
+      })
+      $instance_postgres_password = $instance.get('postgres_password', undef) ? {
+        undef            => undef,
+        Sensitive        => $instance.get('postgres_password'),
+        default          => Sensitive($instance.get('postgres_password')),
+      }
+      $instance_database = $instance.get('include_pe_metrics', true) ? {
+        true  => 'pe-puppetdb',
+        false => 'puppetdb',
+      }
+
+      $instance_postgres_hosts.sort.each |$pg_host| {
+        $instance_options = $instance_postgres_options.map |$k, $v| { "${k}=${v}" }.join('&')
+        $instance_pg_inputs = epp(
+          "puppet_operational_dashboards/postgres.${template_format}.epp",
+          {
+            certname          => $pg_host,
+            telegraf_user     => $instance.get('telegraf_user', $telegraf_user),
+            password          => $instance_postgres_password,
+            database          => $instance_database,
+            port              => $instance.get('postgres_port', 5432),
+            connection_params => $instance_options,
+          }
+        )
+        $instance_pg_parsed = $template_format ? {
+          'yaml'  => $instance_pg_inputs.parseyaml(),
+          default => $instance_pg_inputs.influxdb::from_toml(),
+        }
+
+        telegraf::input { "${instance_name}_postgres_${pg_host}":
+          plugin_type => 'postgresql_extensible',
+          options     => [$instance_pg_parsed + { 'tags' => { 'pe_instance' => $instance_name } }],
+        }
       }
     }
   }
