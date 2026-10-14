@@ -153,7 +153,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_difference(distinct(\"temp_bytes\")) FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"db\", \"server\" fill(null)",
+          "query": "SELECT non_negative_difference(distinct(\"temp_bytes\")) FROM \"postgresql\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"db\", \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -181,6 +181,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -316,6 +322,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/^$server$/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -433,7 +445,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"db\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"db\", \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -457,6 +469,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -574,7 +592,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -598,6 +616,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -715,7 +739,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -739,6 +763,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -856,7 +886,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"size_bytes\") FROM \"postgresql\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND (\"server\" =~ /$server/) AND $timeFilter GROUP BY time($__interval), \"table\", \"server\" fill(null)",
           "rawQuery": false,
           "refId": "B",
           "resultFormat": "time_series",
@@ -880,6 +910,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1027,6 +1063,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1174,6 +1216,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1316,6 +1364,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1458,6 +1512,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1600,6 +1660,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1742,6 +1808,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -1884,6 +1956,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2026,6 +2104,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2149,7 +2233,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"n_live_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_live_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($Group_by_time), \"table\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"n_live_tup\") FROM \"postgresql\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND $timeFilter and \"n_live_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($Group_by_time), \"table\", \"server\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2173,6 +2257,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2296,7 +2386,7 @@
           "measurement": "postgresql",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT distinct(\"n_dead_tup\") FROM \"postgresql\" WHERE $timeFilter and \"n_dead_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($Group_by_time), \"table\", \"server\" fill(null)",
+          "query": "SELECT distinct(\"n_dead_tup\") FROM \"postgresql\" WHERE \"pe_instance\" =~ /^$pe_instance$/ AND $timeFilter and \"n_dead_tup\" > 0 AND \"server\" =~ /$server/ GROUP BY time($Group_by_time), \"table\", \"server\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2320,6 +2410,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2486,6 +2582,12 @@
               "key": "server",
               "operator": "=~",
               "value": "/$server/"
+            },
+            {
+              "condition": "AND",
+              "key": "pe_instance",
+              "operator": "=~",
+              "value": "/^$pe_instance$/"
             }
           ]
         }
@@ -2522,6 +2624,38 @@
         "type": "datasource"
       },
       {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "$datasource"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": true,
+        "label": "PE Instance",
+        "multi": true,
+        "name": "pe_instance",
+        "options": [],
+        "query": "SHOW TAG VALUES WITH KEY = \"pe_instance\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
         "current": {
           "selected": true,
           "text": [
@@ -2542,7 +2676,7 @@
         "multi": true,
         "name": "server",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"server\"",
+        "query": "SHOW TAG VALUES WITH KEY = \"server\" WHERE \"pe_instance\" =~ /^$pe_instance$/",
         "refresh": 1,
         "regex": "/^(?!http).*/",
         "skipUrlSync": false,

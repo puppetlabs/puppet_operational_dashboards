@@ -115,6 +115,14 @@ describe 'puppet_operational_dashboards' do
     }
   end
 
+  context 'when setting pe_instance' do
+    let(:params) { { influxdb_host: 'localhost', include_pe_metrics: true, pe_instance: 'prod' } }
+
+    it {
+      is_expected.to contain_class('telegraf').with(global_tags: { 'pe_instance' => 'prod' })
+    }
+  end
+
   context 'when passing a token' do
     let(:params) { { influxdb_host: 'localhost', influxdb_token: RSpec::Puppet::Sensitive.new('puppetlabs'), include_pe_metrics: true } }
 

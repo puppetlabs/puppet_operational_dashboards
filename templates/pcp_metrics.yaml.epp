@@ -1,8 +1,8 @@
-<%- | Array[String] $urls, Enum['https', 'http'] $protocol, Integer[1] $http_timeout_seconds | -%>
+<%- | Array[String] $urls, Enum['https', 'http'] $protocol, Integer[1] $http_timeout_seconds, Stdlib::Absolutepath $tls_cert_file = '/etc/telegraf/puppet_cert.pem', Stdlib::Absolutepath $tls_key_file = '/etc/telegraf/puppet_key.pem', Stdlib::Absolutepath $tls_ca_file = '/etc/telegraf/puppet_ca.pem' | -%>
 <% if $protocol == 'https' { -%>
-tls_cert: "/etc/telegraf/puppet_cert.pem"
-tls_key: "/etc/telegraf/puppet_key.pem"
-tls_ca: "/etc/telegraf/puppet_ca.pem"
+tls_cert: "<%= $tls_cert_file %>"
+tls_key: "<%= $tls_key_file %>"
+tls_ca: "<%= $tls_ca_file %>"
 <% } -%>
 data_format: json_v2
 headers:

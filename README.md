@@ -15,6 +15,7 @@
   - [Usage](#usage)
     - [Evaluation order](#evaluation-order)
     - [Determining where Telegraf runs](#determining-where-telegraf-runs)
+    - [Collecting metrics from multiple PE installations](#collecting-metrics-from-multiple-pe-installations)
     - [Importing archive metrics](#importing-archive-metrics)
   - [Default Dashboards Available](#default-dashboards-available)
       - [Puppetserver Performance](#puppetserver-performance)
@@ -274,6 +275,88 @@ class {'puppet_operational_dashboards::telegraf::agent':
   token => <my_sensitive_token>,
 }
 ```
+
+### Collecting metrics from multiple PE installations
+
+By default, the module assumes a single PE installation: the dashboard node discovers infrastructure hosts via its own PuppetDB. To display metrics from several PE installations in one set of dashboards, name each installation with the `pe_instance` parameter and configure the central Telegraf to scrape the others via `pe_instances`. Telegraf adds the name to metrics as the `pe_instance` tag, and each bundled dashboard provides a "PE Instance" variable to filter by installation. When neither parameter is set (the default), no tag is added and the dashboards' "All" selection displays data as before, so existing single-installation setups are unaffected.
+
+Start by naming the dashboard node's own installation in its Hiera data or classification:
+
+```yaml
+puppet_operational_dashboards::pe_instance: 'prod'
+```
+
+Certnames must be unique across installations, or their metrics will merge in per-server panels.
+
+#### Onboarding another PE installation
+
+Prerequisites:
+
+| From | To | Ports |
+|------|----|-------|
+| Dashboard node | The new installation's Puppet server, PuppetDB, orchestrator, and PostgreSQL hosts | 8140, 8081, 8143, 5432 |
+
+Each PE installation has its own certificate authority, so scraping it requires a certificate issued by that installation. The `add_instance` plan generates and distributes it in one step. Under the PE orchestrator:
+
+```bash
+puppet plan run puppet_operational_dashboards::add_instance \
+  primary=primary.dr.example.com dashboard=dashboard.example.com instance_name=dr
+```
+
+or with standalone Bolt, `bolt plan run` with the same parameters.
+
+The plan generates a private key on the dashboard node (it never leaves that node), has the new installation's CA sign a `dashboard-telegraf-dr` certificate for it, places the certificate, key, and CA files as `/etc/telegraf/dr_{cert,key,ca}.pem` with the right ownership and permissions, and prints the exact Hiera entries for the remaining steps.
+
+To do the same by hand instead:
+
+1. On the new installation's primary: `puppetserver ca generate --certname dashboard-telegraf-dr`
+2. Copy to the dashboard node, matching the `pe_instances` key exactly (case-sensitive):
+   * `/etc/puppetlabs/puppet/ssl/certs/dashboard-telegraf-dr.pem` to `/etc/telegraf/dr_cert.pem`
+   * `/etc/puppetlabs/puppet/ssl/private_keys/dashboard-telegraf-dr.pem` to `/etc/telegraf/dr_key.pem`
+   * `/etc/puppetlabs/puppet/ssl/certs/ca.pem` to `/etc/telegraf/dr_ca.pem`
+3. `chown telegraf:telegraf /etc/telegraf/dr_*.pem && chmod 0400 /etc/telegraf/dr_*.pem`
+
+Alternatively, provide the file contents through the `ssl_cert_content`, `ssl_key_content`, and `ssl_ca_content` keys, e.g. encrypted with [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml), and the module manages the files itself.
+
+Then configure both sides:
+
+1. On the dashboard node, describe the new installation. Host lists cannot be discovered across installations, so they are given explicitly, using the certnames of the hosts (the names their certificates present):
+
+   ```yaml
+   puppet_operational_dashboards::pe_instances:
+     dr:
+       puppetserver_hosts: ['primary.dr.example.com']
+       puppetdb_hosts: ['primary.dr.example.com']
+       orchestrator_hosts: ['primary.dr.example.com']
+       postgres_hosts: ['primary.dr.example.com']
+   ```
+
+2. On the new installation, apply `puppet_operational_dashboards::enterprise_infrastructure` to its infrastructure nodes as usual, and grant the scrape certificate database access. The dashboard node is not in the new installation's PuppetDB, so its certname must be listed explicitly; `additional_telegraf_hosts` appends to the automatically discovered hosts, so it is safe at any Hiera layer:
+
+   ```yaml
+   puppet_operational_dashboards::profile::postgres_access::additional_telegraf_hosts: ['dashboard-telegraf-dr']
+   ```
+
+3. Run the Puppet agent on the new installation's database and infrastructure nodes (applies the grants and the PuppetDB metrics allowlist), then on the dashboard node (creates the Telegraf inputs).
+
+Verification, on the dashboard node:
+
+```bash
+telegraf --test --config /etc/telegraf/telegraf.conf --config /etc/telegraf/telegraf.d/dr_puppetserver_metrics.conf
+```
+
+Each output line should carry `pe_instance=dr`. Repeat for the other `dr_*.conf` inputs. After the next flush interval (up to 15 minutes with the defaults), the installation appears in the dashboards' "PE Instance" dropdown.
+
+Troubleshooting:
+
+* TLS errors from an input: the host list entry does not match the certname the service presents, or the certificate files are missing or unreadable by the `telegraf` user.
+* `403` from PuppetDB or orchestrator inputs: the metrics allowlist has not been applied yet; run the agent on the new installation's infrastructure nodes and check `enterprise_infrastructure` is classified there.
+* `pg: authentication` errors: `additional_telegraf_hosts` has not been applied on the new installation's PostgreSQL node, or lists a different certname than the one generated.
+* Installation missing from the dropdown: no tagged points have been written yet; wait out the collection and flush intervals and reload the dashboard.
+
+#### Federated collection
+
+Where network policy rules out scraping across installations, the same data model works federated instead: apply `puppet_operational_dashboards::telegraf::agent` on a node in the remote installation with `collection_method => 'local'` (or a collector node with the default `all`), `influxdb_host` pointing at the central node, that installation's `pe_instance` name, and the central Telegraf token supplied via `token`, encrypted with hiera-eyaml in that installation's Hiera data. In this arrangement only port 8086 needs to be open from each installation to the central InfluxDB.
 
 ### Importing archive metrics
 
