@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":t:m:s:c" opt; do
+while getopts ":t:m:s:c:" opt; do
   case $opt in
     t)
       telegraf_dir="$OPTARG"
@@ -12,7 +12,7 @@ while getopts ":t:m:s:c" opt; do
       support_script="$OPTARG"
       ;;
     c)
-      cleanup='true'
+      cleanup="$OPTARG"
       ;;
     *)
       echo "WARN: invalid option $opt received"
@@ -36,7 +36,7 @@ fi
 
 find metrics -type f -name "*gz" -execdir tar xf "{}" \;
 
-telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config-directory "${telegraf_dir}/telegraf.conf.d" &>"$outfile"
+telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config-directory "${telegraf_dir}/telegraf.conf.d" >"$outfile" 2>&1
 
 # Only load one set of sar metrics from either the sa?? files, or from the metrics collector, preferring sa?? files
 for f in metrics/sa/sa??; do
@@ -47,15 +47,15 @@ for f in metrics/sa/sa??; do
 done
 
 if [[ $have_system_sar ]]; then
-  telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config "${telegraf_dir}/system_sar.conf" &>>"$outfile"
+  telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config "${telegraf_dir}/system_sar.conf" >>"$outfile" 2>&1
 else
-  telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config "${telegraf_dir}/sar.conf" &>>"$outfile"
+  telegraf --once --debug --config "${telegraf_dir}/telegraf.conf" --config "${telegraf_dir}/sar.conf" >>"$outfile" 2>&1
 fi
 
 
 if [[ $cleanup == true ]]; then
-  [[ -e ${metrics_dir}/metrics ]] && rm "${metrics_dir}/metrics" -rf
-  [[ -e $_tmp ]] && rm "$_tmp" -rf
+  [[ -e ${metrics_dir}/metrics ]] && rm -rf "${metrics_dir}/metrics"
+  [[ -e $_tmp ]] && rm -rf "$_tmp"
   [[ -e $support_script ]] && rm "$support_script"
 fi
 

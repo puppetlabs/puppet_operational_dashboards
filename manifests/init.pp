@@ -55,8 +55,8 @@ class puppet_operational_dashboards (
   Optional[Sensitive[String]] $telegraf_token = undef,
   String $telegraf_token_name = 'puppet telegraf token',
   String $influxdb_token_file = lookup(influxdb::token_file, undef, undef, $facts['identity']['user'] ? {
-      'root'  => '/root/.influxdb_token',
-      default => "/home/${facts['identity']['user']}/.influxdb_token"
+    'root'  => '/root/.influxdb_token',
+    default => "/home/${facts['identity']['user']}/.influxdb_token"
   }),
   Boolean $manage_telegraf = true,
   Boolean $manage_telegraf_token = true,

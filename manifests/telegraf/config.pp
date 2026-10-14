@@ -88,11 +88,11 @@ define puppet_operational_dashboards::telegraf::config (
     if $service == 'puppetdb' {
       $regexes = {
         tags => [{
-            'key'         => 'mbean',
-            'append'      => false,
-            'pattern'     => '.*name=(?P<name>.+)',
-            # This is the name of a regex capture group, not a variable
-            'replacement' => '${name}', # lint:ignore:single_quote_string_with_variables
+          'key'         => 'mbean',
+          'append'      => false,
+          'pattern'     => '.*name=(?P<name>.+)',
+          # This is the name of a regex capture group, not a variable
+          'replacement' => '${name}', # lint:ignore:single_quote_string_with_variables
         }],
       }
 

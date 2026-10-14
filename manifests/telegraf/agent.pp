@@ -163,7 +163,7 @@ class puppet_operational_dashboards::telegraf::agent (
           'organization'         => $influxdb_org,
           'token'                => '$INFLUX_TOKEN',
           'urls'                 => [$influxdb_uri],
-        }
+        },
       ],
     },
     false => {
@@ -173,7 +173,7 @@ class puppet_operational_dashboards::telegraf::agent (
           'organization'         => $influxdb_org,
           'token'                => '$INFLUX_TOKEN',
           'urls'                 => [$influxdb_uri],
-        }
+        },
       ],
     },
   }
@@ -271,7 +271,7 @@ class puppet_operational_dashboards::telegraf::agent (
       content => inline_epp(file('influxdb/telegraf_environment_file.epp'), { token => $token }),
       notify  => [
         Exec['puppet_telegraf_daemon_reload'],
-        Service['telegraf']
+        Service['telegraf'],
       ],
     }
   }
@@ -413,7 +413,7 @@ class puppet_operational_dashboards::telegraf::agent (
 
     if 'Puppet_enterprise::Profile::Orchestrator' in $profiles or 'orchestrator' in $local_services {
       puppet_operational_dashboards::telegraf::config { 'orchestrator':
-        hosts                => $orchestrator_hosts.sort,
+        hosts                => [$trusted['certname']],
         protocol             => $protocol,
         http_timeout_seconds => $http_timeout_seconds,
         template_format      => $template_format,

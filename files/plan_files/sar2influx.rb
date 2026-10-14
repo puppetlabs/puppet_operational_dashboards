@@ -7,6 +7,9 @@ require 'rubygems/requirement'
 require 'tempfile'
 require 'uri'
 
+# Namespace for Puppet support tooling
+module PBug; end
+
 # Tools for importing SAR archives into InfluxDB
 module PBug::ImportSARMetrics
   VERSION = '0.1.0'.freeze
@@ -225,7 +228,7 @@ module PBug::ImportSARMetrics
       stdout, stderr, have_sadf = Open3.capture3('/bin/sh', '-c', 'command -v sadf')
 
       if have_sadf.success?
-        @sadf = stdout.chomp!
+        @sadf = stdout.chomp
       else
         raise [stdout,
                stderr,

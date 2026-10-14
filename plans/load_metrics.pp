@@ -43,9 +43,9 @@ plan puppet_operational_dashboards::load_metrics (
   String $conf_dir = '/tmp/telegraf',
   # 90 day default for bucket retention
   Array[Hash] $retention_rules = [{
-      'type' => 'expire',
-      'everySeconds' => 7776000,
-      'shardGroupDurationSeconds' => 604800,
+    'type' => 'expire',
+    'everySeconds' => 7776000,
+    'shardGroupDurationSeconds' => 604800,
   }],
 #TODO
   Enum['local', 'remote'] $telegraf_process = 'remote',

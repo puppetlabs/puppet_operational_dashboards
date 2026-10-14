@@ -49,17 +49,71 @@ spec/default_facts.yml:
     networking:
       fqdn: 'foo.bar.com'
 .rubocop.yml:
-  default_configs:
+  # Cops the previous PDK template disabled, kept disabled to preserve this module's established style
+  cop_overrides:
     "Layout/MultilineOperationIndentation":
        Enabled: False
+    "Layout/HashAlignment":
+      Enabled: False
+    "Layout/LeadingEmptyLines":
+      Enabled: False
+    "Lint/HashCompareByIdentity":
+      Enabled: False
+    "Metrics/AbcSize":
+      Enabled: False
+    "Metrics/ClassLength":
+      Enabled: False
+    "Metrics/CyclomaticComplexity":
+      Enabled: False
+    "Metrics/MethodLength":
+      Enabled: False
+    "Metrics/PerceivedComplexity":
+      Enabled: False
+    "Performance/CollectionLiteralInLoop":
+      Enabled: False
+    "RSpec/ContextWording":
+      Enabled: False
+    "RSpec/EmptyLineAfterExample":
+      Enabled: False
+    "RSpec/EmptyLineAfterExampleGroup":
+      Enabled: False
+    "RSpec/ExampleLength":
+      Enabled: False
+    "RSpec/ExcessiveDocstringSpacing":
+      Enabled: False
+    "RSpec/ImplicitSubject":
+      Enabled: False
+    "RSpec/MessageSpies":
+      EnforcedStyle: receive
+    "RSpec/MultipleExpectations":
+      Enabled: False
+    "RSpec/MultipleMemoizedHelpers":
+      Enabled: False
+    "RSpec/NestedGroups":
+      Enabled: False
+    "RSpec/NoExpectationExample":
+      Enabled: False
+    "Style/FetchEnvVar":
+      Enabled: False
+    "Style/FrozenStringLiteralComment":
+      Enabled: False
+    "Style/IfUnlessModifier":
+      Enabled: False
+    "Style/MixinUsage":
+      Enabled: False
+    "Style/RedundantArgument":
+      Enabled: False
+    "Style/RescueStandardError":
+      Enabled: False
+    "Style/StderrPuts":
+      Enabled: False
+    "Style/StringConcatenation":
+      Enabled: False
+    "Style/TrailingCommaInHashLiteral":
+      Enabled: False
 Gemfile:
   optional:
     ":development":
     - gem: github_changelog_generator
       version: '= 1.16.4'
-    - gem: concurrent-ruby
-      version: '= 1.1.10'
     - gem: 'toml-rb'
-    - gem: 'faraday'
-      version:
-       '= 1.10.3'
